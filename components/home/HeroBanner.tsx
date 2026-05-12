@@ -68,9 +68,10 @@ export default function HeroBanner() {
                 border: '1px solid rgba(255,125,15,0.3)',
               }}
             >
-              <span className="text-lg">🙏</span>
+              {/* <span className="text-lg">🙏</span> */}
               <span className="text-sm font-semibold" style={{ color: '#ffb366' }}>
-                Jai Shri Krishna — Welcome to Braj Bhoomi
+                {/* Jai Shri Krishna — Welcome to Braj Bhoomi */}
+                🪶🦚राधे राधे 𓃔 🦚 🪄 — Welcome to Braj Bhoomi
               </span>
             </motion.div>
 

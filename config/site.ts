@@ -18,6 +18,18 @@ export const siteConfig = {
 
 export const cars = [
   {
+    id: 'wagonr',
+    name: 'Wagon R',
+    image: '/images/cars/wagonr.png',
+    capacity: '4 Passengers',
+    luggage: '2 Bags',
+    ac: true,
+    basePrice: 2000,
+    pricePerKm: 12,
+    features: ['AC', 'Music System', 'GPS'],
+    type: 'sedan',
+  },
+  {
     id: 'swift',
     name: 'Swift Dzire',
     image: '/images/cars/swift.png',
@@ -73,6 +85,18 @@ export const cars = [
     luggage: '5 Bags',
     ac: true,
     basePrice: 5500,
+    pricePerKm: 24,
+    features: ['AC', 'Luxury', 'GPS', 'USB Charging'],
+    type: 'luxury',
+  },
+  {
+    id: 'karens',
+    name: 'Kia Karens',
+    image: '/images/cars/karens.png',
+    capacity: '7 Passengers',
+    luggage: '5 Bags',
+    ac: true,
+    basePrice: 6000,
     pricePerKm: 24,
     features: ['AC', 'Luxury', 'GPS', 'USB Charging'],
     type: 'luxury',

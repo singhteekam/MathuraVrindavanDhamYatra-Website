@@ -289,6 +289,7 @@ export const getAllPlaceSlugs = unstable_cache(
 export const getApprovedReviews = unstable_cache(
   async (limit = 6): Promise<ReviewSummary[]> => {
     await connectDB()
+    await import('@/models/User') 
     const Review = (await import('@/models/Review')).default
     const docs = await Review
       .find({ isApproved: true })

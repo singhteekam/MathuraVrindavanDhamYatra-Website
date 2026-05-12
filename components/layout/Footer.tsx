@@ -2,6 +2,7 @@ import Link         from 'next/link'
 import VisitorBadge from '@/components/shared/VisitorBadge'
 import { Phone, Mail, MapPin, Facebook, Instagram, Youtube } from 'lucide-react'
 import { siteConfig } from '@/config/site'
+import Image from 'next/image'
 
 const footerPackages = [
   { label: 'Same Day Mathura Vrindavan', href: '/packages/same-day-mathura-vrindavan' },
@@ -89,14 +90,24 @@ export default function Footer() {
           {/* Brand col */}
           <div>
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 bg-saffron-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              {/* <div className="w-10 h-10 bg-saffron-500 rounded-xl flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-lg" style={{ fontFamily: 'var(--font-hindi)' }}>ॐ</span>
+              </div> */}
+
+              <div className="relative w-48 h-18 md:w-24 md:h-12 flex-shrink-0 -ml-5">
+                <Image
+                  src="/logo/logo128x128.png"
+                  alt="Mathura Vrindavan Dham Yatra Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
               </div>
               <div className="leading-tight">
                 <p className="font-bold text-white text-sm" style={{ fontFamily: 'var(--font-serif)' }}>
                   Mathura Vrindavan
                 </p>
-                <p className="text-saffron-400 text-xs font-semibold tracking-widest uppercase">Travel</p>
+                <p className="text-saffron-400 text-xs font-semibold tracking-widest uppercase">Dham Yatra</p>
               </div>
             </div>
 

@@ -12,6 +12,7 @@ import {
 import { useSession, signOut } from 'next-auth/react'
 import { cn } from '@/lib/utils'
 import { siteConfig } from '@/config/site'
+import Image from "next/image";
 
 interface NavChild { label: string; href: string; description?: string }
 interface NavItem  { label: string; href: string; children?: NavChild[] }
@@ -205,12 +206,22 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-              <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-saffron-500 to-saffron-700 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
-                <span className="text-white font-bold text-lg" style={{ fontFamily: 'var(--font-hindi)' }}>ॐ</span>
+              {/* <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-saffron-500 to-saffron-700 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
+                <span className="text-white font-bold text-lg" style={{ fontFamily: 'var(--font-hindi)' }}>🪈</span>
               </div>
               <div className="hidden sm:block leading-tight">
                 <p className="font-bold text-gray-900 text-base" style={{ fontFamily: 'var(--font-serif)' }}>Mathura Vrindavan</p>
                 <p className="text-saffron-500 text-xs font-semibold tracking-widest uppercase">Dham Yatra</p>
+              </div> */}
+
+              <div className="relative w-48 h-18 md:w-48 md:h-24 flex-shrink-0 -ml-10">
+                <Image
+                  src="/logo/logo128x128.png"
+                  alt="Mathura Vrindavan Dham Yatra Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
               </div>
             </Link>
 
@@ -308,12 +319,22 @@ export default function Navbar() {
             >
               {/* Header */}
               <div className="flex items-center justify-between p-5 border-b border-gray-100 flex-shrink-0">
-                <div className="flex items-center gap-2.5">
+                {/* <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 bg-saffron-500 rounded-lg flex items-center justify-center">
                     <span className="text-white font-bold" style={{ fontFamily: 'var(--font-hindi)' }}>ॐ</span>
                   </div>
                   <span className="font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>MVTravel</span>
-                </div>
+                </div> */}
+
+                <div className="relative w-48 h-18 md:w-48 md:h-24 flex-shrink-0 -ml-10">
+                <Image
+                  src="/logo/logo128x128.png"
+                  alt="Mathura Vrindavan Dham Yatra Logo"
+                  fill
+                  className="object-contain"
+                  priority
+                />
+              </div>
                 <button onClick={() => setMobileOpen(false)} className="p-1.5 rounded-lg hover:bg-gray-100">
                   <X size={20} className="text-gray-600" />
                 </button>
