@@ -1,5 +1,9 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from 'next'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
+
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       // Cloudinary — admin-uploaded images
@@ -11,13 +15,10 @@ const nextConfig = {
       // Google user content (profile avatars from Google OAuth)
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
     ],
-    // Optimize local /public images automatically
-    // Supported formats for best compression
     formats: ['image/avif', 'image/webp'],
   },
-  allowedDevOrigins: ['192.168.1.38'],  // for development, allow requests from this origin
+  allowedDevOrigins: ['192.168.1.38'],
   serverExternalPackages: ['mongoose'],
-
 }
 
-module.exports = nextConfig
+export default withNextIntl(nextConfig)
