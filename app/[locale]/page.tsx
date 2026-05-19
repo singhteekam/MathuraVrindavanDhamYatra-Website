@@ -17,6 +17,7 @@ import Footer from '@/components/layout/Footer'
 import WhatsAppButton from '@/components/layout/WhatsAppButton'
 import { siteConfig } from '@/config/site'
 import { AlertTriangle, MessageCircle } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 
 export const metadata: Metadata = {
   title: 'Mathura Vrindavan Dham Yatra | Best Tour Packages & Taxi Service',
@@ -35,8 +36,9 @@ export const metadata: Metadata = {
 // Tags: 'packages' | 'places' | 'reviews' — busted by admin mutations
 export const revalidate = 300
 
-function BookingNotice() {
-  const message = 'Namaste! App booking is currently unavailable. I want to book a Mathura Vrindavan tour through WhatsApp.'
+async function BookingNotice() {
+  const t       = await getTranslations('BookingNotice')
+  const message = t('whatsAppGreeting')
 
   return (
     <section className="bg-amber-50 border-b border-amber-200">
@@ -47,10 +49,9 @@ function BookingNotice() {
               <AlertTriangle size={17} />
             </span>
             <div>
-              <p className="text-sm font-bold text-amber-900">Important Notice</p>
+              <p className="text-sm font-bold text-amber-900">{t('important')}</p>
               <p className="text-sm leading-relaxed text-amber-800">
-                App booking features are currently unavailable. Online booking will be available from 18 May 2026.
-                Until then, please book your tour through WhatsApp.
+                {t('message')}
               </p>
             </div>
           </div>
@@ -61,7 +62,7 @@ function BookingNotice() {
             className="inline-flex flex-shrink-0 items-center justify-center gap-2 rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
           >
             <MessageCircle size={16} />
-            Book on WhatsApp
+            {t('bookOnWhatsApp')}
           </a>
         </div>
       </div>
