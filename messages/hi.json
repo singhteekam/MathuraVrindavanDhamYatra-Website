@@ -1,7 +1,164 @@
 {
-  "_meta": {
-    "locale": "hi",
-    "name": "हिन्दी",
-    "note": "Placeholder — full UI strings populated in Phase 3"
+  "Common": {
+    "loading": "लोड हो रहा है...",
+    "save": "सेव करें",
+    "cancel": "रद्द करें",
+    "submit": "सबमिट करें",
+    "edit": "एडिट करें",
+    "delete": "डिलीट करें",
+    "back": "वापस",
+    "next": "अगला",
+    "previous": "पिछला",
+    "close": "बंद करें",
+    "search": "खोजें",
+    "viewAll": "सभी देखें",
+    "viewDetails": "विवरण देखें",
+    "readMore": "और पढ़ें",
+    "bookNow": "अभी बुक करें",
+    "callNow": "अभी कॉल करें",
+    "whatsApp": "व्हाट्सऐप",
+    "share": "शेयर करें",
+    "copy": "कॉपी करें",
+    "copied": "कॉपी हो गया",
+    "all": "सभी",
+    "perPerson": "प्रति व्यक्ति",
+    "from": "से",
+    "starting": "शुरू",
+    "namaste": "नमस्ते",
+    "jaiShriKrishna": "जय श्री कृष्ण",
+    "tryAgain": "पुनः प्रयास करें",
+    "comingSoon": "जल्द आ रहा है"
+  },
+  "LanguageSwitcher": {
+    "label": "भाषा",
+    "selectLanguage": "भाषा चुनें",
+    "current": "वर्तमान भाषा"
+  },
+  "Navigation": {
+    "home": "होम",
+    "packages": "पैकेज",
+    "places": "स्थान",
+    "hotels": "होटल",
+    "restaurants": "रेस्तरां",
+    "blog": "ब्लॉग",
+    "about": "हमारे बारे में",
+    "aboutUs": "हमारे बारे में",
+    "faq": "सामान्य प्रश्न",
+    "contact": "संपर्क",
+    "contactUs": "संपर्क करें",
+    "signIn": "साइन इन",
+    "signOut": "साइन आउट",
+    "signUp": "साइन अप",
+    "bookNow": "अभी बुक करें",
+    "bookATour": "टूर बुक करें",
+    "book": "बुक करें",
+    "callNow": "अभी कॉल करें",
+    "menu": "मेनू",
+    "packagesChildren": {
+      "sameDayTour": "एक दिवसीय यात्रा",
+      "sameDayTourDesc": "एक दिन में पूरा दर्शन",
+      "twoDays": "2 दिन का पैकेज",
+      "twoDaysDesc": "1 रात आरामदायक प्रवास",
+      "threeDaysGovardhan": "3 दिन गोवर्धन",
+      "threeDaysGovardhanDesc": "गोवर्धन और बरसाना सहित",
+      "fourDays": "4 दिन संपूर्ण ब्रज",
+      "fourDaysDesc": "संपूर्ण ब्रज तीर्थयात्रा",
+      "sevenDays": "7 दिन 84 कोस यात्रा",
+      "sevenDaysDesc": "पवित्र 84 कोस परिक्रमा",
+      "allPackages": "सभी पैकेज",
+      "allPackagesDesc": "सभी टूर पैकेज देखें"
+    },
+    "placesChildren": {
+      "temples": "मंदिर",
+      "templesDesc": "ब्रज के पवित्र मंदिर",
+      "ghats": "घाट",
+      "ghatsDesc": "यमुना के पवित्र घाट",
+      "sacredSites": "पवित्र स्थल",
+      "sacredSitesDesc": "दिव्य पवित्र स्थान",
+      "allPlaces": "सभी स्थान",
+      "allPlacesDesc": "50+ स्थान देखें"
+    },
+    "aboutChildren": {
+      "aboutUsDesc": "हमारी कहानी और उद्देश्य",
+      "faqDesc": "सामान्य प्रश्न",
+      "contactDesc": "संपर्क में रहें"
+    },
+    "topBarLocation": "मथुरा, उत्तर प्रदेश, भारत"
+  },
+  "ProfileDropdown": {
+    "adminPanel": "एडमिन पैनल",
+    "driverPortal": "ड्राइवर पोर्टल",
+    "myBookings": "मेरी बुकिंग",
+    "myProfile": "मेरी प्रोफाइल",
+    "signOut": "साइन आउट",
+    "user": "उपयोगकर्ता",
+    "roleAdmin": "एडमिन",
+    "roleDriver": "ड्राइवर",
+    "roleCustomer": "ग्राहक",
+    "roleSuperadmin": "सुपर एडमिन"
+  },
+  "Footer": {
+    "ctaTitle": "आध्यात्मिक यात्रा के लिए तैयार हैं?",
+    "ctaSubtitle": "₹2,000 से शुरू अपनी मथुरा वृन्दावन यात्रा बुक करें",
+    "whatsAppUs": "व्हाट्सऐप पर संपर्क",
+    "tagline": "भगवान कृष्ण की दिव्य भूमि की आध्यात्मिक यात्रा के लिए आपका विश्वसनीय यात्रा साथी। 2018 से भक्तों की प्रेमपूर्वक सेवा।",
+    "tourPackages": "टूर पैकेज",
+    "popularPlaces": "लोकप्रिय स्थान",
+    "quickLinks": "त्वरित लिंक",
+    "getTravelUpdates": "यात्रा अपडेट प्राप्त करें",
+    "yourEmail": "आपका ईमेल",
+    "go": "जाएं",
+    "copyright": "सर्वाधिकार सुरक्षित।",
+    "builtWithLove": "जय श्री कृष्ण 🙏 — भक्तों के लिए प्रेम से निर्मित",
+    "privacy": "गोपनीयता",
+    "terms": "शर्तें",
+    "developer": "डेवलपर",
+    "sitemap": "साइटमैप",
+    "packages": {
+      "sameDay": "एक दिवसीय मथुरा वृन्दावन",
+      "twoDays": "2 दिन मथुरा वृन्दावन",
+      "threeDays": "3 दिन गोवर्धन पैकेज",
+      "fourDays": "4 दिन संपूर्ण ब्रज यात्रा",
+      "sevenDays": "7 दिन 84 कोस यात्रा",
+      "all": "सभी पैकेज"
+    },
+    "places": {
+      "bankeBihari": "बांके बिहारी मंदिर",
+      "premMandir": "प्रेम मंदिर",
+      "janmabhoomi": "कृष्ण जन्मभूमि",
+      "vishramGhat": "विश्राम घाट",
+      "iskcon": "इस्कॉन वृन्दावन",
+      "all": "सभी स्थान"
+    },
+    "quick": {
+      "aboutUs": "हमारे बारे में",
+      "hotels": "होटल",
+      "restaurants": "रेस्तरां",
+      "blog": "ब्लॉग",
+      "faq": "सामान्य प्रश्न",
+      "contactUs": "संपर्क करें",
+      "privacy": "गोपनीयता नीति",
+      "terms": "नियम और शर्तें"
+    }
+  },
+  "VisitorBadge": {
+    "label": "आगंतुक",
+    "today": "आज",
+    "thisWeek": "इस सप्ताह",
+    "thisMonth": "इस माह",
+    "total": "कुल",
+    "thankYou": "आने के लिए धन्यवाद!"
+  },
+  "InactivityWatcher": {
+    "warningTitle": "क्या आप अभी भी यहाँ हैं?",
+    "warningMessage": "निष्क्रियता के कारण आप {seconds} सेकंड में साइन आउट हो जाएंगे।",
+    "stayActive": "मैं यहाँ हूँ",
+    "signOut": "साइन आउट"
+  },
+  "BookingNotice": {
+    "important": "महत्वपूर्ण सूचना",
+    "message": "ऐप बुकिंग सुविधा वर्तमान में अनुपलब्ध है। ऑनलाइन बुकिंग 18 मई 2026 से उपलब्ध होगी। तब तक कृपया व्हाट्सऐप के माध्यम से अपना टूर बुक करें।",
+    "bookOnWhatsApp": "व्हाट्सऐप पर बुक करें",
+    "whatsAppGreeting": "नमस्ते! ऐप बुकिंग वर्तमान में अनुपलब्ध है। मैं व्हाट्सऐप के माध्यम से मथुरा वृन्दावन टूर बुक करना चाहता हूँ।"
   }
 }

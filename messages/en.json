@@ -1,7 +1,164 @@
 {
-  "_meta": {
-    "locale": "en",
-    "name": "English",
-    "note": "Placeholder — full UI strings populated in Phase 3"
+  "Common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "search": "Search",
+    "viewAll": "View All",
+    "viewDetails": "View Details",
+    "readMore": "Read More",
+    "bookNow": "Book Now",
+    "callNow": "Call Now",
+    "whatsApp": "WhatsApp",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied",
+    "all": "All",
+    "perPerson": "per person",
+    "from": "From",
+    "starting": "Starting",
+    "namaste": "Namaste",
+    "jaiShriKrishna": "Jai Shri Krishna",
+    "tryAgain": "Try Again",
+    "comingSoon": "Coming Soon"
+  },
+  "LanguageSwitcher": {
+    "label": "Language",
+    "selectLanguage": "Select language",
+    "current": "Current language"
+  },
+  "Navigation": {
+    "home": "Home",
+    "packages": "Packages",
+    "places": "Places",
+    "hotels": "Hotels",
+    "restaurants": "Restaurants",
+    "blog": "Blog",
+    "about": "About",
+    "aboutUs": "About Us",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "contactUs": "Contact Us",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up",
+    "bookNow": "Book Now",
+    "bookATour": "Book a Tour",
+    "book": "Book",
+    "callNow": "Call Now",
+    "menu": "Menu",
+    "packagesChildren": {
+      "sameDayTour": "Same Day Tour",
+      "sameDayTourDesc": "Complete darshan in one day",
+      "twoDays": "2 Days Package",
+      "twoDaysDesc": "1 Night comfortable stay",
+      "threeDaysGovardhan": "3 Days Govardhan",
+      "threeDaysGovardhanDesc": "Govardhan & Barsana included",
+      "fourDays": "4 Days Complete Braj",
+      "fourDaysDesc": "Complete Braj pilgrimage",
+      "sevenDays": "7 Days 84 Kos Yatra",
+      "sevenDaysDesc": "Sacred 84 Kos Parikrama",
+      "allPackages": "All Packages",
+      "allPackagesDesc": "Browse all tour packages"
+    },
+    "placesChildren": {
+      "temples": "Temples",
+      "templesDesc": "Sacred temples of Braj",
+      "ghats": "Ghats",
+      "ghatsDesc": "Holy ghats of Yamuna",
+      "sacredSites": "Sacred Sites",
+      "sacredSitesDesc": "Divine sacred locations",
+      "allPlaces": "All Places",
+      "allPlacesDesc": "Explore 50+ places"
+    },
+    "aboutChildren": {
+      "aboutUsDesc": "Our story & mission",
+      "faqDesc": "Common questions",
+      "contactDesc": "Get in touch"
+    },
+    "topBarLocation": "Mathura, Uttar Pradesh, India"
+  },
+  "ProfileDropdown": {
+    "adminPanel": "Admin Panel",
+    "driverPortal": "Driver Portal",
+    "myBookings": "My Bookings",
+    "myProfile": "My Profile",
+    "signOut": "Sign Out",
+    "user": "User",
+    "roleAdmin": "admin",
+    "roleDriver": "driver",
+    "roleCustomer": "customer",
+    "roleSuperadmin": "superadmin"
+  },
+  "Footer": {
+    "ctaTitle": "Ready for Your Spiritual Journey?",
+    "ctaSubtitle": "Book your Mathura Vrindavan tour starting from ₹2,000",
+    "whatsAppUs": "WhatsApp Us",
+    "tagline": "Your trusted travel partner for spiritual journeys to the divine land of Lord Krishna. Serving devotees with love since 2018.",
+    "tourPackages": "Tour Packages",
+    "popularPlaces": "Popular Places",
+    "quickLinks": "Quick Links",
+    "getTravelUpdates": "Get Travel Updates",
+    "yourEmail": "Your email",
+    "go": "Go",
+    "copyright": "All rights reserved.",
+    "builtWithLove": "Jai Shri Krishna 🙏 — Built with love for devotees",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "developer": "Developer",
+    "sitemap": "Sitemap",
+    "packages": {
+      "sameDay": "Same Day Mathura Vrindavan",
+      "twoDays": "2 Days Mathura Vrindavan",
+      "threeDays": "3 Days Govardhan Package",
+      "fourDays": "4 Days Complete Braj Tour",
+      "sevenDays": "7 Days 84 Kos Yatra",
+      "all": "All Packages"
+    },
+    "places": {
+      "bankeBihari": "Banke Bihari Temple",
+      "premMandir": "Prem Mandir",
+      "janmabhoomi": "Krishna Janmabhoomi",
+      "vishramGhat": "Vishram Ghat",
+      "iskcon": "ISKCON Vrindavan",
+      "all": "All Places"
+    },
+    "quick": {
+      "aboutUs": "About Us",
+      "hotels": "Hotels",
+      "restaurants": "Restaurants",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "contactUs": "Contact Us",
+      "privacy": "Privacy Policy",
+      "terms": "Terms & Conditions"
+    }
+  },
+  "VisitorBadge": {
+    "label": "visitors",
+    "today": "Today",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "total": "Total",
+    "thankYou": "Thank you for visiting!"
+  },
+  "InactivityWatcher": {
+    "warningTitle": "Are you still there?",
+    "warningMessage": "You will be signed out due to inactivity in {seconds} seconds.",
+    "stayActive": "I'm here",
+    "signOut": "Sign Out"
+  },
+  "BookingNotice": {
+    "important": "Important Notice",
+    "message": "App booking features are currently unavailable. Online booking will be available from 18 May 2026. Until then, please book your tour through WhatsApp.",
+    "bookOnWhatsApp": "Book on WhatsApp",
+    "whatsAppGreeting": "Namaste! App booking is currently unavailable. I want to book a Mathura Vrindavan tour through WhatsApp."
   }
 }

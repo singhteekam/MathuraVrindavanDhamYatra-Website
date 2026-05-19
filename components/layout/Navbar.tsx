@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import NextLink from 'next/link'
 import { Link, usePathname } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone, Menu, X, ChevronDown, Mail, MapPin,
@@ -13,53 +14,55 @@ import { useSession, signOut } from 'next-auth/react'
 import { cn } from '@/lib/utils'
 import { siteConfig } from '@/config/site'
 import Image from "next/image";
+import LanguageSwitcher from '@/components/shared/LanguageSwitcher'
 
-interface NavChild { label: string; href: string; description?: string }
-interface NavItem  { label: string; href: string; children?: NavChild[] }
+interface NavChild { labelKey: string; href: string; descKey?: string }
+interface NavItem  { labelKey: string; href: string; children?: NavChild[] }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Home', href: '/' },
+  { labelKey: 'home', href: '/' },
   {
-    label: 'Packages', href: '/packages',
+    labelKey: 'packages', href: '/packages',
     children: [
-      { label: 'Same Day Tour',        href: '/packages/same-day-mathura-vrindavan',        description: 'Complete darshan in one day'  },
-      { label: '2 Days Package',       href: '/packages/2-days-mathura-vrindavan',           description: '1 Night comfortable stay'     },
-      { label: '3 Days Govardhan',     href: '/packages/3-days-mathura-vrindavan-govardhan', description: 'Govardhan & Barsana included' },
-      { label: '4 Days Complete Braj', href: '/packages/4-days-mathura-vrindavan',           description: 'Complete Braj pilgrimage'     },
-      { label: '7 Days 84 Kos Yatra', href: '/packages/7-days-braj-84-kos-yatra',           description: 'Sacred 84 Kos Parikrama'     },
-      { label: 'All Packages',         href: '/packages',                                     description: 'Browse all tour packages'    },
+      { labelKey: 'packagesChildren.sameDayTour',        href: '/packages/same-day-mathura-vrindavan',        descKey: 'packagesChildren.sameDayTourDesc' },
+      { labelKey: 'packagesChildren.twoDays',            href: '/packages/2-days-mathura-vrindavan',          descKey: 'packagesChildren.twoDaysDesc' },
+      { labelKey: 'packagesChildren.threeDaysGovardhan', href: '/packages/3-days-mathura-vrindavan-govardhan',descKey: 'packagesChildren.threeDaysGovardhanDesc' },
+      { labelKey: 'packagesChildren.fourDays',           href: '/packages/4-days-mathura-vrindavan',          descKey: 'packagesChildren.fourDaysDesc' },
+      { labelKey: 'packagesChildren.sevenDays',          href: '/packages/7-days-braj-84-kos-yatra',          descKey: 'packagesChildren.sevenDaysDesc' },
+      { labelKey: 'packagesChildren.allPackages',        href: '/packages',                                   descKey: 'packagesChildren.allPackagesDesc' },
     ],
   },
   {
-    label: 'Places', href: '/places',
+    labelKey: 'places', href: '/places',
     children: [
-      { label: 'Temples',      href: '/places?type=temple',      description: 'Sacred temples of Braj'  },
-      { label: 'Ghats',        href: '/places?type=ghat',        description: 'Holy ghats of Yamuna'    },
-      { label: 'Sacred Sites', href: '/places?type=sacred-site', description: 'Divine sacred locations' },
-      { label: 'All Places',   href: '/places',                   description: 'Explore 50+ places'     },
+      { labelKey: 'placesChildren.temples',     href: '/places?type=temple',      descKey: 'placesChildren.templesDesc' },
+      { labelKey: 'placesChildren.ghats',       href: '/places?type=ghat',        descKey: 'placesChildren.ghatsDesc' },
+      { labelKey: 'placesChildren.sacredSites', href: '/places?type=sacred-site', descKey: 'placesChildren.sacredSitesDesc' },
+      { labelKey: 'placesChildren.allPlaces',   href: '/places',                  descKey: 'placesChildren.allPlacesDesc' },
     ],
   },
-  { label: 'Hotels',      href: '/hotels'      },
-  { label: 'Restaurants', href: '/restaurants' },
-  { label: 'Blog',        href: '/blog'        },
+  { labelKey: 'hotels',      href: '/hotels'      },
+  { labelKey: 'restaurants', href: '/restaurants' },
+  { labelKey: 'blog',        href: '/blog'        },
   {
-    label: 'About', href: '/about',
+    labelKey: 'about', href: '/about',
     children: [
-      { label: 'About Us',   href: '/about',   description: 'Our story & mission' },
-      { label: 'FAQ',        href: '/faq',     description: 'Common questions'     },
-      { label: 'Contact Us', href: '/contact', description: 'Get in touch'         },
+      { labelKey: 'aboutUs',   href: '/about',   descKey: 'aboutChildren.aboutUsDesc' },
+      { labelKey: 'faq',       href: '/faq',     descKey: 'aboutChildren.faqDesc' },
+      { labelKey: 'contactUs', href: '/contact', descKey: 'aboutChildren.contactDesc' },
     ],
   },
 ]
 
-const ROLE_CONFIG: Record<string, { portal: string; label: string; icon: React.ReactNode }> = {
-  admin:    { portal: '/admin',    label: 'Admin Panel',   icon: <LayoutDashboard size={14} /> },
-  driver:   { portal: '/driver',   label: 'Driver Portal', icon: <Car             size={14} /> },
-  customer: { portal: '/customer', label: 'My Bookings',   icon: <CalendarCheck   size={14} /> },
+const ROLE_CONFIG: Record<string, { portal: string; labelKey: string; icon: React.ReactNode }> = {
+  admin:    { portal: '/admin',    labelKey: 'adminPanel',   icon: <LayoutDashboard size={14} /> },
+  driver:   { portal: '/driver',   labelKey: 'driverPortal', icon: <Car             size={14} /> },
+  customer: { portal: '/customer', labelKey: 'myBookings',   icon: <CalendarCheck   size={14} /> },
 }
 
 // ── Profile dropdown ──────────────────────────────────────
 function ProfileDropdown() {
+  const t                 = useTranslations('ProfileDropdown')
   const { data: session } = useSession()
   const [open, setOpen]   = useState(false)
   const ref               = useRef<HTMLDivElement>(null)
@@ -68,6 +71,10 @@ function ProfileDropdown() {
   const role     = user?.role ?? 'customer'
   const cfg      = ROLE_CONFIG[role] ?? ROLE_CONFIG.customer
   const initials = (user?.name ?? 'U').split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+  const roleKey  = role === 'admin' ? 'roleAdmin'
+                 : role === 'driver' ? 'roleDriver'
+                 : role === 'superadmin' ? 'roleSuperadmin'
+                 : 'roleCustomer'
 
   // Close on outside click
   useEffect(() => {
@@ -92,8 +99,8 @@ function ProfileDropdown() {
           {initials}
         </div>
         <div className="hidden sm:block text-left leading-tight">
-          <p className="text-xs font-semibold text-gray-800">{user?.name?.split(' ')[0] ?? 'User'}</p>
-          <p className="text-xs capitalize" style={{ color: '#ff7d0f' }}>{role}</p>
+          <p className="text-xs font-semibold text-gray-800">{user?.name?.split(' ')[0] ?? t('user')}</p>
+          <p className="text-xs" style={{ color: '#ff7d0f' }}>{t(roleKey)}</p>
         </div>
         <ChevronDown size={12} className={cn('text-gray-400 transition-transform', open && 'rotate-180')} />
       </button>
@@ -112,10 +119,10 @@ function ProfileDropdown() {
               <p className="font-semibold text-gray-900 text-sm">{user?.name}</p>
               <p className="text-xs text-gray-400 truncate mt-0.5">{user?.email}</p>
               <span
-                className="inline-flex items-center gap-1.5 mt-2 text-xs px-2.5 py-1 rounded-full font-semibold capitalize"
+                className="inline-flex items-center gap-1.5 mt-2 text-xs px-2.5 py-1 rounded-full font-semibold"
                 style={{ background: '#fff8ed', color: '#ff7d0f' }}
               >
-                {cfg.icon}{role}
+                {cfg.icon}{t(roleKey)}
               </span>
             </div>
 
@@ -123,12 +130,12 @@ function ProfileDropdown() {
             {role === 'customer' ? (
               <Link href={cfg.portal} onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors">
-                {cfg.icon}{cfg.label}
+                {cfg.icon}{t(cfg.labelKey)}
               </Link>
             ) : (
               <NextLink href={cfg.portal} onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors">
-                {cfg.icon}{cfg.label}
+                {cfg.icon}{t(cfg.labelKey)}
               </NextLink>
             )}
 
@@ -136,7 +143,7 @@ function ProfileDropdown() {
             {role === 'customer' ? (
               <Link href="/customer" onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors">
-                <User size={14} />My Profile
+                <User size={14} />{t('myProfile')}
               </Link>
             ) : (
               <NextLink
@@ -144,7 +151,7 @@ function ProfileDropdown() {
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors"
               >
-                <User size={14} />My Profile
+                <User size={14} />{t('myProfile')}
               </NextLink>
             )}
 
@@ -152,7 +159,7 @@ function ProfileDropdown() {
             {role === 'customer' && (
               <Link href="/customer" onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors">
-                <CalendarCheck size={14} />My Bookings
+                <CalendarCheck size={14} />{t('myBookings')}
               </Link>
             )}
 
@@ -161,7 +168,7 @@ function ProfileDropdown() {
                 onClick={() => { setOpen(false); signOut({ callbackUrl: '/' }) }}
                 className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
               >
-                <LogOut size={14} />Sign Out
+                <LogOut size={14} />{t('signOut')}
               </button>
             </div>
           </motion.div>
@@ -173,6 +180,7 @@ function ProfileDropdown() {
 
 // ── Main Navbar ───────────────────────────────────────────
 export default function Navbar() {
+  const t                                      = useTranslations('Navigation')
   const { status }                             = useSession()
   const [scrolled,       setScrolled]          = useState(false)
   const [mobileOpen,     setMobileOpen]        = useState(false)
@@ -202,7 +210,7 @@ export default function Navbar() {
       {/* Top bar */}
       <div className="hidden md:block bg-saffron-600 text-white text-xs py-2">
         <div className="container-custom flex justify-between items-center">
-          <span className="flex items-center gap-1.5"><MapPin size={11} />Mathura, Uttar Pradesh, India</span>
+          <span className="flex items-center gap-1.5"><MapPin size={11} />{t('topBarLocation')}</span>
           <div className="flex items-center gap-6">
             <a href={`tel:${siteConfig.phone}`}  className="flex items-center gap-1.5 hover:text-amber-200 transition-colors"><Phone size={11} />{siteConfig.phone}</a>
             <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-1.5 hover:text-amber-200 transition-colors"><Mail  size={11} />{siteConfig.email}</a>
@@ -242,8 +250,8 @@ export default function Navbar() {
             {/* Desktop nav */}
             <div className="hidden lg:flex items-center gap-0.5">
               {NAV_ITEMS.map((item) => (
-                <div key={item.label} className="relative"
-                  onMouseEnter={() => item.children && setOpenDropdown(item.label)}
+                <div key={item.labelKey} className="relative"
+                  onMouseEnter={() => item.children && setOpenDropdown(item.labelKey)}
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <Link href={item.href}
@@ -253,13 +261,13 @@ export default function Navbar() {
                         ? 'text-saffron-600 bg-saffron-50'
                         : 'text-gray-700 hover:text-saffron-600 hover:bg-saffron-50',
                     )}>
-                    {item.label}
+                    {t(item.labelKey)}
                     {item.children && (
-                      <ChevronDown size={13} className={cn('mt-px transition-transform duration-200', openDropdown === item.label && 'rotate-180')} />
+                      <ChevronDown size={13} className={cn('mt-px transition-transform duration-200', openDropdown === item.labelKey && 'rotate-180')} />
                     )}
                   </Link>
                   <AnimatePresence>
-                    {item.children && openDropdown === item.label && (
+                    {item.children && openDropdown === item.labelKey && (
                       <motion.div
                         initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}
                         transition={{ duration: 0.13 }}
@@ -268,8 +276,8 @@ export default function Navbar() {
                         {item.children.map((child) => (
                           <Link key={child.href} href={child.href}
                             className="flex flex-col px-4 py-3 hover:bg-saffron-50 transition-colors group">
-                            <span className="text-sm font-medium text-gray-800 group-hover:text-saffron-600">{child.label}</span>
-                            {child.description && <span className="text-xs text-gray-400 mt-0.5">{child.description}</span>}
+                            <span className="text-sm font-medium text-gray-800 group-hover:text-saffron-600">{t(child.labelKey)}</span>
+                            {child.descKey && <span className="text-xs text-gray-400 mt-0.5">{t(child.descKey)}</span>}
                           </Link>
                         ))}
                       </motion.div>
@@ -283,8 +291,11 @@ export default function Navbar() {
             <div className="flex items-center gap-2">
               <a href={`tel:${siteConfig.phone}`}
                 className="hidden md:flex items-center gap-2 bg-saffron-50 text-saffron-700 px-4 py-2 rounded-full text-sm font-semibold hover:bg-saffron-100 transition-colors">
-                <Phone size={14} />Call Now
+                <Phone size={14} />{t('callNow')}
               </a>
+
+              {/* Language switcher */}
+              <LanguageSwitcher />
 
               {/* Auth section */}
               {isLoading ? (
@@ -295,10 +306,10 @@ export default function Navbar() {
                 <div className="hidden sm:flex items-center gap-2">
                   <Link href="/login"
                     className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-saffron-600 px-3 py-2 rounded-lg hover:bg-saffron-50 transition-colors">
-                    <LogIn size={15} />Sign In
+                    <LogIn size={15} />{t('signIn')}
                   </Link>
                   <Link href="/booking" className="btn-primary text-sm px-5 py-2.5">
-                    Book Now
+                    {t('bookNow')}
                   </Link>
                 </div>
               )}
@@ -306,7 +317,7 @@ export default function Navbar() {
               {/* Show Book Now on mobile when not logged in */}
               {!isLoggedIn && !isLoading && (
                 <Link href="/booking" className="btn-primary text-sm px-4 py-2 sm:hidden">
-                  Book
+                  {t('book')}
                 </Link>
               )}
 
@@ -357,18 +368,18 @@ export default function Navbar() {
               {/* Nav items */}
               <nav className="flex-1 p-4 space-y-0.5">
                 {NAV_ITEMS.map((item) => (
-                  <div key={item.label}>
+                  <div key={item.labelKey}>
                     {item.children ? (
                       <>
                         <button
-                          onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
+                          onClick={() => setMobileExpanded(mobileExpanded === item.labelKey ? null : item.labelKey)}
                           className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 font-medium text-sm transition-colors"
                         >
-                          {item.label}
-                          <ChevronDown size={15} className={cn('transition-transform duration-200', mobileExpanded === item.label && 'rotate-180')} />
+                          {t(item.labelKey)}
+                          <ChevronDown size={15} className={cn('transition-transform duration-200', mobileExpanded === item.labelKey && 'rotate-180')} />
                         </button>
                         <AnimatePresence>
-                          {mobileExpanded === item.label && (
+                          {mobileExpanded === item.labelKey && (
                             <motion.div
                               initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}
@@ -378,7 +389,7 @@ export default function Navbar() {
                                 {item.children.map((child) => (
                                   <Link key={child.href} href={child.href}
                                     className="block px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:text-saffron-600 hover:bg-saffron-50 transition-colors">
-                                    {child.label}
+                                    {t(child.labelKey)}
                                   </Link>
                                 ))}
                               </div>
@@ -393,11 +404,16 @@ export default function Navbar() {
                             ? 'bg-saffron-50 text-saffron-600'
                             : 'text-gray-700 hover:bg-saffron-50 hover:text-saffron-600',
                         )}>
-                        {item.label}
+                        {t(item.labelKey)}
                       </Link>
                     )}
                   </div>
                 ))}
+
+                {/* Mobile language switcher */}
+                <div className="pt-3 mt-3 border-t border-gray-100">
+                  <LanguageSwitcher variant="mobile" />
+                </div>
               </nav>
 
               {/* Footer CTAs */}
@@ -405,14 +421,14 @@ export default function Navbar() {
                 {isLoggedIn ? (
                   <button onClick={() => signOut({ callbackUrl: '/' })}
                     className="flex items-center justify-center gap-2 w-full py-3 rounded-full text-sm font-semibold border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
-                    <LogOut size={15} />Sign Out
+                    <LogOut size={15} />{t('signOut')}
                   </button>
                 ) : (
                   <>
-                    <Link href="/booking" className="btn-primary w-full text-sm py-3">Book a Tour</Link>
+                    <Link href="/booking" className="btn-primary w-full text-sm py-3">{t('bookATour')}</Link>
                     <Link href="/login"
                       className="flex items-center justify-center gap-2 w-full py-3 rounded-full text-sm font-semibold border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
-                      <LogIn size={15} />Sign In
+                      <LogIn size={15} />{t('signIn')}
                     </Link>
                   </>
                 )}
