@@ -3,10 +3,10 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, Suspense, useEffect } from 'react'
-import { useSearchParams, useRouter }    from 'next/navigation'
+import { useSearchParams }               from 'next/navigation'
+import { Link, useRouter }               from '@/i18n/navigation'
 import { useSession }                    from 'next-auth/react'
 import { motion, AnimatePresence }       from 'framer-motion'
-import Link from 'next/link'
 import {
   Car, Calendar, Users, MapPin, Phone, Mail, User,
   ChevronRight, Check, ArrowLeft, MessageCircle, LogIn,

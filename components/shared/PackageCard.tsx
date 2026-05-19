@@ -1,7 +1,7 @@
 'use client'
 
 import { useState }  from 'react'
-import Link           from 'next/link'
+import { Link }       from '@/i18n/navigation'
 import Image          from 'next/image'
 import { Clock, Star, ArrowRight } from 'lucide-react'
 import { formatCurrency }          from '@/lib/utils'

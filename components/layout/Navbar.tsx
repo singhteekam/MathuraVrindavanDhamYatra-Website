@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import NextLink from 'next/link'
+import { Link, usePathname } from '@/i18n/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone, Menu, X, ChevronDown, Mail, MapPin,
@@ -119,20 +119,34 @@ function ProfileDropdown() {
               </span>
             </div>
 
-            {/* Portal */}
-            <Link href={cfg.portal} onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors">
-              {cfg.icon}{cfg.label}
-            </Link>
+            {/* Portal — admin/driver use NextLink (not under [locale]); customer uses locale-aware Link */}
+            {role === 'customer' ? (
+              <Link href={cfg.portal} onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors">
+                {cfg.icon}{cfg.label}
+              </Link>
+            ) : (
+              <NextLink href={cfg.portal} onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors">
+                {cfg.icon}{cfg.label}
+              </NextLink>
+            )}
 
-            {/* Profile */}
-            <Link
-              href={role === 'driver' ? '/driver/profile' : role === 'admin' ? '/admin/settings' : '/customer'}
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors"
-            >
-              <User size={14} />My Profile
-            </Link>
+            {/* Profile — same split: admin/driver settings are not localized */}
+            {role === 'customer' ? (
+              <Link href="/customer" onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors">
+                <User size={14} />My Profile
+              </Link>
+            ) : (
+              <NextLink
+                href={role === 'driver' ? '/driver/profile' : '/admin/settings'}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-saffron-50 hover:text-saffron-600 transition-colors"
+              >
+                <User size={14} />My Profile
+              </NextLink>
+            )}
 
             {/* My bookings - customer only */}
             {role === 'customer' && (

@@ -3,8 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { Link, useRouter } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, UserPlus } from 'lucide-react'
 import toast from 'react-hot-toast'

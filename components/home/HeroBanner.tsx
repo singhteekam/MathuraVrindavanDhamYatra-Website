@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { Phone, ChevronDown, Star, Users, MapPin, Calendar } from 'lucide-react'
 import { siteConfig, cars, durations } from '@/config/site'

@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams }               from 'next/navigation'
-import Link                              from 'next/link'
+import { Link }                          from '@/i18n/navigation'
 import { motion }                        from 'framer-motion'
 import {
   CheckCircle, Phone, MessageCircle, Home, Package,

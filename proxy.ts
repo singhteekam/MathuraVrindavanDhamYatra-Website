@@ -1,6 +1,9 @@
 import { withAuth, NextRequestWithAuth } from 'next-auth/middleware'
 import { NextResponse, NextRequest }     from 'next/server'
 import { getToken }                      from 'next-auth/jwt'
+import { match }                         from '@formatjs/intl-localematcher'
+import Negotiator                        from 'negotiator'
+import { routing }                       from '@/i18n/routing'
 
 // ─── Routes that bypass maintenance mode ─────────────────────────────────────
 // Admin and superadmin can still access the site during maintenance.
@@ -16,9 +19,53 @@ const MAINTENANCE_BYPASS_PREFIXES = [
   '/images',
 ]
 
+// ─── Routes that stay locale-free (never prefixed with /en or /hi) ───────────
+// Admin/superadmin/driver dashboards are internal-only — English only.
+// API + static assets must never be prefixed.
+const LOCALE_BYPASS_PREFIXES = [
+  '/admin',
+  '/superadmin',
+  '/driver',
+  '/api',
+  '/maintenance',
+  '/_next',
+  '/favicon',
+  '/images',
+]
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function getLocale(req: NextRequest): string {
+  const headers: Record<string, string> = {}
+  req.headers.forEach((value, key) => { headers[key] = value })
+  const languages = new Negotiator({ headers }).languages()
+  return match(
+    languages,
+    routing.locales as unknown as string[],
+    routing.defaultLocale,
+  )
+}
+
+function pathHasLocale(pathname: string): boolean {
+  return routing.locales.some(
+    (loc) => pathname === `/${loc}` || pathname.startsWith(`/${loc}/`),
+  )
+}
+
+function isLocaleBypassed(pathname: string): boolean {
+  return LOCALE_BYPASS_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(p + '/'),
+  )
+}
+
+function stripLocale(pathname: string): string {
+  for (const loc of routing.locales) {
+    if (pathname === `/${loc}`) return '/'
+    if (pathname.startsWith(`/${loc}/`)) return pathname.slice(`/${loc}`.length)
+  }
+  return pathname
+}
+
 // ─── Main middleware ──────────────────────────────────────────────────────────
-// We export a custom function instead of withAuth directly so we can run the
-// maintenance check BEFORE next-auth's auth logic.
 export default async function proxy(req: NextRequest) {
   const pathname = req.nextUrl.pathname
 
@@ -29,31 +76,41 @@ export default async function proxy(req: NextRequest) {
     const isBypassed = MAINTENANCE_BYPASS_PREFIXES.some((p) => pathname.startsWith(p))
 
     if (!isBypassed) {
-      // Admins and superadmins can bypass via their JWT role
       const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
       const role  = token?.role as string | undefined
 
       if (role !== 'admin' && role !== 'superadmin') {
-        // Redirect public users to maintenance page
         return NextResponse.redirect(new URL('/maintenance', req.url))
       }
     }
   }
 
-  // ── 2. Auth / role guards (only for protected routes) ────────────────────
+  // ── 2. Locale detection — redirect missing-locale URLs ────────────────────
+  if (!isLocaleBypassed(pathname) && !pathHasLocale(pathname)) {
+    const locale = getLocale(req)
+    const redirectPath = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`
+    const newUrl = new URL(redirectPath, req.url)
+    newUrl.search = req.nextUrl.search
+    return NextResponse.redirect(newUrl)
+  }
+
+  // ── 3. Auth / role guards (only for protected routes) ────────────────────
+  // Note: admin/superadmin/driver paths are NOT under [locale].
+  // Customer paths ARE under [locale] (e.g., /en/customer, /hi/customer).
+  const cleanPath  = stripLocale(pathname)
   const isProtected =
     pathname.startsWith('/admin')      ||
     pathname.startsWith('/superadmin') ||
     pathname.startsWith('/driver')     ||
-    pathname.startsWith('/customer')
+    cleanPath.startsWith('/customer')
 
   if (!isProtected) return NextResponse.next()
 
-  // Delegate to withAuth for protected routes
   return withAuth(
     function authMiddleware(req: NextRequestWithAuth) {
       const token     = req.nextauth.token
       const pathname  = req.nextUrl.pathname
+      const cleanPath = stripLocale(pathname)
 
       // ── Token-level error checks ──────────────────────────────────────────
       if (token?.error === 'AccountDeactivated') {
@@ -63,33 +120,32 @@ export default async function proxy(req: NextRequest) {
         return NextResponse.redirect(new URL('/login?reason=inactivity', req.url))
       }
 
-      // ── Superadmin routes ─────────────────────────────────────────────────
+      // ── Superadmin routes (no locale prefix) ──────────────────────────────
       if (pathname.startsWith('/superadmin')) {
         if (token?.role !== 'superadmin') {
           return NextResponse.redirect(new URL('/login?error=unauthorized', req.url))
         }
       }
 
-      // ── Admin routes ──────────────────────────────────────────────────────
+      // ── Admin routes (no locale prefix) ───────────────────────────────────
       if (pathname.startsWith('/admin')) {
         if (token?.role !== 'admin' && token?.role !== 'superadmin') {
           return NextResponse.redirect(new URL('/login?error=unauthorized', req.url))
         }
-        // /admin/places is superadmin-only
         if (pathname.startsWith('/admin/places') && token?.role !== 'superadmin') {
           return NextResponse.redirect(new URL('/admin', req.url))
         }
       }
 
-      // ── Driver routes ─────────────────────────────────────────────────────
+      // ── Driver routes (no locale prefix) ──────────────────────────────────
       if (pathname.startsWith('/driver')) {
         if (token?.role !== 'driver') {
           return NextResponse.redirect(new URL('/login?error=unauthorized', req.url))
         }
       }
 
-      // ── Customer routes ───────────────────────────────────────────────────
-      if (pathname.startsWith('/customer')) {
+      // ── Customer routes (under [locale]) ─────────────────────────────────
+      if (cleanPath.startsWith('/customer')) {
         if (!token) {
           return NextResponse.redirect(new URL('/login', req.url))
         }
@@ -100,12 +156,13 @@ export default async function proxy(req: NextRequest) {
     {
       callbacks: {
         authorized: ({ token, req }) => {
-          const p = req.nextUrl.pathname
+          const p     = req.nextUrl.pathname
+          const clean = stripLocale(p)
           if (
             p.startsWith('/admin')      ||
             p.startsWith('/superadmin') ||
             p.startsWith('/driver')     ||
-            p.startsWith('/customer')
+            clean.startsWith('/customer')
           ) {
             return !!token
           }
@@ -116,7 +173,7 @@ export default async function proxy(req: NextRequest) {
   )(req as NextRequestWithAuth, {} as never)
 }
 
-// ─── Matcher — includes ALL routes so maintenance mode can intercept public pages
+// ─── Matcher — includes ALL routes so maintenance mode + locale can intercept
 export const config = {
   matcher: [
     /*

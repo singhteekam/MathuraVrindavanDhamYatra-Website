@@ -2,7 +2,7 @@
 
 import { useState }   from 'react'
 import { motion }     from 'framer-motion'
-import Link           from 'next/link'
+import { Link }       from '@/i18n/navigation'
 import { ArrowRight } from 'lucide-react'
 import SectionHeader  from '@/components/shared/SectionHeader'
 import PackageCard    from '@/components/shared/PackageCard'

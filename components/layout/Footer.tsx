@@ -1,4 +1,4 @@
-import Link         from 'next/link'
+import { Link }     from '@/i18n/navigation'
 import VisitorBadge from '@/components/shared/VisitorBadge'
 import { Phone, Mail, MapPin, Facebook, Instagram, Youtube } from 'lucide-react'
 import { siteConfig } from '@/config/site'
@@ -197,7 +197,7 @@ export default function Footer() {
             <Link href="/developer" className="hover:text-indigo-400 transition-colors text-gray-500">
               Developer
             </Link>
-            <Link href="/sitemap.xml" className="hover:text-gray-300 transition-colors">Sitemap</Link>
+            <a href="/sitemap.xml" className="hover:text-gray-300 transition-colors">Sitemap</a>
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Phone, MessageCircle, Send, MapPin } from 'lucide-react'
 import { siteConfig } from '@/config/site'
 import toast from 'react-hot-toast'
