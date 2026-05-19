@@ -2,6 +2,7 @@
 
 import { useState }    from 'react'
 import { Link }         from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import Image            from 'next/image'
 import { MapPin, Clock, ArrowRight } from 'lucide-react'
 import { getPlaceImageSrc, getPlaceGradient, getTypeEmoji } from '@/lib/imageUtils'
@@ -29,6 +30,7 @@ export default function PlaceCard({
   entryFee,
   isFeatured,
 }: PlaceCardProps) {
+  const t = useTranslations('PlaceCard')
   // Start with the resolved src; on error fall back to null (gradient shown)
   const resolvedSrc = getPlaceImageSrc(slug, thumbnail)
   const [imgSrc, setImgSrc]       = useState<string | null>(resolvedSrc)
@@ -82,7 +84,7 @@ export default function PlaceCard({
           <div className="absolute top-3 right-3 z-10">
             <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
               style={{ background: '#312e81', color: '#c7d2fe' }}>
-              ⭐ Must Visit
+              {t('mustVisit')}
             </span>
           </div>
         )}
@@ -111,7 +113,7 @@ export default function PlaceCard({
             {entryFee && (
               <span className="font-medium"
                 style={{ color: entryFee === 'Free' ? '#16a34a' : '#6b7280' }}>
-                {entryFee === 'Free' ? '✓ Free' : entryFee}
+                {entryFee === 'Free' ? t('free') : entryFee}
               </span>
             )}
           </div>

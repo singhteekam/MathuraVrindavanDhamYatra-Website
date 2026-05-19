@@ -2,19 +2,22 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import CountUp from 'react-countup'
 
-const stats = [
-  { value: 10,  suffix: '+', label: 'Happy Pilgrims',   emoji: '🙏' },
-  { value: 50,    suffix: '+', label: 'Sacred Places',    emoji: '🛕' },
-  { value: 2,     suffix: '+', label: 'Months of Service', emoji: '⭐' },
-  { value: 5,    suffix: '+', label: 'Tour Packages',    emoji: '🚗' },
-  { value: 95,    suffix: '%', label: 'Satisfaction Rate',emoji: '❤️' },
+const statsData = [
+  { value: 10, suffix: '+', labelKey: 'happyPilgrims',    emoji: '🙏' },
+  { value: 50, suffix: '+', labelKey: 'sacredPlaces',     emoji: '🛕' },
+  { value: 2,  suffix: '+', labelKey: 'monthsOfService',  emoji: '⭐' },
+  { value: 5,  suffix: '+', labelKey: 'tourPackages',     emoji: '🚗' },
+  { value: 95, suffix: '%', labelKey: 'satisfactionRate', emoji: '❤️' },
 ]
 
 export default function StatsBar() {
-  const ref = useRef(null)
+  const t      = useTranslations('StatsBar')
+  const ref    = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
+  const stats  = statsData.map((s) => ({ ...s, label: t(s.labelKey) }))
 
   return (
     <section

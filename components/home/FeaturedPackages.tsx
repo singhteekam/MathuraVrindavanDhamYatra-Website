@@ -3,16 +3,17 @@
 import { useState }   from 'react'
 import { motion }     from 'framer-motion'
 import { Link }       from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { ArrowRight } from 'lucide-react'
 import SectionHeader  from '@/components/shared/SectionHeader'
 import PackageCard    from '@/components/shared/PackageCard'
 import type { PackageSummary } from '@/lib/fetchData'
 
-const TABS = [
-  { label: 'All',     filter: (p: PackageSummary) => true },
-  { label: '1 Day',   filter: (p: PackageSummary) => p.duration === 1 },
-  { label: '2-3 Days',filter: (p: PackageSummary) => p.duration >= 2 && p.duration <= 3 },
-  { label: '4+ Days', filter: (p: PackageSummary) => p.duration >= 4 },
+const TAB_KEYS = [
+  { key: 'tabAll',         filter: (_p: PackageSummary) => true },
+  { key: 'tabOneDay',      filter: (p: PackageSummary) => p.duration === 1 },
+  { key: 'tab23Days',      filter: (p: PackageSummary) => p.duration >= 2 && p.duration <= 3 },
+  { key: 'tab4PlusDays',   filter: (p: PackageSummary) => p.duration >= 4 },
 ]
 
 interface Props {
@@ -20,7 +21,9 @@ interface Props {
 }
 
 export default function FeaturedPackages({ packages }: Props) {
+  const t                         = useTranslations('FeaturedPackages')
   const [activeTab, setActiveTab] = useState(0)
+  const TABS                      = TAB_KEYS.map((tab) => ({ ...tab, label: t(tab.key) }))
 
   // Filter operates on the `packages` prop — bug-free, no stale closure
   const filtered = packages.filter(TABS[activeTab].filter)
@@ -30,15 +33,15 @@ export default function FeaturedPackages({ packages }: Props) {
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <SectionHeader
-            subtitle="Tour Packages"
-            title="Choose Your Perfect Braj Journey"
-            description="Handcrafted spiritual tour packages for every devotee — from quick day trips to extended pilgrimage retreats."
+            subtitle={t('subtitle')}
+            title={t('title')}
+            description={t('description')}
             centered={false}
           />
           <Link href="/packages"
             className="inline-flex items-center gap-2 font-semibold text-sm flex-shrink-0"
             style={{ color: '#ff7d0f' }}>
-            View All Packages <ArrowRight size={16} />
+            {t('viewAllPackages')} <ArrowRight size={16} />
           </Link>
         </div>
 
@@ -64,7 +67,7 @@ export default function FeaturedPackages({ packages }: Props) {
         {filtered.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-4xl mb-3">🙏</p>
-            <p className="text-gray-400 text-sm">No packages in this category yet.</p>
+            <p className="text-gray-400 text-sm">{t('emptyTitle')}</p>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -84,10 +87,10 @@ export default function FeaturedPackages({ packages }: Props) {
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="text-center mt-12">
           <p className="text-gray-500 mb-4">
-            Can&apos;t find the right package? We create custom itineraries too!
+            {t('customPrompt')}
           </p>
           <Link href="/contact" className="btn-secondary">
-            Request Custom Package
+            {t('requestCustom')}
           </Link>
         </motion.div>
       </div>

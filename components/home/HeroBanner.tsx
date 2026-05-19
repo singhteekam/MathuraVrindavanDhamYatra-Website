@@ -2,12 +2,14 @@
 
 import { useState } from 'react'
 import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import { Phone, ChevronDown, Star, Users, MapPin, Calendar } from 'lucide-react'
 import { siteConfig, cars, durations } from '@/config/site'
 import { formatCurrency } from '@/lib/utils'
 
 export default function HeroBanner() {
+  const t = useTranslations('HeroBanner')
   const [selectedCar, setSelectedCar]      = useState(cars[0].id)
   const [selectedDuration, setSelectedDuration] = useState(durations[0].id)
 
@@ -70,8 +72,7 @@ export default function HeroBanner() {
             >
               {/* <span className="text-lg">🙏</span> */}
               <span className="text-sm font-semibold" style={{ color: '#ffb366' }}>
-                {/* Jai Shri Krishna — Welcome to Braj Bhoomi */}
-                🪶🦚राधे राधे 𓃔 🦚 🪄 — Welcome to Braj Bhoomi
+                {t('welcomeBadge')}
               </span>
             </motion.div>
 
@@ -83,7 +84,7 @@ export default function HeroBanner() {
               className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6"
               style={{ fontFamily: 'var(--font-serif)' }}
             >
-              Experience the{' '}
+              {t('headingPart1')}{' '}
               <span
                 style={{
                   background: 'linear-gradient(135deg, #ff7d0f, #f59e0b)',
@@ -91,9 +92,9 @@ export default function HeroBanner() {
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                Divine Land
+                {t('headingHighlight')}
               </span>{' '}
-              of Lord Krishna
+              {t('headingPart2')}
             </motion.h1>
 
             <motion.p
@@ -102,9 +103,7 @@ export default function HeroBanner() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-gray-300 leading-relaxed mb-8 max-w-lg"
             >
-              Discover Mathura &amp; Vrindavan — the sacred birthplace and playground
-              of Lord Krishna. Comfortable cars, expert guides, and spiritual
-              experiences crafted with love.
+              {t('subtitle')}
             </motion.p>
 
             {/* CTA Buttons */}
@@ -115,7 +114,7 @@ export default function HeroBanner() {
               className="flex flex-wrap gap-4 mb-10"
             >
               <Link href="/packages" className="btn-primary text-base px-8 py-4">
-                Explore Packages
+                {t('explorePackages')}
               </Link>
               <a
                 href={`tel:${siteConfig.phone}`}
@@ -132,7 +131,7 @@ export default function HeroBanner() {
                 }}
               >
                 <Phone size={18} />
-                Call Now
+                {t('callNow')}
               </a>
             </motion.div>
 
@@ -144,9 +143,9 @@ export default function HeroBanner() {
               className="flex flex-wrap items-center gap-6"
             >
               {[
-                { icon: <Star size={16} fill="currentColor" />, text: '4.9/5 Rating', color: '#f59e0b' },
-                { icon: <Users size={16} />, text: '10+ Happy Pilgrims', color: '#34d399' },
-                { icon: <MapPin size={16} />, text: '50+ Sacred Places', color: '#60a5fa' },
+                { icon: <Star size={16} fill="currentColor" />, text: t('trustRating'),   color: '#f59e0b' },
+                { icon: <Users size={16} />,                    text: t('trustPilgrims'), color: '#34d399' },
+                { icon: <MapPin size={16} />,                   text: t('trustPlaces'),   color: '#60a5fa' },
               ].map((item) => (
                 <div
                   key={item.text}
@@ -178,16 +177,16 @@ export default function HeroBanner() {
                 className="text-white font-bold text-xl mb-1"
                 style={{ fontFamily: 'var(--font-serif)' }}
               >
-                Plan Your Trip
+                {t('widgetTitle')}
               </h3>
               <p className="text-gray-400 text-sm mb-6">
-                Get an instant price estimate
+                {t('widgetSubtitle')}
               </p>
 
               {/* Car selection */}
               <div className="mb-5">
                 <label className="block text-gray-300 text-xs font-semibold uppercase tracking-wider mb-3">
-                  Choose Your Vehicle
+                  {t('chooseVehicle')}
                 </label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {cars.slice(0, 3).map((car) => (
@@ -226,7 +225,7 @@ export default function HeroBanner() {
               <div className="mb-5">
                 <label className="block text-gray-300 text-xs font-semibold uppercase tracking-wider mb-3">
                   <Calendar size={12} className="inline mr-1" />
-                  Trip Duration
+                  {t('tripDuration')}
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {durations.slice(0, 3).map((d) => (
@@ -259,7 +258,7 @@ export default function HeroBanner() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-400 mb-1">Estimated Price</p>
+                    <p className="text-xs text-gray-400 mb-1">{t('estimatedPrice')}</p>
                     <p className="text-2xl font-bold" style={{ color: '#ff7d0f' }}>
                       {formatCurrency(estimatedPrice)}
                     </p>
@@ -268,23 +267,23 @@ export default function HeroBanner() {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-gray-400">Starting from</p>
+                    <p className="text-xs text-gray-400">{t('startingFrom')}</p>
                     <p className="text-sm font-semibold text-green-400">
-                      ✓ No hidden charges
+                      {t('noHiddenCharges')}
                     </p>
                     <p className="text-sm font-semibold text-blue-400">
-                      ✓ AC Vehicle
+                      {t('acVehicle')}
                     </p>
                   </div>
                 </div>
               </div>
 
               <Link href={`/booking?car=${selectedCar}&duration=${selectedDuration}`} className="btn-primary w-full justify-center text-base py-4">
-                Book This Package
+                {t('bookThisPackage')}
               </Link>
 
               <p className="text-center text-xs text-gray-500 mt-3">
-                Free cancellation up to 24 hours before trip
+                {t('freeCancellation')}
               </p>
             </div>
           </motion.div>
@@ -297,7 +296,7 @@ export default function HeroBanner() {
           transition={{ delay: 1.2, duration: 0.5 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
         >
-          <span className="text-xs text-gray-500">Scroll to explore</span>
+          <span className="text-xs text-gray-500">{t('scrollToExplore')}</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ repeat: Infinity, duration: 1.5 }}

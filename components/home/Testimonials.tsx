@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { Star, Quote } from 'lucide-react'
 import SectionHeader from '@/components/shared/SectionHeader'
 import { getInitials } from '@/lib/utils'
@@ -67,10 +68,10 @@ const STATIC_TESTIMONIALS = [
 ]
 
 // ── Helper: convert a DB ReviewSummary to the same shape as static data ──────
-function reviewToTestimonial(r: ReviewSummary) {
+function reviewToTestimonial(r: ReviewSummary, staticLocation: string) {
   return {
     name:     r.customer.name,
-    location: 'India',                // DB reviews don't store location
+    location: staticLocation,         // DB reviews don't store location
     rating:   r.rating,
     date:     new Date(r.createdAt).toLocaleDateString('en-IN', {
       month: 'long', year: 'numeric',
@@ -101,20 +102,21 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export default function Testimonials({ reviews: propReviews }: Props) {
+  const t = useTranslations('Testimonials')
+
   // Use real DB reviews when available; fall back to static for fresh deployments
   const testimonials =
     propReviews && propReviews.length > 0
-      ? propReviews.map(reviewToTestimonial)
+      ? propReviews.map((r) => reviewToTestimonial(r, t('staticLocation')))
       : STATIC_TESTIMONIALS
 
-  // ── JSX is exactly as originally written — unchanged ──────────────────────
   return (
     <section className="py-20 bg-gray-50">
       <div className="container-custom">
         <SectionHeader
-          subtitle="Testimonials"
-          title="What Our Pilgrims Say"
-          description="Real stories from real devotees who experienced the divine journey of Mathura and Vrindavan with us."
+          subtitle={t('subtitle')}
+          title={t('title')}
+          description={t('description')}
           className="mb-14"
         />
 
@@ -188,17 +190,17 @@ export default function Testimonials({ reviews: propReviews }: Props) {
             <div className="text-center">
               <p className="text-3xl font-bold text-gray-900">4.9</p>
               <StarRating rating={5} />
-              <p className="text-xs text-gray-400 mt-1">Google Rating</p>
+              <p className="text-xs text-gray-400 mt-1">{t('googleRating')}</p>
             </div>
             <div
               className="w-px h-12 self-center"
               style={{ background: '#e5e7eb' }}
             />
             <div>
-              <p className="font-semibold text-gray-700 text-sm">Rated by 2000+</p>
-              <p className="text-xs text-gray-400">happy pilgrims</p>
+              <p className="font-semibold text-gray-700 text-sm">{t('ratedBy')}</p>
+              <p className="text-xs text-gray-400">{t('happyPilgrims')}</p>
               <p className="text-xs font-semibold mt-1" style={{ color: '#ff7d0f' }}>
-                ✓ Verified Reviews
+                {t('verifiedReviews')}
               </p>
             </div>
           </div>

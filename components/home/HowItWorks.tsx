@@ -2,48 +2,20 @@
 
 import { motion } from 'framer-motion'
 import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import SectionHeader from '@/components/shared/SectionHeader'
 
-const steps = [
-  {
-    step: '01',
-    emoji: '🗺️',
-    title: 'Choose Your Package',
-    description:
-      'Browse our curated tour packages — 1 day to 8 days. Filter by car type, duration, and budget. Everything is clearly priced, no hidden charges.',
-    color: '#fff8ed',
-    accent: '#ff7d0f',
-  },
-  {
-    step: '02',
-    emoji: '📋',
-    title: 'Book & Confirm',
-    description:
-      'Fill in your travel details, select add-ons like hotel help or a local guide. Pay securely online or choose to pay on arrival.',
-    color: '#eef2ff',
-    accent: '#4338ca',
-  },
-  {
-    step: '03',
-    emoji: '🚗',
-    title: 'Meet Your Driver',
-    description:
-      'Your verified, experienced driver arrives at your location on time with a clean, AC vehicle ready for your spiritual journey.',
-    color: '#f0fdf4',
-    accent: '#16a34a',
-  },
-  {
-    step: '04',
-    emoji: '🙏',
-    title: 'Enjoy Your Darshan',
-    description:
-      'Immerse yourself in the divine energy of Braj Bhoomi. Our drivers know every temple, every shortcut, every aarti timing.',
-    color: '#fefce8',
-    accent: '#d97706',
-  },
+const stepStyles = [
+  { step: '01', emoji: '🗺️', titleKey: 'step1Title', descKey: 'step1Desc', color: '#fff8ed', accent: '#ff7d0f' },
+  { step: '02', emoji: '📋', titleKey: 'step2Title', descKey: 'step2Desc', color: '#eef2ff', accent: '#4338ca' },
+  { step: '03', emoji: '🚗', titleKey: 'step3Title', descKey: 'step3Desc', color: '#f0fdf4', accent: '#16a34a' },
+  { step: '04', emoji: '🙏', titleKey: 'step4Title', descKey: 'step4Desc', color: '#fefce8', accent: '#d97706' },
 ]
 
 export default function HowItWorks() {
+  const t     = useTranslations('HowItWorks')
+  const steps = stepStyles.map((s) => ({ ...s, title: t(s.titleKey), description: t(s.descKey) }))
+
   return (
     <section
       className="py-20"
@@ -53,9 +25,9 @@ export default function HowItWorks() {
     >
       <div className="container-custom">
         <SectionHeader
-          subtitle="How It Works"
-          title="Your Journey in 4 Simple Steps"
-          description="We've made booking a Mathura Vrindavan tour as easy as possible so you can focus on what matters — your spiritual experience."
+          subtitle={t('subtitle')}
+          title={t('title')}
+          description={t('description')}
           className="mb-16"
         />
 
@@ -107,7 +79,7 @@ export default function HowItWorks() {
           className="text-center mt-14"
         >
           <Link href="/booking" className="btn-primary text-base px-10 py-4">
-            Start Booking Now
+            {t('startBookingNow')}
           </Link>
         </motion.div>
       </div>

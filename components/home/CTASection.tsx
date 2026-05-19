@@ -3,24 +3,26 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { Phone, MessageCircle, Send, MapPin } from 'lucide-react'
 import { siteConfig } from '@/config/site'
 import toast from 'react-hot-toast'
 
 export default function CTASection() {
-  const [form, setForm] = useState({ name: '', phone: '', date: '', message: '' })
+  const t                     = useTranslations('CTASection')
+  const [form, setForm]       = useState({ name: '', phone: '', date: '', message: '' })
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.name || !form.phone) {
-      toast.error('Please fill in your name and phone number.')
+      toast.error(t('errorMissingFields'))
       return
     }
     setLoading(true)
     // Will connect to API route later
     await new Promise((r) => setTimeout(r, 1000))
-    toast.success('Enquiry sent! We\'ll call you within 1 hour. 🙏')
+    toast.success(t('successSent'))
     setForm({ name: '', phone: '', date: '', message: '' })
     setLoading(false)
   }
@@ -37,22 +39,20 @@ export default function CTASection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <p className="section-subtitle mb-3">✦ Contact Us ✦</p>
+            <p className="section-subtitle mb-3">✦ {t('subtitle')} ✦</p>
             <h2 className="section-title mb-5">
-              Plan Your Perfect<br />
-              <span style={{ color: '#ff7d0f' }}>Spiritual Journey</span>
+              {t('titleLine1')}<br />
+              <span style={{ color: '#ff7d0f' }}>{t('titleHighlight')}</span>
             </h2>
             <p className="text-gray-500 leading-relaxed mb-8">
-              Have questions? Want a custom itinerary? Our travel experts are
-              available 7 days a week to help you plan the most memorable
-              pilgrimage of your life.
+              {t('description')}
             </p>
 
             <div className="space-y-5 mb-8">
               {[
                 {
                   icon: <Phone size={20} />,
-                  label: 'Call or WhatsApp',
+                  label: t('callLabel'),
                   value: siteConfig.phone,
                   href: `tel:${siteConfig.phone}`,
                   color: '#ff7d0f',
@@ -60,15 +60,15 @@ export default function CTASection() {
                 },
                 {
                   icon: <MessageCircle size={20} />,
-                  label: 'WhatsApp Chat',
-                  value: 'Chat with us instantly',
+                  label: t('whatsAppLabel'),
+                  value: t('whatsAppValue'),
                   href: `https://wa.me/${siteConfig.whatsapp}`,
                   color: '#16a34a',
                   bg: '#f0fdf4',
                 },
                 {
                   icon: <MapPin size={20} />,
-                  label: 'Our Location',
+                  label: t('locationLabel'),
                   value: siteConfig.address,
                   href: '#',
                   color: '#4338ca',
@@ -100,10 +100,10 @@ export default function CTASection() {
             {/* Quick links */}
             <div className="flex gap-3 flex-wrap">
               <Link href="/packages" className="btn-primary text-sm py-3 px-6">
-                View Packages
+                {t('viewPackages')}
               </Link>
               <a
-                href={`https://wa.me/${siteConfig.whatsapp}?text=Namaste! I want to book a Mathura Vrindavan tour.`}
+                href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('whatsAppGreeting'))}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-200"
@@ -114,7 +114,7 @@ export default function CTASection() {
                 }}
               >
                 <MessageCircle size={16} />
-                WhatsApp
+                {t('whatsApp')}
               </a>
             </div>
           </motion.div>
@@ -138,21 +138,21 @@ export default function CTASection() {
                 className="text-xl font-bold text-gray-900 mb-1"
                 style={{ fontFamily: 'var(--font-serif)' }}
               >
-                Get a Free Tour Plan 🙏
+                {t('formTitle')}
               </h3>
               <p className="text-sm text-gray-500 mb-6">
-                Fill the form and we&apos;ll call you within 1 hour
+                {t('formSubtitle')}
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                      Your Name *
+                      {t('yourName')} *
                     </label>
                     <input
                       type="text"
-                      placeholder="Ram Sharma"
+                      placeholder={t('yourNamePlaceholder')}
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       className="input-field bg-white"
@@ -161,11 +161,11 @@ export default function CTASection() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                      Phone / WhatsApp *
+                      {t('phoneWhatsApp')} *
                     </label>
                     <input
                       type="tel"
-                      placeholder="+91 98765 43210"
+                      placeholder={t('phonePlaceholder')}
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       className="input-field bg-white"
@@ -176,7 +176,7 @@ export default function CTASection() {
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                    Planned Travel Date
+                    {t('plannedDate')}
                   </label>
                   <input
                     type="date"
@@ -189,11 +189,11 @@ export default function CTASection() {
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-                    Message / Requirements
+                    {t('messageLabel')}
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="Number of people, preferred car, specific temples to visit..."
+                    placeholder={t('messagePlaceholder')}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     className="input-field bg-white resize-none"
@@ -209,18 +209,18 @@ export default function CTASection() {
                   {loading ? (
                     <>
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Sending...
+                      {t('sending')}
                     </>
                   ) : (
                     <>
                       <Send size={18} />
-                      Send Enquiry
+                      {t('sendEnquiry')}
                     </>
                   )}
                 </button>
 
                 <p className="text-center text-xs text-gray-400">
-                  🔒 Your details are safe with us. No spam, ever.
+                  {t('privacyNote')}
                 </p>
               </form>
             </div>

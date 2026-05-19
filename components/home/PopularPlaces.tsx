@@ -3,6 +3,7 @@
 import { useState }  from 'react'
 import { motion }    from 'framer-motion'
 import { Link }      from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import Image         from 'next/image'
 import { ArrowRight, MapPin, Clock, Ticket } from 'lucide-react'
 import SectionHeader from '@/components/shared/SectionHeader'
@@ -14,6 +15,7 @@ interface Props {
 }
 
 function PlaceTile({ place, index }: { place: PlaceSummary; index: number }) {
+  const t                         = useTranslations('PopularPlaces')
   const resolvedSrc               = getPlaceImageSrc(place.slug, place.thumbnail)
   const [imgSrc, setImgSrc]       = useState<string | null>(resolvedSrc)
   const [imgLoaded, setImgLoaded] = useState(false)
@@ -91,7 +93,7 @@ function PlaceTile({ place, index }: { place: PlaceSummary; index: number }) {
               <span className="flex items-center gap-1"
                 style={{ color: place.entryFee === 'Free' ? '#16a34a' : '#6b7280' }}>
                 <Ticket size={10} />
-                {place.entryFee === 'Free' ? '✓ Free' : place.entryFee}
+                {place.entryFee === 'Free' ? `✓ ${t('free')}` : place.entryFee}
               </span>
             )}
           </div>
@@ -102,23 +104,31 @@ function PlaceTile({ place, index }: { place: PlaceSummary; index: number }) {
 }
 
 export default function PopularPlaces({ places }: Props) {
+  const t = useTranslations('PopularPlaces')
   if (places.length === 0) return null
 
-  const CITIES = ['Mathura', 'Vrindavan', 'Govardhan', 'Barsana', 'Gokul']
+  // Keep slug keys (English) for DB matching; render translated label
+  const CITIES = [
+    { slug: 'Mathura',   label: t('cityMathura') },
+    { slug: 'Vrindavan', label: t('cityVrindavan') },
+    { slug: 'Govardhan', label: t('cityGovardhan') },
+    { slug: 'Barsana',   label: t('cityBarsana') },
+    { slug: 'Gokul',     label: t('cityGokul') },
+  ]
 
   return (
     <section className="py-20 bg-white">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <SectionHeader
-            subtitle="Sacred Places"
-            title="Explore the Holy Land of Braj"
-            description="Discover sacred temples, divine ghats, and spiritual sites across Mathura, Vrindavan, Govardhan and Barsana."
+            subtitle={t('subtitle')}
+            title={t('title')}
+            description={t('description')}
             centered={false} />
           <Link href="/places"
             className="inline-flex items-center gap-2 font-semibold text-sm flex-shrink-0"
             style={{ color: '#ff7d0f' }}>
-            Explore All Places <ArrowRight size={16} />
+            {t('exploreAllPlaces')} <ArrowRight size={16} />
           </Link>
         </div>
 
@@ -136,13 +146,13 @@ export default function PopularPlaces({ places }: Props) {
           viewport={{ once: true }}
           className="mt-10 flex flex-wrap gap-3 justify-center">
           {CITIES.map((city) => {
-            const count = places.filter((p) => p.city === city).length
+            const count = places.filter((p) => p.city === city.slug).length
             if (count === 0) return null
             return (
-              <Link key={city} href={`/places?city=${city}`}
+              <Link key={city.slug} href={`/places?city=${city.slug}`}
                 className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
                 style={{ background: '#fff8ed', color: '#c74a06', border: '1px solid #ffdba8' }}>
-                <MapPin size={12} />{city}
+                <MapPin size={12} />{city.label}
                 <span className="text-xs opacity-70">({count})</span>
               </Link>
             )

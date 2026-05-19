@@ -1,60 +1,24 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import SectionHeader from '@/components/shared/SectionHeader'
 
-const features = [
-  {
-    emoji: '🚗',
-    title: 'Premium Fleet of Vehicles',
-    description:
-      'Choose from Swift, Eeco, Ertiga, Innova and more — all AC, GPS-equipped, well-maintained vehicles with experienced drivers.',
-  },
-  {
-    emoji: '💰',
-    title: 'Transparent Pricing',
-    description:
-      'What you see is what you pay. No hidden charges, no surprises. All-inclusive pricing from ₹2,000 onwards.',
-  },
-  {
-    emoji: '🗺️',
-    title: 'Expert Local Knowledge',
-    description:
-      'Our drivers and guides are born and raised in Braj. They know every temple story, every shortcut, every aarti timing.',
-  },
-  {
-    emoji: '🏨',
-    title: 'Hotel & Restaurant Help',
-    description:
-      'Need a place to stay or eat? We help you find the best pure-veg restaurants and budget-to-premium hotels in Mathura & Vrindavan.',
-  },
-  {
-    emoji: '📞',
-    title: '24/7 Customer Support',
-    description:
-      'Our team is always available on call and WhatsApp. Any issue during your trip — we solve it immediately.',
-  },
-  {
-    emoji: '🔒',
-    title: 'Safe & Verified Drivers',
-    description:
-      'All our drivers are police-verified, licensed, and trained in safe driving. Your safety is our highest priority.',
-  },
-  {
-    emoji: '📿',
-    title: 'Puja Arrangements',
-    description:
-      'We help arrange special pujas, Yamuna aarti participation, temple VIP passes, and spiritual guide services.',
-  },
-  {
-    emoji: '❌',
-    title: 'Free Cancellation',
-    description:
-      'Plans changed? Cancel up to 24 hours before your trip for a full refund. No questions asked.',
-  },
+const featureEmojis = [
+  { emoji: '🚗', titleKey: 'f1Title', descKey: 'f1Desc' },
+  { emoji: '💰', titleKey: 'f2Title', descKey: 'f2Desc' },
+  { emoji: '🗺️', titleKey: 'f3Title', descKey: 'f3Desc' },
+  { emoji: '🏨', titleKey: 'f4Title', descKey: 'f4Desc' },
+  { emoji: '📞', titleKey: 'f5Title', descKey: 'f5Desc' },
+  { emoji: '🔒', titleKey: 'f6Title', descKey: 'f6Desc' },
+  { emoji: '📿', titleKey: 'f7Title', descKey: 'f7Desc' },
+  { emoji: '❌', titleKey: 'f8Title', descKey: 'f8Desc' },
 ]
 
 export default function WhyChooseUs() {
+  const t        = useTranslations('WhyChooseUs')
+  const features = featureEmojis.map((f) => ({ ...f, title: t(f.titleKey), description: t(f.descKey) }))
+
   return (
     <section
       className="py-20"
@@ -64,9 +28,9 @@ export default function WhyChooseUs() {
     >
       <div className="container-custom">
         <SectionHeader
-          subtitle="Why Choose Us"
-          title="The Most Trusted Tour Partner in Braj"
-          description="Thousands of devotees have trusted us with their most sacred journeys. Here's what makes us different."
+          subtitle={t('subtitle')}
+          title={t('title')}
+          description={t('description')}
           className="mb-14"
         />
 
@@ -74,9 +38,9 @@ export default function WhyChooseUs() {
         <style>{`.why-us .section-title { color: #fff; } .why-us .section-subtitle { color: #ff9b37; }`}</style>
         <div className="why-us">
           <SectionHeader
-            subtitle="Why Choose Us"
-            title="The Most Trusted Tour Partner in Braj"
-            description="Thousands of devotees have trusted us with their most sacred journeys. Here's what makes us different."
+            subtitle={t('subtitle')}
+            title={t('title')}
+            description={t('description')}
             className="mb-14 hidden"
           />
         </div>

@@ -2,6 +2,7 @@
 
 import { useState }  from 'react'
 import { Link }       from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import Image          from 'next/image'
 import { Clock, Star, ArrowRight } from 'lucide-react'
 import { formatCurrency }          from '@/lib/utils'
@@ -34,6 +35,7 @@ export default function PackageCard({
   highlights,
   isPopular,
 }: PackageCardProps) {
+  const t                        = useTranslations('PackageCard')
   const resolvedSrc              = getPackageImageSrc(slug, thumbnail)
   const [imgSrc, setImgSrc]      = useState<string | null>(resolvedSrc)
   const [imgLoaded, setImgLoaded]= useState(false)
@@ -83,13 +85,13 @@ export default function PackageCard({
           <span className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-semibold backdrop-blur-sm"
             style={{ background: 'rgba(255,255,255,0.92)', color: '#c74a06' }}>
             <Clock size={10} />
-            {duration} {duration === 1 ? 'Day' : 'Days'}
+            {duration} {duration === 1 ? t('day') : t('days')}
             {nights > 0 && ` / ${nights}N`}
           </span>
           {isPopular && (
             <span className="text-xs px-2.5 py-1 rounded-full font-semibold backdrop-blur-sm"
               style={{ background: 'rgba(254,243,199,0.95)', color: '#92400e' }}>
-              🔥 Popular
+              {t('popular')}
             </span>
           )}
         </div>
@@ -131,7 +133,7 @@ export default function PackageCard({
         <div className="flex items-center justify-between pt-4"
           style={{ borderTop: '1px solid #f3f4f6' }}>
           <div>
-            <p className="text-xs text-gray-400">Starting from</p>
+            <p className="text-xs text-gray-400">{t('startingFrom')}</p>
             <p className="text-xl font-bold" style={{ color: '#ff7d0f' }}>
               {formatCurrency(basePrice)}
             </p>
@@ -141,7 +143,7 @@ export default function PackageCard({
             style={{ background: '#fff8ed', color: '#f06205', border: '1px solid #ffdba8' }}
             onMouseEnter={(e) => { e.currentTarget.style.background = '#ff7d0f'; e.currentTarget.style.color = '#fff' }}
             onMouseLeave={(e) => { e.currentTarget.style.background = '#fff8ed'; e.currentTarget.style.color = '#f06205' }}>
-            View Details <ArrowRight size={14} />
+            {t('viewDetails')} <ArrowRight size={14} />
           </Link>
         </div>
       </div>
