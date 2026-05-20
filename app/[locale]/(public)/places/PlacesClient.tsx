@@ -2,26 +2,37 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { Search, X, MapPin } from 'lucide-react'
 import PlaceCard from '@/components/shared/PlaceCard'
 import type { PlaceSummary } from '@/lib/fetchData'
-import { cn } from '@/lib/utils'
 
-const CITIES = ['All', 'Mathura', 'Vrindavan', 'Gokul', 'Govardhan', 'Barsana']
+const CITY_KEYS = [
+  { slug: 'All',       key: 'cityAll' },
+  { slug: 'Mathura',   key: 'cityMathura' },
+  { slug: 'Vrindavan', key: 'cityVrindavan' },
+  { slug: 'Gokul',     key: 'cityGokul' },
+  { slug: 'Govardhan', key: 'cityGovardhan' },
+  { slug: 'Barsana',   key: 'cityBarsana' },
+]
 
-const TYPES = [
-  { value: 'all',         label: 'All Types',    emoji: '✨' },
-  { value: 'temple',      label: 'Temples',      emoji: '🛕' },
-  { value: 'ghat',        label: 'Ghats',        emoji: '🌊' },
-  { value: 'sacred-site', label: 'Sacred Sites', emoji: '🙏' },
-  { value: 'hill',        label: 'Hills',        emoji: '⛰️' },
-  { value: 'garden',      label: 'Gardens',      emoji: '🌺' },
+const TYPE_KEYS = [
+  { value: 'all',         key: 'typeAll',        emoji: '✨' },
+  { value: 'temple',      key: 'typeTemple',     emoji: '🛕' },
+  { value: 'ghat',        key: 'typeGhat',       emoji: '🌊' },
+  { value: 'sacred-site', key: 'typeSacredSite', emoji: '🙏' },
+  { value: 'hill',        key: 'typeHill',       emoji: '⛰️' },
+  { value: 'garden',      key: 'typeGarden',     emoji: '🌺' },
 ]
 
 export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
-  const [search,    setSearch]    = useState('')
-  const [city,      setCity]      = useState('All')
-  const [type,      setType]      = useState('all')
+  const t                      = useTranslations('PlacesPage')
+  const [search, setSearch]    = useState('')
+  const [city,   setCity]      = useState('All')
+  const [type,   setType]      = useState('all')
+
+  const CITIES = CITY_KEYS.map((c) => ({ ...c, label: t(c.key) }))
+  const TYPES  = TYPE_KEYS.map((tp) => ({ ...tp, label: t(tp.key) }))
 
   const filtered = useMemo(() => {
     let result = [...places]
@@ -66,7 +77,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
             animate={{ opacity: 1, y: 0 }}
             className="text-amber-400 font-semibold text-sm uppercase tracking-widest mb-3"
           >
-            ✦ Sacred Places ✦
+            ✦ {t('heroSubtitle')} ✦
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -75,7 +86,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
-            Explore the Holy Dham of Braj
+            {t('heroTitle')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -83,8 +94,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
             transition={{ delay: 0.2 }}
             className="text-gray-300 max-w-xl mx-auto text-base mb-8"
           >
-            Discover {places.length}+ sacred temples, holy ghats, and divine sites across
-            Mathura, Vrindavan, Gokul, Govardhan and Barsana.
+            {t('heroDescription', { count: places.length })}
           </motion.p>
 
           {/* Search */}
@@ -97,7 +107,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search temples, ghats, sacred sites..."
+              placeholder={t('searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-11 pr-10 py-4 rounded-2xl text-sm bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:border-amber-400 transition-colors"
@@ -118,24 +128,24 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
         <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
           {CITIES.map((c) => (
             <button
-              key={c}
-              onClick={() => setCity(c)}
+              key={c.slug}
+              onClick={() => setCity(c.slug)}
               className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0"
-              style={city === c
+              style={city === c.slug
                 ? { background: '#4338ca', color: '#fff', boxShadow: '0 4px 15px rgba(67,56,202,0.35)' }
                 : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
               }
             >
               <MapPin size={12} />
-              {c}
+              {c.label}
               <span
                 className="text-xs px-1.5 py-0.5 rounded-full font-bold"
-                style={city === c
+                style={city === c.slug
                   ? { background: 'rgba(255,255,255,0.25)', color: '#fff' }
                   : { background: '#f3f4f6', color: '#9ca3af' }
                 }
               >
-                {cityCount(c)}
+                {cityCount(c.slug)}
               </span>
             </button>
           ))}
@@ -143,18 +153,18 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
 
         {/* ── Type filter chips ── */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-8">
-          {TYPES.map((t) => (
+          {TYPES.map((tp) => (
             <button
-              key={t.value}
-              onClick={() => setType(t.value)}
+              key={tp.value}
+              onClick={() => setType(tp.value)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0"
-              style={type === t.value
+              style={type === tp.value
                 ? { background: '#fff8ed', color: '#c74a06', border: '1.5px solid #ff7d0f' }
                 : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
               }
             >
-              <span className="text-sm">{t.emoji}</span>
-              {t.label}
+              <span className="text-sm">{tp.emoji}</span>
+              {tp.label}
             </button>
           ))}
 
@@ -163,7 +173,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
               onClick={() => { setSearch(''); setCity('All'); setType('all') }}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium text-red-500 hover:text-red-700 border border-red-200 bg-red-50 transition-colors whitespace-nowrap flex-shrink-0"
             >
-              <X size={13} /> Clear All
+              <X size={13} /> {t('clearAll')}
             </button>
           )}
         </div>
@@ -171,12 +181,12 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
         {/* Result count */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-sm text-gray-500">
-            Showing <span className="font-semibold text-gray-800">{filtered.length}</span> places
-            {city !== 'All' && <> in <span className="font-semibold text-krishna-600">{city}</span></>}
+            {t('showing')} <span className="font-semibold text-gray-800">{filtered.length}</span> {t('places')}
+            {city !== 'All' && <> {t('inCity')} <span className="font-semibold text-krishna-600">{CITIES.find((c) => c.slug === city)?.label ?? city}</span></>}
           </p>
           {filtered.some((p) => p.isFeatured) && (
             <span className="text-xs text-amber-600 font-semibold flex items-center gap-1">
-              ⭐ Featured places shown first
+              {t('featuredFirst')}
             </span>
           )}
         </div>
@@ -216,13 +226,13 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
             className="text-center py-24"
           >
             <p className="text-6xl mb-4">🙏</p>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">No places found</h3>
-            <p className="text-gray-500 mb-6 text-sm">Try a different city, type, or search term</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">{t('emptyTitle')}</h3>
+            <p className="text-gray-500 mb-6 text-sm">{t('emptySubtitle')}</p>
             <button
               onClick={() => { setSearch(''); setCity('All'); setType('all') }}
               className="btn-primary"
             >
-              Show All Places
+              {t('showAllPlaces')}
             </button>
           </motion.div>
         )}
@@ -242,22 +252,21 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
             className="text-2xl font-bold text-white mb-2"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
-            Want to Visit These Places?
+            {t('ctaTitle')}
           </h3>
           <p className="text-gray-300 mb-6 max-w-md mx-auto text-sm">
-            Book a guided tour with our experienced drivers who know every temple,
-            every shortcut, and every aarti timing in Braj.
+            {t('ctaDescription')}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <a href="/packages" className="btn-primary">
-              Browse Tour Packages
+              {t('browsePackages')}
             </a>
             <a href="/booking" className="btn-secondary"
               style={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
               onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
             >
-              Book a Custom Tour
+              {t('bookCustomTour')}
             </a>
           </div>
         </motion.div>

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react'
 import PackageCard from '@/components/shared/PackageCard'
 import { cn } from '@/lib/utils'
@@ -10,30 +11,43 @@ import type { PackageSummary } from '@/lib/fetchData'
 // Use the shared PackageSummary type from fetchData so server + client always agree
 type Package = PackageSummary
 
-const DURATION_TABS = [
-  { label: 'All',     min: 0,  max: 99 },
-  { label: '1 Day',   min: 1,  max: 1  },
-  { label: '2-3 Days',min: 2,  max: 3  },
-  { label: '4+ Days', min: 4,  max: 99 },
+const DURATION_TAB_KEYS = [
+  { key: 'tabAll',       min: 0, max: 99 },
+  { key: 'tabOneDay',    min: 1, max: 1  },
+  { key: 'tab23Days',    min: 2, max: 3  },
+  { key: 'tab4PlusDays', min: 4, max: 99 },
 ]
 
-const SORT_OPTIONS = [
-  { value: 'popular',    label: 'Most Popular' },
-  { value: 'price-asc',  label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'rating',     label: 'Highest Rated' },
-  { value: 'duration',   label: 'Duration' },
+const SORT_OPTION_KEYS = [
+  { value: 'popular',    key: 'sortPopular'   },
+  { value: 'price-asc',  key: 'sortPriceAsc'  },
+  { value: 'price-desc', key: 'sortPriceDesc' },
+  { value: 'rating',     key: 'sortRating'    },
+  { value: 'duration',   key: 'sortDuration'  },
 ]
 
-const CITIES = ['All', 'Mathura', 'Vrindavan', 'Govardhan', 'Gokul', 'Barsana', 'Agra']
+const CITY_KEYS = [
+  { slug: 'All',       key: 'cityAll'       },
+  { slug: 'Mathura',   key: 'cityMathura'   },
+  { slug: 'Vrindavan', key: 'cityVrindavan' },
+  { slug: 'Govardhan', key: 'cityGovardhan' },
+  { slug: 'Gokul',     key: 'cityGokul'     },
+  { slug: 'Barsana',   key: 'cityBarsana'   },
+  { slug: 'Agra',      key: 'cityAgra'      },
+]
 
 export default function PackagesClient({ packages }: { packages: Package[] }) {
+  const t                             = useTranslations('PackagesPage')
   const [search,      setSearch]      = useState('')
   const [activeTab,   setActiveTab]   = useState(0)
   const [sortBy,      setSortBy]      = useState('popular')
   const [cityFilter,  setCityFilter]  = useState('All')
   const [showFilters, setShowFilters] = useState(false)
   const [showSort,    setShowSort]    = useState(false)
+
+  const DURATION_TABS = DURATION_TAB_KEYS.map((tab) => ({ ...tab, label: t(tab.key) }))
+  const SORT_OPTIONS  = SORT_OPTION_KEYS.map((opt) => ({ ...opt, label: t(opt.key) }))
+  const CITIES        = CITY_KEYS.map((c) => ({ ...c, label: t(c.key) }))
 
   const filtered = useMemo(() => {
     let result = [...packages]
@@ -103,7 +117,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
             animate={{ opacity: 1, y: 0 }}
             className="text-saffron-400 font-semibold text-sm uppercase tracking-widest mb-3"
           >
-            ✦ Tour Packages ✦
+            ✦ {t('heroSubtitle')} ✦
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -112,7 +126,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
-            Choose Your Perfect Braj Journey
+            {t('heroTitle')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -120,8 +134,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
             transition={{ delay: 0.2 }}
             className="text-gray-300 max-w-xl mx-auto text-base mb-8"
           >
-            Handcrafted spiritual tour packages for every devotee — from quick day
-            trips to extended pilgrimage retreats. All AC vehicles, experienced drivers.
+            {t('heroDescription')}
           </motion.p>
 
           {/* Search bar */}
@@ -134,7 +147,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search packages, cities, temples..."
+              placeholder={t('searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-11 pr-4 py-4 rounded-2xl text-sm bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:border-saffron-400 transition-colors"
@@ -160,7 +173,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
           <div className="flex gap-2 flex-wrap">
             {DURATION_TABS.map((tab, i) => (
               <button
-                key={tab.label}
+                key={tab.key}
                 onClick={() => setActiveTab(i)}
                 className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer"
                 style={activeTab === i
@@ -188,7 +201,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                 )}
               >
                 <SlidersHorizontal size={15} />
-                {cityFilter === 'All' ? 'Filter by City' : cityFilter}
+                {cityFilter === 'All' ? t('filterByCity') : CITIES.find((c) => c.slug === cityFilter)?.label ?? cityFilter}
                 <ChevronDown size={13} className={cn('transition-transform', showFilters && 'rotate-180')} />
               </button>
               <AnimatePresence>
@@ -202,16 +215,16 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                   >
                     {CITIES.map((city) => (
                       <button
-                        key={city}
-                        onClick={() => { setCityFilter(city); setShowFilters(false) }}
+                        key={city.slug}
+                        onClick={() => { setCityFilter(city.slug); setShowFilters(false) }}
                         className={cn(
                           'w-full text-left px-4 py-2.5 text-sm transition-colors',
-                          cityFilter === city
+                          cityFilter === city.slug
                             ? 'text-saffron-600 bg-saffron-50 font-semibold'
                             : 'text-gray-700 hover:bg-gray-50',
                         )}
                       >
-                        {city}
+                        {city.label}
                       </button>
                     ))}
                   </motion.div>
@@ -230,7 +243,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                     : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300',
                 )}
               >
-                Sort
+                {t('sort')}
                 <ChevronDown size={13} className={cn('transition-transform', showSort && 'rotate-180')} />
               </button>
               <AnimatePresence>
@@ -268,7 +281,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                 onClick={clearFilters}
                 className="flex items-center gap-1.5 text-sm text-red-500 hover:text-red-700 font-medium transition-colors"
               >
-                <X size={14} /> Clear
+                <X size={14} /> {t('clear')}
               </button>
             )}
           </div>
@@ -276,8 +289,8 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
 
         {/* Results count */}
         <p className="text-sm text-gray-500 mb-6">
-          Showing <span className="font-semibold text-gray-800">{filtered.length}</span> packages
-          {cityFilter !== 'All' && <> in <span className="font-semibold text-saffron-600">{cityFilter}</span></>}
+          {t('showing')} <span className="font-semibold text-gray-800">{filtered.length}</span> {t('packages')}
+          {cityFilter !== 'All' && <> {t('inCity')} <span className="font-semibold text-saffron-600">{CITIES.find((c) => c.slug === cityFilter)?.label ?? cityFilter}</span></>}
         </p>
 
         {/* ── Package Grid ── */}
@@ -305,10 +318,10 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
             className="text-center py-24"
           >
             <p className="text-6xl mb-4">🙏</p>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">No packages found</h3>
-            <p className="text-gray-500 mb-6 text-sm">Try adjusting your filters or search terms</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">{t('emptyTitle')}</h3>
+            <p className="text-gray-500 mb-6 text-sm">{t('emptySubtitle')}</p>
             <button onClick={clearFilters} className="btn-primary">
-              Clear All Filters
+              {t('clearAllFilters')}
             </button>
           </motion.div>
         )}
@@ -326,23 +339,22 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
         >
           <p className="text-4xl mb-4">✨</p>
           <h3 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
-            Can&apos;t find the right package?
+            {t('customTitle')}
           </h3>
           <p className="text-gray-500 mb-6 max-w-md mx-auto text-sm">
-            We create fully custom itineraries based on your budget, group size,
-            and preferred temples. Just tell us what you need!
+            {t('customDescription')}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <a
-              href="https://wa.me/919999999999?text=Namaste! I need a custom Mathura Vrindavan tour package."
+              href={`https://wa.me/919999999999?text=${encodeURIComponent(t('whatsAppGreeting'))}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-primary"
             >
-              WhatsApp Us
+              {t('whatsAppUs')}
             </a>
             <a href="/contact" className="btn-secondary">
-              Request Custom Package
+              {t('requestCustomPackage')}
             </a>
           </div>
         </motion.div>

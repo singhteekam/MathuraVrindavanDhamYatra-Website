@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { Star, MapPin, Phone, Wifi, UtensilsCrossed, Car, Snowflake } from 'lucide-react'
 import { siteConfig } from '@/config/site'
 
@@ -86,12 +87,18 @@ const HOTELS = [
   },
 ]
 
-const CITIES     = ['All', 'Mathura', 'Vrindavan', 'Govardhan', 'Barsana']
-const CATEGORIES = [
-  { value: 'all',       label: 'All Budgets'            },
-  { value: 'budget',    label: 'Budget (₹500–1500)'    },
-  { value: 'mid-range', label: 'Mid-Range (₹1500–4000)' },
-  { value: 'premium',   label: 'Premium (₹4000+)'       },
+const CITY_KEYS = [
+  { slug: 'All',       key: 'cityAll' },
+  { slug: 'Mathura',   key: 'cityMathura' },
+  { slug: 'Vrindavan', key: 'cityVrindavan' },
+  { slug: 'Govardhan', key: 'cityGovardhan' },
+  { slug: 'Barsana',   key: 'cityBarsana' },
+]
+const CATEGORY_KEYS = [
+  { value: 'all',       key: 'categoryAll'      },
+  { value: 'budget',    key: 'categoryBudget'   },
+  { value: 'mid-range', key: 'categoryMidRange' },
+  { value: 'premium',   key: 'categoryPremium'  },
 ]
 
 const AMENITY_ICONS: Record<string, React.ReactNode> = {
@@ -101,13 +108,17 @@ const AMENITY_ICONS: Record<string, React.ReactNode> = {
   Parking:    <Car size={13} />,
 }
 
-function formatPrice(min: number, max: number) {
-  return `₹${min.toLocaleString('en-IN')} – ₹${max.toLocaleString('en-IN')}/night`
+function formatPrice(min: number, max: number, perNightLabel: string) {
+  return `₹${min.toLocaleString('en-IN')} – ₹${max.toLocaleString('en-IN')}${perNightLabel}`
 }
 
 export default function HotelsClient() {
+  const t                       = useTranslations('HotelsPage')
   const [city,     setCity]     = useState('All')
   const [category, setCategory] = useState('all')
+
+  const CITIES     = CITY_KEYS.map((c) => ({ ...c, label: t(c.key) }))
+  const CATEGORIES = CATEGORY_KEYS.map((c) => ({ ...c, label: t(c.key) }))
 
   const filtered = HOTELS
     .filter((h) => {
@@ -130,30 +141,29 @@ export default function HotelsClient() {
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className="text-saffron-400 font-semibold text-sm uppercase tracking-widest mb-3"
           >
-            ✦ Hotel Recommendations ✦
+            ✦ {t('heroSubtitle')} ✦
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight"
             style={{ fontFamily: 'var(--font-serif)' }}
           >
-            Stay Comfortably in Braj
+            {t('heroTitle')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="text-gray-300 max-w-xl mx-auto text-base mb-6"
           >
-            Hand-picked pure vegetarian hotels across Mathura, Vrindavan, Govardhan
-            and Barsana — from budget pilgrim stays to premium spiritual retreats.
+            {t('heroDescription')}
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
             <a
-              href={`https://wa.me/${siteConfig.whatsapp}?text=Namaste! I need help finding a hotel in Mathura Vrindavan. Please help. 🙏`}
+              href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('whatsAppGreeting'))}`}
               target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm"
               style={{ background: '#22c55e', color: '#fff' }}
             >
-              WhatsApp for Free Hotel Help
+              {t('whatsAppHelp')}
             </a>
           </motion.div>
         </div>
@@ -165,14 +175,14 @@ export default function HotelsClient() {
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="flex gap-2 flex-wrap">
             {CITIES.map((c) => (
-              <button key={c} onClick={() => setCity(c)}
+              <button key={c.slug} onClick={() => setCity(c.slug)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
-                style={city === c
+                style={city === c.slug
                   ? { background: '#ff7d0f', color: '#fff' }
                   : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
                 }
               >
-                <MapPin size={11} />{c}
+                <MapPin size={11} />{c.label}
               </button>
             ))}
           </div>
@@ -192,8 +202,8 @@ export default function HotelsClient() {
         </div>
 
         <p className="text-sm text-gray-500 mb-6">
-          Showing <strong>{filtered.length}</strong> hotels
-          {city !== 'All' && <> in <strong className="text-saffron-600">{city}</strong></>}
+          {t('showing')} <strong>{filtered.length}</strong> {t('hotels')}
+          {city !== 'All' && <> {t('inCity')} <strong className="text-saffron-600">{CITIES.find((c) => c.slug === city)?.label ?? city}</strong></>}
         </p>
 
         {/* Hotel grid */}
@@ -219,14 +229,14 @@ export default function HotelsClient() {
                   </span>
                   {hotel.isVegOnly && (
                     <span className="badge" style={{ background: '#f0fdf4', color: '#16a34a' }}>
-                      🟢 Pure Veg
+                      {t('pureVeg')}
                     </span>
                   )}
                 </div>
                 {hotel.isFeatured && (
                   <div className="absolute top-3 right-3">
                     <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>
-                      ⭐ Recommended
+                      {t('recommended')}
                     </span>
                   </div>
                 )}
@@ -261,18 +271,18 @@ export default function HotelsClient() {
                 <div className="flex items-center justify-between pt-4"
                   style={{ borderTop: '1px solid #f3f4f6' }}>
                   <div>
-                    <p className="text-xs text-gray-400">Price range</p>
+                    <p className="text-xs text-gray-400">{t('priceRange')}</p>
                     <p className="text-sm font-bold" style={{ color: '#ff7d0f' }}>
-                      {formatPrice(hotel.priceRange.min, hotel.priceRange.max)}
+                      {formatPrice(hotel.priceRange.min, hotel.priceRange.max, t('perNight'))}
                     </p>
                   </div>
                   <a
-                    href={`https://wa.me/${siteConfig.whatsapp}?text=Namaste! I need help booking ${hotel.name} in ${hotel.city}. 🙏`}
+                    href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('enquireGreeting', { hotel: hotel.name, city: hotel.city }))}`}
                     target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-colors"
                     style={{ background: '#dcfce7', color: '#16a34a' }}
                   >
-                    <Phone size={11} /> Enquire
+                    <Phone size={11} /> {t('enquire')}
                   </a>
                 </div>
               </div>
@@ -288,18 +298,17 @@ export default function HotelsClient() {
         >
           <p className="text-4xl mb-4">🏨</p>
           <h3 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
-            Need Help Choosing a Hotel?
+            {t('ctaTitle')}
           </h3>
           <p className="text-gray-500 mb-6 max-w-md mx-auto text-sm">
-            Our team helps you find the best hotel for your budget, group size, and location
-            preference — completely free of charge!
+            {t('ctaDescription')}
           </p>
           <a
-            href={`https://wa.me/${siteConfig.whatsapp}?text=Namaste! I need help finding a hotel in Mathura Vrindavan. 🙏`}
+            href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('whatsAppGreetingShort'))}`}
             target="_blank" rel="noopener noreferrer"
             className="btn-primary inline-flex"
           >
-            WhatsApp for Free Hotel Help
+            {t('whatsAppHelp')}
           </a>
         </motion.div>
       </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion }   from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { MapPin, Star, Clock, IndianRupee } from 'lucide-react'
 import { siteConfig } from '@/config/site'
 
@@ -120,25 +121,44 @@ const RESTAURANTS = [
   },
 ]
 
-const CITIES   = ['All', 'Mathura', 'Vrindavan', 'Govardhan', 'Gokul', 'Barsana']
-const TYPES    = ['All', 'Thali', 'Sweets', 'Prasadam', 'Dhaba', 'Budget']
-const BRAJ_FOODS = [
-  { name: 'Mathura Peda',     desc: 'Famous milk-based sweet — the most iconic souvenir',   emoji: '🍬' },
-  { name: 'Makhan Mishri',    desc: 'Fresh butter with sugar crystals — Krishna\'s favourite', emoji: '🧈' },
-  { name: 'Lassi',            desc: 'Thick, creamy yogurt drink — best in the Braj region',  emoji: '🥛' },
-  { name: 'Kachori Sabzi',    desc: 'Crispy kachori with spiced potato curry for breakfast',  emoji: '🥙' },
-  { name: 'Panchamrit',       desc: 'Sacred mixture of milk, curd, honey, ghee and sugar',   emoji: '🙏' },
-  { name: 'Dal Baati Churma', desc: 'Rajasthani classic widely available in Braj dhabas',    emoji: '🍲' },
+const CITY_KEYS = [
+  { slug: 'All',       key: 'cityAll' },
+  { slug: 'Mathura',   key: 'cityMathura' },
+  { slug: 'Vrindavan', key: 'cityVrindavan' },
+  { slug: 'Govardhan', key: 'cityGovardhan' },
+  { slug: 'Gokul',     key: 'cityGokul' },
+  { slug: 'Barsana',   key: 'cityBarsana' },
+]
+const TYPE_KEYS = [
+  { tag: 'All',      key: 'categoryAll' },
+  { tag: 'Thali',    key: 'categoryThali' },
+  { tag: 'Sweets',   key: 'categorySweets' },
+  { tag: 'Prasadam', key: 'categoryPrasadam' },
+  { tag: 'Dhaba',    key: 'categoryDhaba' },
+  { tag: 'Budget',   key: 'categoryBudget' },
+]
+const BRAJ_FOOD_KEYS = [
+  { emoji: '🍬', nameKey: 'mustTry.pedaName',       descKey: 'mustTry.pedaDesc' },
+  { emoji: '🧈', nameKey: 'mustTry.makhanName',     descKey: 'mustTry.makhanDesc' },
+  { emoji: '🥛', nameKey: 'mustTry.lassiName',      descKey: 'mustTry.lassiDesc' },
+  { emoji: '🥙', nameKey: 'mustTry.kachoriName',    descKey: 'mustTry.kachoriDesc' },
+  { emoji: '🙏', nameKey: 'mustTry.panchamritName', descKey: 'mustTry.panchamritDesc' },
+  { emoji: '🍲', nameKey: 'mustTry.dalBaatiName',   descKey: 'mustTry.dalBaatiDesc' },
 ]
 
 export default function RestaurantsClient() {
+  const t                     = useTranslations('RestaurantsPage')
   const [city,    setCity]    = useState('All')
   const [typeTag, setTypeTag] = useState('All')
 
+  const CITIES     = CITY_KEYS.map((c) => ({ ...c, label: t(c.key) }))
+  const TYPES      = TYPE_KEYS.map((tp) => ({ ...tp, label: t(tp.key) }))
+  const BRAJ_FOODS = BRAJ_FOOD_KEYS.map((f) => ({ ...f, name: t(f.nameKey), desc: t(f.descKey) }))
+
   const filtered = RESTAURANTS
     .filter((r) => {
-      if (city    !== 'All' && r.city !== city)                           return false
-      if (typeTag !== 'All' && !r.tags.some((t) => t.includes(typeTag))) return false
+      if (city    !== 'All' && r.city !== city)                                  return false
+      if (typeTag !== 'All' && !r.tags.some((tag) => tag.includes(typeTag)))    return false
       return true
     })
     .sort((a, b) => (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0))
@@ -154,25 +174,24 @@ export default function RestaurantsClient() {
         <div className="container-custom relative z-10 text-center">
           <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             className="text-saffron-400 font-semibold text-sm uppercase tracking-widest mb-3">
-            ✦ Pure Vegetarian Only ✦
+            ✦ {t('heroSubtitle')} ✦
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            Dining in Braj Bhoomi
+            {t('heroTitle')}
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="text-gray-300 max-w-xl mx-auto text-base mb-6">
-            Every restaurant in Mathura and Vrindavan is 100% vegetarian. From prasadam
-            to Peda — discover the sacred flavours of Lord Krishna&apos;s land.
+            {t('heroDescription')}
           </motion.p>
           <motion.a
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            href={`https://wa.me/${siteConfig.whatsapp}?text=Namaste! Please recommend restaurants near the temples I am visiting. 🙏`}
+            href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('whatsAppGreeting'))}`}
             target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm"
             style={{ background: '#22c55e', color: '#fff' }}>
-            Get Restaurant Recommendations
+            {t('recommendCTA')}
           </motion.a>
         </div>
       </div>
@@ -183,11 +202,11 @@ export default function RestaurantsClient() {
         <div className="mb-10">
           <h2 className="text-xl font-bold text-gray-900 mb-5"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            Must-Try Foods of Braj
+            {t('mustTryTitle')}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {BRAJ_FOODS.map((food) => (
-              <div key={food.name} className="card rounded-2xl p-4 text-center card-hover">
+              <div key={food.nameKey} className="card rounded-2xl p-4 text-center card-hover">
                 <p className="text-3xl mb-2">{food.emoji}</p>
                 <p className="font-bold text-gray-900 text-xs mb-1">{food.name}</p>
                 <p className="text-gray-400 leading-tight" style={{ fontSize: '10px' }}>{food.desc}</p>
@@ -200,33 +219,33 @@ export default function RestaurantsClient() {
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="flex gap-2 flex-wrap">
             {CITIES.map((c) => (
-              <button key={c} onClick={() => setCity(c)}
+              <button key={c.slug} onClick={() => setCity(c.slug)}
                 className="flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-semibold transition-all"
-                style={city === c
+                style={city === c.slug
                   ? { background: '#ff7d0f', color: '#fff' }
                   : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
                 }>
-                <MapPin size={10} />{c}
+                <MapPin size={10} />{c.label}
               </button>
             ))}
           </div>
           <div className="flex gap-2 flex-wrap">
-            {TYPES.map((t) => (
-              <button key={t} onClick={() => setTypeTag(t)}
+            {TYPES.map((tp) => (
+              <button key={tp.tag} onClick={() => setTypeTag(tp.tag)}
                 className="px-3.5 py-2 rounded-full text-xs font-semibold transition-all"
-                style={typeTag === t
+                style={typeTag === tp.tag
                   ? { background: '#4338ca', color: '#fff' }
                   : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
                 }>
-                {t}
+                {tp.label}
               </button>
             ))}
           </div>
         </div>
 
         <p className="text-sm text-gray-500 mb-6">
-          Showing <strong>{filtered.length}</strong> restaurants
-          {city !== 'All' && <> in <strong className="text-saffron-600">{city}</strong></>}
+          {t('showing')} <strong>{filtered.length}</strong> {t('restaurants')}
+          {city !== 'All' && <> {t('inCity')} <strong className="text-saffron-600">{CITIES.find((c) => c.slug === city)?.label ?? city}</strong></>}
         </p>
 
         {/* Restaurant grid */}
@@ -243,12 +262,12 @@ export default function RestaurantsClient() {
                 {r.isPopular && (
                   <span className="absolute top-3 right-3 text-xs px-2.5 py-1 rounded-full font-semibold"
                     style={{ background: '#fef3c7', color: '#92400e' }}>
-                    ⭐ Popular
+                    {t('popular')}
                   </span>
                 )}
                 <span className="absolute top-3 left-3 text-xs px-2.5 py-1 rounded-full font-semibold"
                   style={{ background: '#f0fdf4', color: '#16a34a' }}>
-                  🟢 Pure Veg
+                  {t('pureVeg')}
                 </span>
               </div>
 
@@ -284,18 +303,18 @@ export default function RestaurantsClient() {
                   style={{ borderTop: '1px solid #f3f4f6' }}>
                   <div className="space-y-0.5">
                     <p className="text-xs flex items-center gap-1 text-gray-500">
-                      <IndianRupee size={10} />{r.priceRange} per person
+                      <IndianRupee size={10} />{r.priceRange} {t('perPerson')}
                     </p>
                     <p className="text-xs flex items-center gap-1 text-gray-500">
                       <Clock size={10} />{r.timings}
                     </p>
                   </div>
                   <a
-                    href={`https://wa.me/${siteConfig.whatsapp}?text=Namaste! Can you help me find ${r.name} in ${r.city}? 🙏`}
+                    href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('directionsGreeting', { name: r.name, city: r.city }))}`}
                     target="_blank" rel="noopener noreferrer"
                     className="text-xs font-semibold px-3 py-2 rounded-full transition-colors"
                     style={{ background: '#dcfce7', color: '#16a34a' }}>
-                    Directions
+                    {t('directions')}
                   </a>
                 </div>
               </div>
@@ -307,16 +326,16 @@ export default function RestaurantsClient() {
         <div className="rounded-3xl p-8 md:p-10"
           style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}>
           <h3 className="text-2xl font-bold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-serif)' }}>
-            Dining Tips for Pilgrims
+            {t('tipsTitle')}
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
             {[
-              { tip: 'All food in Mathura & Vrindavan is 100% vegetarian — you will not find meat or eggs anywhere.' },
-              { tip: 'Eat a hearty breakfast before morning darshan — most temples have long queues and you need energy.' },
-              { tip: 'Try the prasadam distributed at temples — it is free, blessed, and delicious.' },
-              { tip: 'Mathura Peda makes a perfect gift — buy from trusted shops near Holi Gate for authentic flavour.' },
-              { tip: 'Carry water and light snacks if doing the Govardhan Parikrama (21 km walk).' },
-              { tip: 'Most dhabas are busiest 12-2 PM and 7-9 PM. Visit slightly off-peak for faster service.' },
+              { tip: t('tip1') },
+              { tip: t('tip2') },
+              { tip: t('tip3') },
+              { tip: t('tip4') },
+              { tip: t('tip5') },
+              { tip: t('tip6') },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-3">
                 <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 mt-0.5"

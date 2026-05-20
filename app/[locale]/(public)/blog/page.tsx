@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Link }          from '@/i18n/navigation'
 import { Clock, Tag }    from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 
 export const metadata: Metadata = {
   title: 'Travel Blog — Mathura Vrindavan Dham Yatra',
@@ -91,9 +92,8 @@ const POSTS = [
   },
 ]
 
-const CATEGORIES = ['All', 'Travel Guide', 'Temple Guide', 'Festivals', 'Pilgrimage', 'Itinerary', 'Family Travel']
-
-export default function BlogPage() {
+export default async function BlogPage() {
+  const t          = await getTranslations('BlogPage')
   const featured   = POSTS.filter((p) => p.featured)
   const regular    = POSTS.filter((p) => !p.featured)
 
@@ -107,15 +107,14 @@ export default function BlogPage() {
       >
         <div className="container-custom relative z-10 text-center">
           <p className="text-amber-400 font-semibold text-sm uppercase tracking-widest mb-3">
-            ✦ Travel Wisdom ✦
+            ✦ {t('heroSubtitle')} ✦
           </p>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            Braj Travel Blog
+            {t('heroTitle')}
           </h1>
           <p className="text-gray-300 max-w-xl mx-auto text-base">
-            Expert guides, temple tips, festival calendars, and travel advice from the
-            people who know Mathura and Vrindavan best.
+            {t('heroDescription')}
           </p>
         </div>
       </div>
@@ -126,7 +125,7 @@ export default function BlogPage() {
         <div className="mb-12">
           <h2 className="text-xl font-bold text-gray-900 mb-5"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            Featured Articles
+            {t('featuredArticles')}
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {featured.map((post) => (
@@ -155,7 +154,7 @@ export default function BlogPage() {
                     <Link href={`/blog/${post.slug}`}
                       className="text-xs font-semibold"
                       style={{ color: '#ff7d0f' }}>
-                      Read More →
+                      {t('readMore')}
                     </Link>
                   </div>
                 </div>
@@ -168,7 +167,7 @@ export default function BlogPage() {
         <div className="mb-10">
           <h2 className="text-xl font-bold text-gray-900 mb-5"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            All Articles
+            {t('allArticles')}
           </h2>
           <div className="space-y-4">
             {regular.map((post) => (
@@ -193,7 +192,7 @@ export default function BlogPage() {
                 <Link href={`/blog/${post.slug}`}
                   className="text-xs font-semibold whitespace-nowrap flex-shrink-0 self-center"
                   style={{ color: '#ff7d0f' }}>
-                  Read →
+                  {t('read')}
                 </Link>
               </div>
             ))}
@@ -206,13 +205,13 @@ export default function BlogPage() {
           <p className="text-3xl mb-3">📬</p>
           <h3 className="text-xl font-bold text-gray-900 mb-2"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            Planning a Trip to Braj?
+            {t('ctaTitle')}
           </h3>
           <p className="text-gray-500 text-sm mb-5 max-w-md mx-auto">
-            Get a personalized travel plan, temple timings, and local tips sent directly to your WhatsApp.
+            {t('ctaDescription')}
           </p>
           <Link href="/contact" className="btn-primary inline-flex">
-            Get Free Travel Advice
+            {t('ctaButton')}
           </Link>
         </div>
       </div>
