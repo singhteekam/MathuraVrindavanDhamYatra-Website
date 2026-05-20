@@ -34,6 +34,12 @@
     "selectLanguage": "Select language",
     "current": "Current language"
   },
+  "ThemeSwitcher": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "Navigation": {
     "home": "Home",
     "packages": "Packages",

@@ -36,6 +36,9 @@ body {
 ───────────────────────────────────────────────────────── */
 @import "tailwindcss";
 
+/* Class-based dark mode (next-themes adds .dark to <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ─────────────────────────────────────────────────────────
    3. Design tokens
 ───────────────────────────────────────────────────────── */
@@ -85,6 +88,42 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────
+   3b. Theme color tokens (semantic, light + dark)
+   These are runtime CSS variables that switch with .dark class.
+   Components can use `var(--surface)` etc. inside inline styles
+   to stay theme-aware without rewriting every style prop.
+───────────────────────────────────────────────────────── */
+:root {
+  --bg-body:           #ffffff;
+  --bg-surface:        #ffffff;
+  --bg-surface-muted:  #f9fafb;
+  --bg-input:          #ffffff;
+  --text-primary:      #111827;
+  --text-secondary:    #374151;
+  --text-muted:        #6b7280;
+  --text-faint:        #9ca3af;
+  --border-default:    #e5e7eb;
+  --border-muted:      #f3f4f6;
+  --shadow-card-rgb:   0,0,0;
+}
+
+.dark {
+  --bg-body:           #0a0a0a;
+  --bg-surface:        #18181b;
+  --bg-surface-muted:  #27272a;
+  --bg-input:          #1f1f23;
+  --text-primary:      #f4f4f5;
+  --text-secondary:    #d4d4d8;
+  --text-muted:        #a1a1aa;
+  --text-faint:        #71717a;
+  --border-default:    #3f3f46;
+  --border-muted:      #27272a;
+  --shadow-card-rgb:   0,0,0;
+  --shadow-card:       0 4px 20px rgba(0,0,0,0.4);
+  --shadow-card-hover: 0 8px 40px rgba(0,0,0,0.55);
+}
+
+/* ─────────────────────────────────────────────────────────
    4. Keyframes
 ───────────────────────────────────────────────────────── */
 @keyframes fadeIn {
@@ -119,15 +158,16 @@ body {
 
   body {
     font-family: var(--font-sans);
-    color: #1a1a1a;
-    background-color: #ffffff;
+    color: var(--text-primary);
+    background-color: var(--bg-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.6;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   ::-webkit-scrollbar       { width: 6px; }
-  ::-webkit-scrollbar-track { background: #f1f1f1; }
+  ::-webkit-scrollbar-track { background: var(--bg-surface-muted); }
   ::-webkit-scrollbar-thumb { background: #ff7d0f; border-radius: 3px; }
   ::selection                { background: #ffc070; color: #451608; }
 
@@ -214,7 +254,7 @@ body {
   .btn-ghost:hover { background-color: var(--color-saffron-50); }
 
   /* Cards */
-  .card         { background-color: #ffffff; border-radius: 1rem; box-shadow: var(--shadow-card); transition: box-shadow 0.3s, transform 0.3s; }
+  .card         { background-color: var(--bg-surface); border-radius: 1rem; box-shadow: var(--shadow-card); transition: box-shadow 0.3s, transform 0.3s, background-color 0.2s; }
   .card:hover   { box-shadow: var(--shadow-card-hover); }
   .card-hover:hover { transform: translateY(-4px); }
 
@@ -223,7 +263,7 @@ body {
     font-family: var(--font-serif);
     font-size: clamp(1.75rem, 4vw, 2.25rem);
     font-weight: 700;
-    color: #111827;
+    color: var(--text-primary);
     line-height: 1.2;
   }
   .section-subtitle {
@@ -248,16 +288,16 @@ body {
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
     font-family: var(--font-sans);
-    color: #111827;
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
+    color: var(--text-primary);
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-default);
     border-radius: 0.75rem;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s;
     line-height: 1.5;
   }
   .input-field:focus       { border-color: var(--color-saffron-400); box-shadow: 0 0 0 3px rgba(255,125,15,0.15); }
-  .input-field::placeholder { color: #9ca3af; }
+  .input-field::placeholder { color: var(--text-faint); }
 
   /* WhatsApp button */
   .whatsapp-btn {

@@ -3,6 +3,7 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import AuthProvider        from '@/components/AuthProvider'
 import InactivityWatcher   from '@/components/shared/InactivityWatcher'
+import ThemeProvider       from '@/components/shared/ThemeProvider'
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -37,31 +38,33 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <AuthProvider>
-          {children}
+        <ThemeProvider>
+          <AuthProvider>
+            {children}
 
-          {/* Auto-logout after 30 min inactivity on protected routes */}
-          <InactivityWatcher />
-          <Analytics />
-          <SpeedInsights />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#1a1a1a',
-                color: '#fff',
-                borderRadius: '12px',
-                fontSize: '14px',
-              },
-              success: {
-                iconTheme: { primary: '#ff7d0f', secondary: '#fff' },
-              },
-            }}
-          />
-        </AuthProvider>
+            {/* Auto-logout after 30 min inactivity on protected routes */}
+            <InactivityWatcher />
+            <Analytics />
+            <SpeedInsights />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#1a1a1a',
+                  color: '#fff',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                },
+                success: {
+                  iconTheme: { primary: '#ff7d0f', secondary: '#fff' },
+                },
+              }}
+            />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

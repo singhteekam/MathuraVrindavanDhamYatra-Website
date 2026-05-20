@@ -34,6 +34,12 @@
     "selectLanguage": "भाषा चुनें",
     "current": "वर्तमान भाषा"
   },
+  "ThemeSwitcher": {
+    "label": "थीम",
+    "light": "हल्की",
+    "dark": "गहरी",
+    "system": "सिस्टम"
+  },
   "Navigation": {
     "home": "होम",
     "packages": "पैकेज",
