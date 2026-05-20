@@ -96,15 +96,15 @@ export default function PlaceCard({
           style={{ color: '#ff7d0f' }}>
           {emoji} {type.replace('-', ' ')}
         </p>
-        <h3 className="font-bold text-gray-900 text-base mb-2 group-hover:text-orange-600 transition-colors line-clamp-1">
+        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base mb-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors line-clamp-1">
           {name}
         </h3>
-        <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2">
+        <p className="text-gray-500 dark:text-gray-400 text-xs leading-relaxed mb-3 line-clamp-2">
           {shortDescription}
         </p>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 text-xs text-gray-400">
+          <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
             {timeRequired && (
               <span className="flex items-center gap-1">
                 <Clock size={11} />{timeRequired}

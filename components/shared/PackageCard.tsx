@@ -115,14 +115,14 @@ export default function PackageCard({
           {cities.join(' · ')}
         </p>
 
-        <h3 className="font-bold text-gray-900 text-base leading-snug mb-3 group-hover:text-orange-600 transition-colors">
+        <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-snug mb-3 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
           {name}
         </h3>
 
         {/* Highlights */}
         <ul className="space-y-1 mb-4 flex-1">
           {highlights.slice(0, 3).map((h) => (
-            <li key={h} className="flex items-start gap-2 text-xs text-gray-500">
+            <li key={h} className="flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
               <span className="text-green-500 mt-0.5 flex-shrink-0">✓</span>
               {h}
             </li>
@@ -130,10 +130,9 @@ export default function PackageCard({
         </ul>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-4"
-          style={{ borderTop: '1px solid #f3f4f6' }}>
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
           <div>
-            <p className="text-xs text-gray-400">{t('startingFrom')}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">{t('startingFrom')}</p>
             <p className="text-xl font-bold" style={{ color: '#ff7d0f' }}>
               {formatCurrency(basePrice)}
             </p>

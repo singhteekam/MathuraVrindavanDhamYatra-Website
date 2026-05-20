@@ -59,7 +59,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
     c === 'All' ? places.length : places.filter((p) => p.city === c).length
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
 
       {/* ── Hero ── */}
       <div
@@ -133,7 +133,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
               className="flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0"
               style={city === c.slug
                 ? { background: '#4338ca', color: '#fff', boxShadow: '0 4px 15px rgba(67,56,202,0.35)' }
-                : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
               }
             >
               <MapPin size={12} />
@@ -160,7 +160,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
               className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0"
               style={type === tp.value
                 ? { background: '#fff8ed', color: '#c74a06', border: '1.5px solid #ff7d0f' }
-                : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
               }
             >
               <span className="text-sm">{tp.emoji}</span>
@@ -180,9 +180,9 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
 
         {/* Result count */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-sm text-gray-500">
-            {t('showing')} <span className="font-semibold text-gray-800">{filtered.length}</span> {t('places')}
-            {city !== 'All' && <> {t('inCity')} <span className="font-semibold text-krishna-600">{CITIES.find((c) => c.slug === city)?.label ?? city}</span></>}
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {t('showing')} <span className="font-semibold text-gray-800 dark:text-gray-200">{filtered.length}</span> {t('places')}
+            {city !== 'All' && <> {t('inCity')} <span className="font-semibold text-krishna-600 dark:text-krishna-400">{CITIES.find((c) => c.slug === city)?.label ?? city}</span></>}
           </p>
           {filtered.some((p) => p.isFeatured) && (
             <span className="text-xs text-amber-600 font-semibold flex items-center gap-1">
@@ -226,8 +226,8 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
             className="text-center py-24"
           >
             <p className="text-6xl mb-4">🙏</p>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{t('emptyTitle')}</h3>
-            <p className="text-gray-500 mb-6 text-sm">{t('emptySubtitle')}</p>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t('emptyTitle')}</h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">{t('emptySubtitle')}</p>
             <button
               onClick={() => { setSearch(''); setCity('All'); setType('all') }}
               className="btn-primary"

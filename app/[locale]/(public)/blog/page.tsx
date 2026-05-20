@@ -98,7 +98,7 @@ export default async function BlogPage() {
   const regular    = POSTS.filter((p) => !p.featured)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
 
       {/* Hero */}
       <div
@@ -123,7 +123,7 @@ export default async function BlogPage() {
 
         {/* Featured posts */}
         <div className="mb-12">
-          <h2 className="text-xl font-bold text-gray-900 mb-5"
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-5"
             style={{ fontFamily: 'var(--font-serif)' }}>
             {t('featuredArticles')}
           </h2>
@@ -144,8 +144,8 @@ export default async function BlogPage() {
                     </span>
                     <span className="text-xs text-gray-400">{post.readTime}</span>
                   </div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-2 leading-snug">{post.title}</h3>
-                  <p className="text-xs text-gray-500 leading-relaxed mb-4 flex-1">{post.excerpt}</p>
+                  <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-2 leading-snug">{post.title}</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4 flex-1">{post.excerpt}</p>
                   <div className="flex items-center justify-between pt-4"
                     style={{ borderTop: '1px solid #f3f4f6' }}>
                     <span className="text-xs text-gray-400 flex items-center gap-1">
@@ -165,7 +165,7 @@ export default async function BlogPage() {
 
         {/* All posts */}
         <div className="mb-10">
-          <h2 className="text-xl font-bold text-gray-900 mb-5"
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-5"
             style={{ fontFamily: 'var(--font-serif)' }}>
             {t('allArticles')}
           </h2>
@@ -186,8 +186,8 @@ export default async function BlogPage() {
                     </span>
                     <span className="text-xs text-gray-400">{post.readTime} · {post.date}</span>
                   </div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-1 leading-snug">{post.title}</h3>
-                  <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{post.excerpt}</p>
+                  <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1 leading-snug">{post.title}</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">{post.excerpt}</p>
                 </div>
                 <Link href={`/blog/${post.slug}`}
                   className="text-xs font-semibold whitespace-nowrap flex-shrink-0 self-center"

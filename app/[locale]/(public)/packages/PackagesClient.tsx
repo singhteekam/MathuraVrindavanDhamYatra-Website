@@ -96,7 +96,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
   const hasActiveFilters = search || activeTab !== 0 || sortBy !== 'popular' || cityFilter !== 'All'
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
 
       {/* ── Page Hero ── */}
       <div
@@ -178,7 +178,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                 className="px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer"
                 style={activeTab === i
                   ? { background: '#ff7d0f', color: '#fff', boxShadow: '0 4px 15px rgba(255,125,15,0.35)' }
-                  : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                  : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
                 }
               >
                 {tab.label}
@@ -196,8 +196,8 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                 className={cn(
                   'flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold border transition-all duration-200',
                   showFilters || cityFilter !== 'All'
-                    ? 'bg-saffron-50 border-saffron-300 text-saffron-700'
-                    : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300',
+                    ? 'bg-saffron-50 dark:bg-saffron-900/30 border-saffron-300 dark:border-saffron-700 text-saffron-700 dark:text-saffron-300'
+                    : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700',
                 )}
               >
                 <SlidersHorizontal size={15} />
@@ -211,7 +211,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-30"
+                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-30"
                   >
                     {CITIES.map((city) => (
                       <button
@@ -220,8 +220,8 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                         className={cn(
                           'w-full text-left px-4 py-2.5 text-sm transition-colors',
                           cityFilter === city.slug
-                            ? 'text-saffron-600 bg-saffron-50 font-semibold'
-                            : 'text-gray-700 hover:bg-gray-50',
+                            ? 'text-saffron-600 dark:text-saffron-400 bg-saffron-50 dark:bg-saffron-900/30 font-semibold'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800',
                         )}
                       >
                         {city.label}
@@ -239,8 +239,8 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                 className={cn(
                   'flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold border transition-all duration-200',
                   showSort || sortBy !== 'popular'
-                    ? 'bg-saffron-50 border-saffron-300 text-saffron-700'
-                    : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300',
+                    ? 'bg-saffron-50 dark:bg-saffron-900/30 border-saffron-300 dark:border-saffron-700 text-saffron-700 dark:text-saffron-300'
+                    : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700',
                 )}
               >
                 {t('sort')}
@@ -253,7 +253,7 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-30"
+                    className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-30"
                   >
                     {SORT_OPTIONS.map((opt) => (
                       <button
@@ -262,8 +262,8 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
                         className={cn(
                           'w-full text-left px-4 py-2.5 text-sm transition-colors',
                           sortBy === opt.value
-                            ? 'text-saffron-600 bg-saffron-50 font-semibold'
-                            : 'text-gray-700 hover:bg-gray-50',
+                            ? 'text-saffron-600 dark:text-saffron-400 bg-saffron-50 dark:bg-saffron-900/30 font-semibold'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800',
                         )}
                       >
                         {sortBy === opt.value && <span className="mr-2">✓</span>}
@@ -288,9 +288,9 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
         </div>
 
         {/* Results count */}
-        <p className="text-sm text-gray-500 mb-6">
-          {t('showing')} <span className="font-semibold text-gray-800">{filtered.length}</span> {t('packages')}
-          {cityFilter !== 'All' && <> {t('inCity')} <span className="font-semibold text-saffron-600">{CITIES.find((c) => c.slug === cityFilter)?.label ?? cityFilter}</span></>}
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          {t('showing')} <span className="font-semibold text-gray-800 dark:text-gray-200">{filtered.length}</span> {t('packages')}
+          {cityFilter !== 'All' && <> {t('inCity')} <span className="font-semibold text-saffron-600 dark:text-saffron-400">{CITIES.find((c) => c.slug === cityFilter)?.label ?? cityFilter}</span></>}
         </p>
 
         {/* ── Package Grid ── */}
@@ -318,8 +318,8 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
             className="text-center py-24"
           >
             <p className="text-6xl mb-4">🙏</p>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">{t('emptyTitle')}</h3>
-            <p className="text-gray-500 mb-6 text-sm">{t('emptySubtitle')}</p>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t('emptyTitle')}</h3>
+            <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">{t('emptySubtitle')}</p>
             <button onClick={clearFilters} className="btn-primary">
               {t('clearAllFilters')}
             </button>

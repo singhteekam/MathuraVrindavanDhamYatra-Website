@@ -164,7 +164,7 @@ export default function RestaurantsClient() {
     .sort((a, b) => (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0))
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
 
       {/* Hero */}
       <div
@@ -200,7 +200,7 @@ export default function RestaurantsClient() {
 
         {/* Must-try Braj foods */}
         <div className="mb-10">
-          <h2 className="text-xl font-bold text-gray-900 mb-5"
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-5"
             style={{ fontFamily: 'var(--font-serif)' }}>
             {t('mustTryTitle')}
           </h2>
@@ -208,8 +208,8 @@ export default function RestaurantsClient() {
             {BRAJ_FOODS.map((food) => (
               <div key={food.nameKey} className="card rounded-2xl p-4 text-center card-hover">
                 <p className="text-3xl mb-2">{food.emoji}</p>
-                <p className="font-bold text-gray-900 text-xs mb-1">{food.name}</p>
-                <p className="text-gray-400 leading-tight" style={{ fontSize: '10px' }}>{food.desc}</p>
+                <p className="font-bold text-gray-900 dark:text-gray-100 text-xs mb-1">{food.name}</p>
+                <p className="text-gray-400 dark:text-gray-500 leading-tight" style={{ fontSize: '10px' }}>{food.desc}</p>
               </div>
             ))}
           </div>
@@ -223,7 +223,7 @@ export default function RestaurantsClient() {
                 className="flex items-center gap-1 px-3.5 py-2 rounded-full text-xs font-semibold transition-all"
                 style={city === c.slug
                   ? { background: '#ff7d0f', color: '#fff' }
-                  : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                  : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
                 }>
                 <MapPin size={10} />{c.label}
               </button>
@@ -235,7 +235,7 @@ export default function RestaurantsClient() {
                 className="px-3.5 py-2 rounded-full text-xs font-semibold transition-all"
                 style={typeTag === tp.tag
                   ? { background: '#4338ca', color: '#fff' }
-                  : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                  : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
                 }>
                 {tp.label}
               </button>
@@ -243,9 +243,9 @@ export default function RestaurantsClient() {
           </div>
         </div>
 
-        <p className="text-sm text-gray-500 mb-6">
-          {t('showing')} <strong>{filtered.length}</strong> {t('restaurants')}
-          {city !== 'All' && <> {t('inCity')} <strong className="text-saffron-600">{CITIES.find((c) => c.slug === city)?.label ?? city}</strong></>}
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          {t('showing')} <strong className="text-gray-800 dark:text-gray-200">{filtered.length}</strong> {t('restaurants')}
+          {city !== 'All' && <> {t('inCity')} <strong className="text-saffron-600 dark:text-saffron-400">{CITIES.find((c) => c.slug === city)?.label ?? city}</strong></>}
         </p>
 
         {/* Restaurant grid */}

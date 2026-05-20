@@ -29,7 +29,7 @@ export default function FeaturedPackages({ packages }: Props) {
   const filtered = packages.filter(TABS[activeTab].filter)
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-gray-50 dark:bg-gray-950">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <SectionHeader
@@ -54,7 +54,7 @@ export default function FeaturedPackages({ packages }: Props) {
                 className="px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200"
                 style={activeTab === i
                   ? { background: '#ff7d0f', color: '#fff', boxShadow: '0 4px 15px rgba(255,125,15,0.35)' }
-                  : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                  : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
                 }>
                 {tab.label}
                 <span className="ml-1.5 text-xs opacity-70">({count})</span>

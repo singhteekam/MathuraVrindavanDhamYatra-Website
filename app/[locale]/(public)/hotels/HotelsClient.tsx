@@ -129,7 +129,7 @@ export default function HotelsClient() {
     .sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0))
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
 
       {/* Hero */}
       <div
@@ -179,7 +179,7 @@ export default function HotelsClient() {
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
                 style={city === c.slug
                   ? { background: '#ff7d0f', color: '#fff' }
-                  : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                  : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
                 }
               >
                 <MapPin size={11} />{c.label}
@@ -192,7 +192,7 @@ export default function HotelsClient() {
                 className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
                 style={category === cat.value
                   ? { background: '#4338ca', color: '#fff' }
-                  : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                  : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
                 }
               >
                 {cat.label}
@@ -201,9 +201,9 @@ export default function HotelsClient() {
           </div>
         </div>
 
-        <p className="text-sm text-gray-500 mb-6">
-          {t('showing')} <strong>{filtered.length}</strong> {t('hotels')}
-          {city !== 'All' && <> {t('inCity')} <strong className="text-saffron-600">{CITIES.find((c) => c.slug === city)?.label ?? city}</strong></>}
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          {t('showing')} <strong className="text-gray-800 dark:text-gray-200">{filtered.length}</strong> {t('hotels')}
+          {city !== 'All' && <> {t('inCity')} <strong className="text-saffron-600 dark:text-saffron-400">{CITIES.find((c) => c.slug === city)?.label ?? city}</strong></>}
         </p>
 
         {/* Hotel grid */}

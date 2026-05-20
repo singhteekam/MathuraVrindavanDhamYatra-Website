@@ -28,7 +28,7 @@ export default function CTASection() {
   }
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white dark:bg-gray-900">
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
@@ -44,7 +44,7 @@ export default function CTASection() {
               {t('titleLine1')}<br />
               <span style={{ color: '#ff7d0f' }}>{t('titleHighlight')}</span>
             </h2>
-            <p className="text-gray-500 leading-relaxed mb-8">
+            <p className="text-gray-500 dark:text-gray-400 leading-relaxed mb-8">
               {t('description')}
             </p>
 

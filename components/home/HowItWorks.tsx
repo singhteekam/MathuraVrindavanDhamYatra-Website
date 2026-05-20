@@ -17,12 +17,7 @@ export default function HowItWorks() {
   const steps = stepStyles.map((s) => ({ ...s, title: t(s.titleKey), description: t(s.descKey) }))
 
   return (
-    <section
-      className="py-20"
-      style={{
-        background: 'linear-gradient(180deg, #f9fafb 0%, #fff8ed10 100%)',
-      }}
-    >
+    <section className="py-20 bg-gradient-to-b from-gray-50 to-saffron-50/30 dark:from-gray-950 dark:to-gray-900">
       <div className="container-custom">
         <SectionHeader
           subtitle={t('subtitle')}
@@ -66,8 +61,8 @@ export default function HowItWorks() {
                 </div>
               </div>
 
-              <h3 className="font-bold text-gray-900 text-base mb-2">{step.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{step.description}</p>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base mb-2">{step.title}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{step.description}</p>
             </motion.div>
           ))}
         </div>

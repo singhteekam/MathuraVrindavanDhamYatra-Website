@@ -47,7 +47,7 @@ export default function SectionHeader({
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className={cn(
-            'mt-4 text-gray-500 leading-relaxed text-base max-w-2xl',
+            'mt-4 text-gray-500 dark:text-gray-400 leading-relaxed text-base max-w-2xl',
             centered ? 'mx-auto' : ''
           )}
         >

@@ -111,7 +111,7 @@ export default function Testimonials({ reviews: propReviews }: Props) {
       : STATIC_TESTIMONIALS
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-gray-50 dark:bg-gray-950">
       <div className="container-custom">
         <SectionHeader
           subtitle={t('subtitle')}
@@ -141,7 +141,7 @@ export default function Testimonials({ reviews: propReviews }: Props) {
               <StarRating rating={t.rating} />
 
               {/* Review text */}
-              <p className="text-gray-600 text-sm leading-relaxed flex-1">
+              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed flex-1">
                 &ldquo;{t.review}&rdquo;
               </p>
 
@@ -154,8 +154,7 @@ export default function Testimonials({ reviews: propReviews }: Props) {
 
               {/* Reviewer */}
               <div
-                className="flex items-center gap-3 pt-4"
-                style={{ borderTop: '1px solid #f3f4f6' }}
+                className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800"
               >
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
@@ -166,8 +165,8 @@ export default function Testimonials({ reviews: propReviews }: Props) {
                   {getInitials(t.name)}
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                  <p className="text-xs text-gray-400">
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{t.name}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
                     {t.location} · {t.date}
                   </p>
                 </div>
@@ -184,21 +183,17 @@ export default function Testimonials({ reviews: propReviews }: Props) {
           className="mt-12 flex justify-center"
         >
           <div
-            className="inline-flex items-center gap-4 px-6 py-4 rounded-2xl"
-            style={{ background: '#fff', border: '1px solid #e5e7eb', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
+            className="inline-flex items-center gap-4 px-6 py-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm"
           >
             <div className="text-center">
-              <p className="text-3xl font-bold text-gray-900">4.9</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">4.9</p>
               <StarRating rating={5} />
-              <p className="text-xs text-gray-400 mt-1">{t('googleRating')}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('googleRating')}</p>
             </div>
-            <div
-              className="w-px h-12 self-center"
-              style={{ background: '#e5e7eb' }}
-            />
+            <div className="w-px h-12 self-center bg-gray-200 dark:bg-gray-700" />
             <div>
-              <p className="font-semibold text-gray-700 text-sm">{t('ratedBy')}</p>
-              <p className="text-xs text-gray-400">{t('happyPilgrims')}</p>
+              <p className="font-semibold text-gray-700 dark:text-gray-200 text-sm">{t('ratedBy')}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{t('happyPilgrims')}</p>
               <p className="text-xs font-semibold mt-1" style={{ color: '#ff7d0f' }}>
                 {t('verifiedReviews')}
               </p>

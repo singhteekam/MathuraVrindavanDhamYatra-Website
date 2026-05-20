@@ -117,7 +117,7 @@ export default function PopularPlaces({ places }: Props) {
   ]
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white dark:bg-gray-900">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <SectionHeader
@@ -150,8 +150,7 @@ export default function PopularPlaces({ places }: Props) {
             if (count === 0) return null
             return (
               <Link key={city.slug} href={`/places?city=${city.slug}`}
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105"
-                style={{ background: '#fff8ed', color: '#c74a06', border: '1px solid #ffdba8' }}>
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all hover:scale-105 bg-saffron-50 text-saffron-700 border border-saffron-200 dark:bg-saffron-900/30 dark:text-saffron-300 dark:border-saffron-800/50">
                 <MapPin size={12} />{city.label}
                 <span className="text-xs opacity-70">({count})</span>
               </Link>
