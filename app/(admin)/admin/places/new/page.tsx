@@ -8,10 +8,10 @@ import { motion }            from 'framer-motion'
 import { Save, Plus, X, ArrowLeft, MapPin } from 'lucide-react'
 import Link                  from 'next/link'
 import toast                 from 'react-hot-toast'
-import AdminPageHeader        from '@/components/admin/AdminPageHeader'
-import ImageManager           from '@/components/admin/ImageManager'
+import AdminPageHeader       from '@/components/admin/AdminPageHeader'
+import ImageManager          from '@/components/admin/ImageManager'
+import BilingualInput,       { type BLValue } from '@/components/admin/BilingualInput'
 
-// ── Constants ────────────────────────────────────────────────────────────────
 const CITIES = ['Mathura', 'Vrindavan', 'Gokul', 'Govardhan', 'Barsana', 'Nandgaon', 'Agra']
 const TYPES  = [
   { value: 'temple',      label: '🛕 Temple'      },
@@ -23,26 +23,23 @@ const TYPES  = [
   { value: 'village',     label: '🏡 Village'     },
 ]
 
-// Default lat/lng centres on Mathura
-const DEFAULT_LOCATION = { address: '', lat: 27.4924, lng: 77.6737, distanceFromMathura: '' }
-
 interface PlaceForm {
-  name:             string
+  name:             BLValue
   slug:             string
   city:             string
   type:             string
-  shortDescription: string
-  description:      string
-  entryFee:         string
-  timeRequired:     string
+  shortDescription: BLValue
+  description:      BLValue
+  entryFee:         BLValue
+  timeRequired:     BLValue
   thumbnail:        string
   images:           string[]
   isFeatured:       boolean
   tags:             string[]
   timings: {
-    morning: string
-    evening: string
-    note:    string
+    morning: BLValue
+    evening: BLValue
+    note:    BLValue
   }
   location: {
     address:             string
@@ -53,48 +50,35 @@ interface PlaceForm {
 }
 
 const INITIAL_FORM: PlaceForm = {
-  name:             '',
+  name:             { en: '', hi: '' },
   slug:             '',
   city:             'Mathura',
   type:             'temple',
-  shortDescription: '',
-  description:      '',
-  entryFee:         'Free',
-  timeRequired:     '30-60 minutes',
+  shortDescription: { en: '', hi: '' },
+  description:      { en: '', hi: '' },
+  entryFee:         { en: 'Free', hi: '' },
+  timeRequired:     { en: '30-60 minutes', hi: '' },
   thumbnail:        '',
   images:           [],
   isFeatured:       false,
   tags:             [],
-  timings:          { morning: '', evening: '', note: '' },
-  location:         { ...DEFAULT_LOCATION },
+  timings: {
+    morning: { en: '', hi: '' },
+    evening: { en: '', hi: '' },
+    note:    { en: '', hi: '' },
+  },
+  location: { address: '', lat: 27.4924, lng: 77.6737, distanceFromMathura: '' },
 }
 
-// ── Slug generator ────────────────────────────────────────────────────────────
 function toSlug(text: string) {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+  return text.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
-// ── Main page component ───────────────────────────────────────────────────────
 export default function NewPlacePage() {
-  const router                = useRouter()
-  const [form,    setForm]    = useState<PlaceForm>(INITIAL_FORM)
-  const [tagInput, setTagInput] = useState('')
-  const [saving,  setSaving]  = useState(false)
-
-  // Auto-generate slug from name
-  function handleNameChange(name: string) {
-    setForm((prev) => ({
-      ...prev,
-      name,
-      // Only auto-set slug if it hasn't been manually edited (i.e. still matches auto slug)
-      slug: toSlug(name),
-    }))
-  }
+  const router                      = useRouter()
+  const [form,     setForm]         = useState<PlaceForm>(INITIAL_FORM)
+  const [tagInput, setTagInput]     = useState('')
+  const [saving,   setSaving]       = useState(false)
 
   function addTag() {
     const tag = tagInput.trim()
@@ -107,26 +91,12 @@ export default function NewPlacePage() {
     setForm((prev) => ({ ...prev, tags: prev.tags.filter((t) => t !== tag) }))
   }
 
-  function updateLocation<K extends keyof PlaceForm['location']>(
-    key: K, value: PlaceForm['location'][K],
-  ) {
-    setForm((prev) => ({ ...prev, location: { ...prev.location, [key]: value } }))
-  }
-
-  function updateTimings<K extends keyof PlaceForm['timings']>(
-    key: K, value: string,
-  ) {
-    setForm((prev) => ({ ...prev, timings: { ...prev.timings, [key]: value } }))
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-
-    // Validation
-    if (!form.name.trim())             { toast.error('Place name is required.');        return }
-    if (!form.slug.trim())             { toast.error('Slug is required.');               return }
-    if (!form.shortDescription.trim()) { toast.error('Short description is required.'); return }
-    if (!form.location.address.trim()) { toast.error('Location address is required.'); return }
+    if (!form.name.en.trim())             { toast.error('Place name (English) is required.');        return }
+    if (!form.slug.trim())                { toast.error('Slug is required.');                        return }
+    if (!form.shortDescription.en.trim()) { toast.error('Short description (English) is required.'); return }
+    if (!form.location.address.trim())    { toast.error('Location address is required.');            return }
     if (!form.location.lat || !form.location.lng) {
       toast.error('Latitude and longitude are required.')
       return
@@ -136,12 +106,11 @@ export default function NewPlacePage() {
     try {
       const payload = {
         ...form,
-        slug:     toSlug(form.slug),
-        tags:     form.tags,
-        timings:  {
-          morning: form.timings.morning || undefined,
-          evening: form.timings.evening || undefined,
-          note:    form.timings.note    || undefined,
+        slug:    toSlug(form.slug),
+        timings: {
+          morning: form.timings.morning.en ? form.timings.morning : undefined,
+          evening: form.timings.evening.en ? form.timings.evening : undefined,
+          note:    form.timings.note.en    ? form.timings.note    : undefined,
         },
         location: {
           address:             form.location.address,
@@ -149,7 +118,7 @@ export default function NewPlacePage() {
           lng:                 Number(form.location.lng),
           distanceFromMathura: form.location.distanceFromMathura || undefined,
         },
-        description: form.description || undefined,
+        description: form.description.en ? form.description : undefined,
       }
 
       const res  = await fetch('/api/places', {
@@ -160,7 +129,7 @@ export default function NewPlacePage() {
       const data = await res.json()
 
       if (res.ok) {
-        toast.success(`"${form.name}" created successfully! 🙏`)
+        toast.success(`"${form.name.en}" created successfully! 🙏`)
         router.push('/admin/places')
       } else {
         toast.error(data.error ?? 'Failed to create place.')
@@ -172,7 +141,6 @@ export default function NewPlacePage() {
     }
   }
 
-  // ── Reusable label component ─────────────────────────────────────────────
   const Label = ({ children }: { children: React.ReactNode }) => (
     <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
       {children}
@@ -205,7 +173,6 @@ export default function NewPlacePage() {
       <form onSubmit={handleSubmit}>
         <div className="grid lg:grid-cols-3 gap-6">
 
-          {/* ── Left column — main info ── */}
           <div className="lg:col-span-2 space-y-5">
 
             {/* Basic Info */}
@@ -214,15 +181,18 @@ export default function NewPlacePage() {
               <h3 className="font-bold text-gray-900 mb-4">Basic Information</h3>
               <div className="space-y-4">
 
-                {/* Name + auto-slug */}
-                <div>
-                  <Label>Place Name *</Label>
-                  <input type="text"
-                    placeholder="e.g. Krishna Janmabhoomi Temple"
-                    value={form.name}
-                    onChange={(e) => handleNameChange(e.target.value)}
-                    className="input-field" required />
-                </div>
+                <BilingualInput
+                  value={form.name}
+                  onChange={(val) => setForm((prev) => ({
+                    ...prev,
+                    name: val,
+                    slug: val.en !== prev.name.en ? toSlug(val.en) : prev.slug,
+                  }))}
+                  label="Place Name"
+                  required
+                  enPlaceholder="e.g. Krishna Janmabhoomi Temple"
+                  hiPlaceholder="e.g. श्री कृष्ण जन्मभूमि मंदिर"
+                />
 
                 <div>
                   <Label>Slug (URL path) *</Label>
@@ -236,7 +206,6 @@ export default function NewPlacePage() {
                   </p>
                 </div>
 
-                {/* City + Type */}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label>City *</Label>
@@ -258,45 +227,42 @@ export default function NewPlacePage() {
                   </div>
                 </div>
 
-                {/* Short description */}
-                <div>
-                  <Label>Short Description * <span className="normal-case font-normal text-gray-400">(shown on cards)</span></Label>
-                  <textarea rows={2}
-                    placeholder="Brief description shown on listing cards and SEO..."
-                    value={form.shortDescription}
-                    onChange={(e) => setForm({ ...form, shortDescription: e.target.value })}
-                    className="input-field resize-none" required />
-                  <p className="text-xs text-gray-400 mt-1 text-right">
-                    {form.shortDescription.length}/200 chars
-                  </p>
-                </div>
+                <BilingualInput
+                  value={form.shortDescription}
+                  onChange={(val) => setForm({ ...form, shortDescription: val })}
+                  label="Short Description"
+                  required
+                  type="textarea"
+                  rows={2}
+                  enPlaceholder="Brief description shown on listing cards and SEO..."
+                  hiPlaceholder="संक्षिप्त विवरण..."
+                />
 
-                {/* Full description */}
-                <div>
-                  <Label>Full Description <span className="normal-case font-normal text-gray-400">(optional, shown on detail page)</span></Label>
-                  <textarea rows={4}
-                    placeholder="Detailed history, significance, and visitor information..."
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    className="input-field resize-none" />
-                </div>
+                <BilingualInput
+                  value={form.description}
+                  onChange={(val) => setForm({ ...form, description: val })}
+                  label="Full Description (optional)"
+                  type="textarea"
+                  rows={4}
+                  enPlaceholder="Detailed history, significance, and visitor information..."
+                  hiPlaceholder="विस्तृत जानकारी..."
+                />
 
-                {/* Entry fee + time */}
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label>Entry Fee</Label>
-                    <input type="text" placeholder="Free / ₹50 / ₹100"
-                      value={form.entryFee}
-                      onChange={(e) => setForm({ ...form, entryFee: e.target.value })}
-                      className="input-field" />
-                  </div>
-                  <div>
-                    <Label>Time Required</Label>
-                    <input type="text" placeholder="30-60 minutes / 2-3 hours"
-                      value={form.timeRequired}
-                      onChange={(e) => setForm({ ...form, timeRequired: e.target.value })}
-                      className="input-field" />
-                  </div>
+                  <BilingualInput
+                    value={form.entryFee}
+                    onChange={(val) => setForm({ ...form, entryFee: val })}
+                    label="Entry Fee"
+                    enPlaceholder="Free / ₹50 / ₹100"
+                    hiPlaceholder="मुफ़्त / ₹50"
+                  />
+                  <BilingualInput
+                    value={form.timeRequired}
+                    onChange={(val) => setForm({ ...form, timeRequired: val })}
+                    label="Time Required"
+                    enPlaceholder="30-60 minutes / 2-3 hours"
+                    hiPlaceholder="30-60 मिनट"
+                  />
                 </div>
               </div>
             </motion.div>
@@ -306,31 +272,28 @@ export default function NewPlacePage() {
               transition={{ delay: 0.08 }}
               className="card rounded-2xl p-5">
               <h3 className="font-bold text-gray-900 mb-4">Temple / Place Timings</h3>
-              <div className="space-y-3">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label>Morning Session</Label>
-                    <input type="text" placeholder="5:00 AM – 12:00 PM"
-                      value={form.timings.morning}
-                      onChange={(e) => updateTimings('morning', e.target.value)}
-                      className="input-field" />
-                  </div>
-                  <div>
-                    <Label>Evening Session</Label>
-                    <input type="text" placeholder="4:00 PM – 9:00 PM"
-                      value={form.timings.evening}
-                      onChange={(e) => updateTimings('evening', e.target.value)}
-                      className="input-field" />
-                  </div>
-                </div>
-                <div>
-                  <Label>Special Note</Label>
-                  <input type="text"
-                    placeholder="e.g. Closed on Holi, Extended hours on Janmashtami..."
-                    value={form.timings.note}
-                    onChange={(e) => updateTimings('note', e.target.value)}
-                    className="input-field" />
-                </div>
+              <div className="space-y-4">
+                <BilingualInput
+                  value={form.timings.morning}
+                  onChange={(val) => setForm({ ...form, timings: { ...form.timings, morning: val } })}
+                  label="Morning Session"
+                  enPlaceholder="5:00 AM – 12:00 PM"
+                  hiPlaceholder="सुबह 5:00 – दोपहर 12:00"
+                />
+                <BilingualInput
+                  value={form.timings.evening}
+                  onChange={(val) => setForm({ ...form, timings: { ...form.timings, evening: val } })}
+                  label="Evening Session"
+                  enPlaceholder="4:00 PM – 9:00 PM"
+                  hiPlaceholder="शाम 4:00 – रात 9:00"
+                />
+                <BilingualInput
+                  value={form.timings.note}
+                  onChange={(val) => setForm({ ...form, timings: { ...form.timings, note: val } })}
+                  label="Special Note"
+                  enPlaceholder="e.g. Closed on Holi, Extended hours on Janmashtami..."
+                  hiPlaceholder="e.g. होली पर बंद..."
+                />
               </div>
             </motion.div>
 
@@ -341,33 +304,29 @@ export default function NewPlacePage() {
               <h3 className="font-bold text-gray-900 mb-1 flex items-center gap-2">
                 <MapPin size={16} className="text-saffron-500" />Location
               </h3>
-              <p className="text-xs text-gray-400 mb-4">
-                Used for Google Maps directions link on the detail page.
-              </p>
+              <p className="text-xs text-gray-400 mb-4">Used for Google Maps directions link on the detail page.</p>
               <div className="space-y-3">
                 <div>
                   <Label>Address *</Label>
                   <input type="text"
                     placeholder="e.g. Near Mathura Junction, Mathura, UP — 281001"
                     value={form.location.address}
-                    onChange={(e) => updateLocation('address', e.target.value)}
+                    onChange={(e) => setForm({ ...form, location: { ...form.location, address: e.target.value } })}
                     className="input-field" required />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Latitude *</Label>
-                    <input type="number" step="0.0001"
-                      placeholder="27.4924"
+                    <input type="number" step="0.0001" placeholder="27.4924"
                       value={form.location.lat || ''}
-                      onChange={(e) => updateLocation('lat', Number(e.target.value))}
+                      onChange={(e) => setForm({ ...form, location: { ...form.location, lat: Number(e.target.value) } })}
                       className="input-field" required />
                   </div>
                   <div>
                     <Label>Longitude *</Label>
-                    <input type="number" step="0.0001"
-                      placeholder="77.6737"
+                    <input type="number" step="0.0001" placeholder="77.6737"
                       value={form.location.lng || ''}
-                      onChange={(e) => updateLocation('lng', Number(e.target.value))}
+                      onChange={(e) => setForm({ ...form, location: { ...form.location, lng: Number(e.target.value) } })}
                       className="input-field" required />
                   </div>
                 </div>
@@ -375,26 +334,21 @@ export default function NewPlacePage() {
                   <Label>Distance from Mathura <span className="normal-case font-normal text-gray-400">(optional)</span></Label>
                   <input type="text" placeholder="e.g. 12 km from Mathura city centre"
                     value={form.location.distanceFromMathura}
-                    onChange={(e) => updateLocation('distanceFromMathura', e.target.value)}
+                    onChange={(e) => setForm({ ...form, location: { ...form.location, distanceFromMathura: e.target.value } })}
                     className="input-field" />
                 </div>
-
-                {/* Quick-fill lat/lng for known cities */}
                 <div className="p-3 rounded-xl" style={{ background: '#f9fafb' }}>
                   <p className="text-xs font-semibold text-gray-500 mb-2">Quick-fill coordinates</p>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { label: 'Mathura',    lat: 27.4924, lng: 77.6737 },
-                      { label: 'Vrindavan',  lat: 27.5794, lng: 77.7022 },
+                      { label: 'Mathura',   lat: 27.4924, lng: 77.6737 },
+                      { label: 'Vrindavan', lat: 27.5794, lng: 77.7022 },
                       { label: 'Govardhan', lat: 27.4985, lng: 77.4668 },
                       { label: 'Gokul',     lat: 27.4565, lng: 77.7401 },
                       { label: 'Barsana',   lat: 27.6512, lng: 77.3636 },
                     ].map((city) => (
                       <button key={city.label} type="button"
-                        onClick={() => {
-                          updateLocation('lat', city.lat)
-                          updateLocation('lng', city.lng)
-                        }}
+                        onClick={() => setForm({ ...form, location: { ...form.location, lat: city.lat, lng: city.lng } })}
                         className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
                         style={{ background: '#fff', border: '1px solid #e5e7eb', color: '#374151' }}>
                         📍 {city.label}
@@ -410,7 +364,7 @@ export default function NewPlacePage() {
               transition={{ delay: 0.14 }}
               className="card rounded-2xl p-5">
               <h3 className="font-bold text-gray-900 mb-1">Photo Gallery</h3>
-              <p className="text-xs text-gray-400 mb-4">Upload place photos via Cloudinary. First image becomes the main thumbnail on cards and homepage.</p>
+              <p className="text-xs text-gray-400 mb-4">First image becomes the main thumbnail on cards and homepage.</p>
               <ImageManager
                 images={form.images}
                 onChange={(imgs) => setForm((prev) => ({ ...prev, images: imgs, thumbnail: imgs[0] ?? '' }))}
@@ -425,44 +379,35 @@ export default function NewPlacePage() {
               transition={{ delay: 0.16 }}
               className="card rounded-2xl p-5">
               <h3 className="font-bold text-gray-900 mb-3">Tags</h3>
-              <p className="text-xs text-gray-400 mb-3">
-                Tags help visitors find this place through search. Add relevant keywords.
-              </p>
+              <p className="text-xs text-gray-400 mb-3">Tags help visitors find this place through search.</p>
               <div className="flex gap-2 mb-3">
                 <input type="text"
                   placeholder="Add a tag and press Enter or Add"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') { e.preventDefault(); addTag() }
-                  }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag() } }}
                   className="input-field text-sm py-2 flex-1" />
                 <button type="button" onClick={addTag}
-                  className="flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-semibold flex-shrink-0"
+                  className="flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-semibold"
                   style={{ background: '#fff8ed', color: '#ff7d0f', border: '1px solid #ffdba8' }}>
                   <Plus size={14} /> Add
                 </button>
               </div>
-
-              {/* Suggested tags */}
               <div className="mb-3">
                 <p className="text-xs text-gray-400 mb-2">Suggested:</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {[
-                    'Krishna', 'Radha', 'Temple', 'Pilgrimage', 'Darshan',
-                    'Aarti', 'Ghat', 'Historic', 'Must Visit', 'Free Entry',
-                  ].filter((t) => !form.tags.includes(t)).map((tag) => (
-                    <button key={tag} type="button"
-                      onClick={() => setForm((prev) => ({ ...prev, tags: [...prev.tags, tag] }))}
-                      className="px-2.5 py-1 rounded-full text-xs transition-colors"
-                      style={{ background: '#f3f4f6', color: '#6b7280' }}>
-                      + {tag}
-                    </button>
-                  ))}
+                  {['Krishna', 'Radha', 'Temple', 'Pilgrimage', 'Darshan', 'Aarti', 'Ghat', 'Historic', 'Must Visit', 'Free Entry']
+                    .filter((t) => !form.tags.includes(t))
+                    .map((tag) => (
+                      <button key={tag} type="button"
+                        onClick={() => setForm((prev) => ({ ...prev, tags: [...prev.tags, tag] }))}
+                        className="px-2.5 py-1 rounded-full text-xs transition-colors"
+                        style={{ background: '#f3f4f6', color: '#6b7280' }}>
+                        + {tag}
+                      </button>
+                    ))}
                 </div>
               </div>
-
-              {/* Added tags */}
               {form.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {form.tags.map((tag) => (
@@ -478,34 +423,28 @@ export default function NewPlacePage() {
                   ))}
                 </div>
               )}
-              {form.tags.length === 0 && (
-                <p className="text-xs text-gray-300">No tags added yet.</p>
-              )}
+              {form.tags.length === 0 && <p className="text-xs text-gray-300">No tags added yet.</p>}
             </motion.div>
           </div>
 
-          {/* ── Right column — settings sidebar ── */}
+          {/* Sidebar */}
           <div className="space-y-5">
-
-            {/* Visibility settings */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               className="card rounded-2xl p-5">
               <h3 className="font-bold text-gray-900 mb-4">Visibility</h3>
-              <div className="space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-800">Featured</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Show on homepage & top of listings</p>
-                  </div>
-                  <button type="button"
-                    onClick={() => setForm((prev) => ({ ...prev, isFeatured: !prev.isFeatured }))}
-                    className="relative w-11 h-6 rounded-full transition-colors duration-200 flex-shrink-0"
-                    style={{ background: form.isFeatured ? '#ff7d0f' : '#d1d5db' }}>
-                    <span className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
-                      style={{ transform: form.isFeatured ? 'translateX(22px)' : 'translateX(2px)' }} />
-                  </button>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Featured</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Show on homepage & top of listings</p>
                 </div>
+                <button type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, isFeatured: !prev.isFeatured }))}
+                  className="relative w-11 h-6 rounded-full transition-colors duration-200"
+                  style={{ background: form.isFeatured ? '#ff7d0f' : '#d1d5db' }}>
+                  <span className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+                    style={{ transform: form.isFeatured ? 'translateX(22px)' : 'translateX(2px)' }} />
+                </button>
               </div>
             </motion.div>
 
@@ -522,22 +461,21 @@ export default function NewPlacePage() {
                   </span>
                 </div>
                 <div className="p-3">
-                  <p className="text-xs font-semibold uppercase tracking-wide mb-1"
-                    style={{ color: '#ff7d0f' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: '#ff7d0f' }}>
                     {form.city || 'City'} · {form.type.replace('-', ' ')}
                   </p>
                   <p className="font-bold text-gray-900 text-sm leading-tight mb-1">
-                    {form.name || 'Place Name'}
+                    {form.name.en || 'Place Name'}
                   </p>
                   <p className="text-xs text-gray-400 line-clamp-2">
-                    {form.shortDescription || 'Short description will appear here...'}
+                    {form.shortDescription.en || 'Short description will appear here...'}
                   </p>
-                  {(form.entryFee || form.timeRequired) && (
+                  {(form.entryFee.en || form.timeRequired.en) && (
                     <div className="flex gap-3 mt-2 text-xs text-gray-400">
-                      {form.timeRequired && <span>⏱ {form.timeRequired}</span>}
-                      {form.entryFee && (
-                        <span style={{ color: form.entryFee === 'Free' ? '#16a34a' : '#6b7280' }}>
-                          🎫 {form.entryFee}
+                      {form.timeRequired.en && <span>⏱ {form.timeRequired.en}</span>}
+                      {form.entryFee.en && (
+                        <span style={{ color: form.entryFee.en === 'Free' ? '#16a34a' : '#6b7280' }}>
+                          🎫 {form.entryFee.en}
                         </span>
                       )}
                     </div>
@@ -546,19 +484,17 @@ export default function NewPlacePage() {
               </div>
             </motion.div>
 
-            {/* Tips */}
             <div className="rounded-2xl p-4 text-xs leading-relaxed"
               style={{ background: '#fffbeb', border: '1px solid #fde68a', color: '#92400e' }}>
               <p className="font-semibold mb-2">💡 Tips</p>
               <ul className="space-y-1.5 list-none">
-                <li>• Slug is auto-generated from name — edit if needed</li>
-                <li>• Use Quick-fill buttons for accurate coordinates</li>
+                <li>• Slug is auto-generated from English name</li>
+                <li>• Use EN→HI button to auto-translate fields</li>
+                <li>• Hindi is optional — English is always shown as fallback</li>
                 <li>• Featured places appear on the homepage</li>
-                <li>• Add relevant tags to improve search visibility</li>
               </ul>
             </div>
 
-            {/* Submit */}
             <button type="submit" disabled={saving}
               className="btn-primary w-full py-4 text-base"
               style={{ opacity: saving ? 0.7 : 1 }}>

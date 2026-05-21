@@ -2,26 +2,36 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState }          from 'react'
-import { useRouter }         from 'next/navigation'
-import { motion }            from 'framer-motion'
-import { Save, Plus, X, ArrowLeft } from 'lucide-react'
-import Link                  from 'next/link'
-import toast                 from 'react-hot-toast'
-import ImageManager          from '@/components/admin/ImageManager'
-import { cars }              from '@/config/site'
+import { useState }        from 'react'
+import { useRouter }       from 'next/navigation'
+import { motion }          from 'framer-motion'
+import { Save, ArrowLeft } from 'lucide-react'
+import Link                from 'next/link'
+import toast               from 'react-hot-toast'
+import ImageManager        from '@/components/admin/ImageManager'
+import BilingualInput,     { type BLValue } from '@/components/admin/BilingualInput'
+import BilingualListEditor from '@/components/admin/BilingualListEditor'
+import { cars }            from '@/config/site'
+
+interface ItineraryDay {
+  day:         number
+  title:       BLValue
+  description: BLValue
+  places:      BLValue[]
+}
 
 interface PackageForm {
-  name:             string
+  name:             BLValue
   slug:             string
   duration:         number
   nights:           number
-  cities:           string[]
+  cities:           BLValue[]
   basePrice:        number
-  shortDescription: string
-  highlights:       string[]
-  inclusions:       string[]
-  exclusions:       string[]
+  shortDescription: BLValue
+  highlights:       BLValue[]
+  inclusions:       BLValue[]
+  exclusions:       BLValue[]
+  itinerary:        ItineraryDay[]
   isActive:         boolean
   isFeatured:       boolean
   isPopular:        boolean
@@ -30,21 +40,28 @@ interface PackageForm {
   pricing:          { carType: string; carName: string; price: number }[]
 }
 
+function bl(s: string): BLValue { return { en: s, hi: '' } }
+
 const INITIAL: PackageForm = {
-  name: '', slug: '', duration: 1, nights: 0,
-  cities: ['Mathura', 'Vrindavan'],
-  basePrice: 2000, shortDescription: '',
-  highlights:  ['', '', ''],
+  name:             { en: '', hi: '' },
+  slug:             '',
+  duration:         1,
+  nights:           0,
+  cities:           [bl('Mathura'), bl('Vrindavan')],
+  basePrice:        2000,
+  shortDescription: { en: '', hi: '' },
+  highlights:       [bl(''), bl(''), bl('')],
   inclusions: [
     'AC vehicle throughout the tour',
     'Experienced local driver',
     'All inter-city transfers',
     'Hotel assistance',
     'Fuel charges included',
-  ],
+  ].map(bl),
   exclusions: [
     'Meals', 'Hotel accommodation cost', 'Entry fees at temples', 'Personal expenses',
-  ],
+  ].map(bl),
+  itinerary: [],
   isActive: true, isFeatured: false, isPopular: false,
   thumbnail: '', images: [],
   pricing: cars.map((c) => ({ carType: c.id, carName: c.name, price: 0 })),
@@ -54,34 +71,19 @@ function slugify(t: string) {
   return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 }
 
+const Label = ({ children }: { children: React.ReactNode }) => (
+  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">{children}</label>
+)
+
 export default function SuperadminNewPackagePage() {
   const router              = useRouter()
   const [form, setForm]     = useState<PackageForm>(INITIAL)
   const [saving, setSaving] = useState(false)
 
-  function updatePricing(i: number, price: number) {
-    const updated = [...form.pricing]
-    updated[i]    = { ...updated[i], price }
-    setForm({ ...form, pricing: updated })
-  }
-
-  function updateList(field: 'highlights' | 'inclusions' | 'exclusions', i: number, val: string) {
-    const arr = [...form[field]]; arr[i] = val
-    setForm({ ...form, [field]: arr })
-  }
-
-  function addItem(field: 'highlights' | 'inclusions' | 'exclusions') {
-    setForm({ ...form, [field]: [...form[field], ''] })
-  }
-
-  function removeItem(field: 'highlights' | 'inclusions' | 'exclusions', i: number) {
-    setForm({ ...form, [field]: form[field].filter((_, idx) => idx !== i) })
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault()
-    if (!form.name || !form.slug || !form.shortDescription) {
-      toast.error('Please fill name, slug, and description.'); return
+    if (!form.name.en || !form.slug || !form.shortDescription.en) {
+      toast.error('Please fill English name, slug, and description.'); return
     }
     setSaving(true)
     try {
@@ -90,9 +92,14 @@ export default function SuperadminNewPackagePage() {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
           ...form,
-          highlights: form.highlights.filter(Boolean),
-          inclusions: form.inclusions.filter(Boolean),
-          exclusions: form.exclusions.filter(Boolean),
+          cities:     form.cities.filter((x) => x.en),
+          highlights: form.highlights.filter((x) => x.en),
+          inclusions: form.inclusions.filter((x) => x.en),
+          exclusions: form.exclusions.filter((x) => x.en),
+          itinerary:  form.itinerary.map((day) => ({
+            ...day,
+            places: day.places.filter((x) => x.en),
+          })),
           pricing:    form.pricing.filter((p) => p.price > 0),
         }),
       })
@@ -109,35 +116,6 @@ export default function SuperadminNewPackagePage() {
       setSaving(false)
     }
   }
-
-  const Label = ({ children }: { children: React.ReactNode }) => (
-    <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">{children}</label>
-  )
-
-  const ListEditor = ({ field, label }: { field: 'highlights' | 'inclusions' | 'exclusions'; label: string }) => (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <Label>{label}</Label>
-        <button type="button" onClick={() => addItem(field)}
-          className="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700">
-          <Plus size={12} />Add
-        </button>
-      </div>
-      <div className="space-y-2">
-        {form[field].map((item, i) => (
-          <div key={i} className="flex gap-2">
-            <input type="text" value={item} placeholder={`${label} ${i + 1}`}
-              onChange={(e) => updateList(field, i, e.target.value)}
-              className="input-field text-sm py-2 flex-1" />
-            <button type="button" onClick={() => removeItem(field, i)}
-              className="p-2 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-500 transition-colors">
-              <X size={14} />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
 
   return (
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
@@ -179,13 +157,18 @@ export default function SuperadminNewPackagePage() {
               className="card rounded-2xl p-5">
               <h3 className="font-bold text-gray-900 mb-4">Basic Information</h3>
               <div className="space-y-4">
-                <div>
-                  <Label>Package Name *</Label>
-                  <input type="text" placeholder="Same Day Mathura Vrindavan Tour" required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value, slug: slugify(e.target.value) })}
-                    className="input-field" />
-                </div>
+                <BilingualInput
+                  value={form.name}
+                  onChange={(val) => setForm((prev) => ({
+                    ...prev,
+                    name: val,
+                    slug: val.en !== prev.name.en ? slugify(val.en) : prev.slug,
+                  }))}
+                  label="Package Name"
+                  required
+                  enPlaceholder="Same Day Mathura Vrindavan Tour"
+                  hiPlaceholder="मथुरा वृन्दावन दर्शन"
+                />
                 <div>
                   <Label>Slug *</Label>
                   <input type="text" placeholder="same-day-mathura-vrindavan" required
@@ -196,14 +179,15 @@ export default function SuperadminNewPackagePage() {
                     URL: /packages/<span className="text-indigo-500 font-medium">{form.slug || 'your-slug'}</span>
                   </p>
                 </div>
-                <div>
-                  <Label>Short Description *</Label>
-                  <textarea rows={2} required
-                    placeholder="Brief description shown on listing cards..."
-                    value={form.shortDescription}
-                    onChange={(e) => setForm({ ...form, shortDescription: e.target.value })}
-                    className="input-field resize-none" />
-                </div>
+                <BilingualInput
+                  value={form.shortDescription}
+                  onChange={(val) => setForm({ ...form, shortDescription: val })}
+                  label="Short Description"
+                  required
+                  type="textarea"
+                  rows={2}
+                  enPlaceholder="Brief description shown on listing cards..."
+                />
                 <div className="grid grid-cols-3 gap-4">
                   <div>
                     <Label>Duration (days)</Label>
@@ -250,7 +234,11 @@ export default function SuperadminNewPackagePage() {
                     <div className="flex items-center gap-2">
                       <span className="text-gray-500 text-sm">₹</span>
                       <input type="number" min={0} placeholder="0" value={p.price || ''}
-                        onChange={(e) => updatePricing(i, Number(e.target.value))}
+                        onChange={(e) => {
+                          const updated = [...form.pricing]
+                          updated[i] = { ...updated[i], price: Number(e.target.value) }
+                          setForm({ ...form, pricing: updated })
+                        }}
                         className="input-field py-2 text-sm w-28 text-right" />
                     </div>
                   </div>
@@ -263,9 +251,94 @@ export default function SuperadminNewPackagePage() {
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
               className="card rounded-2xl p-5 space-y-5">
               <h3 className="font-bold text-gray-900">Package Details</h3>
-              <ListEditor field="highlights"  label="Highlights"  />
-              <ListEditor field="inclusions"  label="Inclusions"  />
-              <ListEditor field="exclusions"  label="Exclusions"  />
+              <BilingualListEditor
+                items={form.cities}
+                onChange={(items) => setForm({ ...form, cities: items })}
+                label="Cities Covered"
+                addColor="#6366f1"
+              />
+              <BilingualListEditor
+                items={form.highlights}
+                onChange={(items) => setForm({ ...form, highlights: items })}
+                label="Highlights"
+                addColor="#6366f1"
+              />
+              <BilingualListEditor
+                items={form.inclusions}
+                onChange={(items) => setForm({ ...form, inclusions: items })}
+                label="Inclusions"
+                addColor="#6366f1"
+              />
+              <BilingualListEditor
+                items={form.exclusions}
+                onChange={(items) => setForm({ ...form, exclusions: items })}
+                label="Exclusions"
+                addColor="#6366f1"
+              />
+            </motion.div>
+
+            {/* Itinerary */}
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}
+              className="card rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-gray-900">Itinerary</h3>
+                <button type="button"
+                  onClick={() => setForm({ ...form, itinerary: [...form.itinerary, {
+                    day: form.itinerary.length + 1,
+                    title: { en: '', hi: '' },
+                    description: { en: '', hi: '' },
+                    places: [],
+                  }] })}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors"
+                  style={{ borderColor: '#6366f1', color: '#6366f1' }}>
+                  + Add Day
+                </button>
+              </div>
+              {form.itinerary.length === 0 && (
+                <p className="text-sm text-gray-400 text-center py-4">No itinerary days added yet.</p>
+              )}
+              <div className="space-y-4">
+                {form.itinerary.map((day, di) => (
+                  <div key={di} className="border border-gray-100 rounded-xl p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#6366f1' }}>Day {day.day}</span>
+                      <button type="button"
+                        onClick={() => setForm({ ...form, itinerary: form.itinerary.filter((_, i) => i !== di) })}
+                        className="text-xs text-red-400 hover:text-red-600 transition-colors">Remove</button>
+                    </div>
+                    <BilingualInput
+                      value={day.title}
+                      onChange={(val) => {
+                        const updated = [...form.itinerary]
+                        updated[di] = { ...updated[di], title: val }
+                        setForm({ ...form, itinerary: updated })
+                      }}
+                      label="Day Title"
+                    />
+                    <BilingualInput
+                      value={day.description}
+                      onChange={(val) => {
+                        const updated = [...form.itinerary]
+                        updated[di] = { ...updated[di], description: val }
+                        setForm({ ...form, itinerary: updated })
+                      }}
+                      label="Description"
+                      type="textarea"
+                      rows={2}
+                    />
+                    <BilingualListEditor
+                      items={day.places}
+                      onChange={(places) => {
+                        const updated = [...form.itinerary]
+                        updated[di] = { ...updated[di], places }
+                        setForm({ ...form, itinerary: updated })
+                      }}
+                      label="Places Visited"
+                      addColor="#6366f1"
+                    />
+                  </div>
+                ))}
+              </div>
             </motion.div>
           </div>
 
@@ -276,9 +349,9 @@ export default function SuperadminNewPackagePage() {
               <h3 className="font-bold text-gray-900 mb-4">Settings</h3>
               <div className="space-y-4">
                 {[
-                  { key: 'isActive',   label: 'Active',   desc: 'Visible on public site'   },
-                  { key: 'isFeatured', label: 'Featured', desc: 'Shown on homepage'         },
-                  { key: 'isPopular',  label: 'Popular',  desc: 'Shows popular badge'       },
+                  { key: 'isActive',   label: 'Active',   desc: 'Visible on public site' },
+                  { key: 'isFeatured', label: 'Featured', desc: 'Shown on homepage'       },
+                  { key: 'isPopular',  label: 'Popular',  desc: 'Shows popular badge'     },
                 ].map((toggle) => (
                   <div key={toggle.key} className="flex items-start justify-between gap-3">
                     <div>
@@ -287,7 +360,7 @@ export default function SuperadminNewPackagePage() {
                     </div>
                     <button type="button"
                       onClick={() => setForm({ ...form, [toggle.key]: !form[toggle.key as keyof PackageForm] })}
-                      className="relative w-10 h-5 rounded-full transition-all duration-200 flex-shrink-0 mt-0.5"
+                      className="relative w-10 h-5 rounded-full transition-all duration-200 mt-0.5"
                       style={{ background: form[toggle.key as keyof PackageForm] ? '#6366f1' : '#d1d5db' }}>
                       <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
                         style={{ left: form[toggle.key as keyof PackageForm] ? '22px' : '2px' }} />

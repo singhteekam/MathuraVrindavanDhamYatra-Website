@@ -5,10 +5,9 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState }  from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion }               from 'framer-motion'
-import { Save, ArrowLeft, AlertCircle } from 'lucide-react'
+import { Save, ArrowLeft, AlertCircle, ShieldCheck } from 'lucide-react'
 import Link                     from 'next/link'
 import toast                    from 'react-hot-toast'
-import AdminPageHeader          from '@/components/admin/AdminPageHeader'
 import ImageManager             from '@/components/admin/ImageManager'
 import BilingualInput,          { type BLValue } from '@/components/admin/BilingualInput'
 import BilingualListEditor      from '@/components/admin/BilingualListEditor'
@@ -48,7 +47,11 @@ function bl(val: unknown): BLValue {
   return { en: v.en ?? '', hi: v.hi ?? '' }
 }
 
-export default function EditPackagePage() {
+const Label = ({ children }: { children: React.ReactNode }) => (
+  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">{children}</label>
+)
+
+export default function SuperadminEditPackagePage() {
   const { slug }              = useParams<{ slug: string }>()
   const router                = useRouter()
   const [form,    setForm]    = useState<PackageForm | null>(null)
@@ -90,7 +93,7 @@ export default function EditPackagePage() {
           })
         } else {
           toast.error('Package not found.')
-          router.push('/admin/packages')
+          router.push('/superadmin/packages')
         }
       })
       .catch(() => toast.error('Failed to load package.'))
@@ -121,7 +124,7 @@ export default function EditPackagePage() {
       const data = await res.json()
       if (res.ok) {
         toast.success('Package updated successfully!')
-        router.push('/admin/packages')
+        router.push('/superadmin/packages')
       } else {
         toast.error(data.error ?? 'Failed to update package.')
       }
@@ -134,7 +137,7 @@ export default function EditPackagePage() {
 
   if (loading) return (
     <div className="flex-1 flex items-center justify-center p-8 pt-20 lg:pt-8">
-      <div className="w-8 h-8 border-4 border-saffron-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#6366f1', borderTopColor: 'transparent' }} />
     </div>
   )
 
@@ -142,7 +145,7 @@ export default function EditPackagePage() {
     <div className="flex-1 p-8 pt-20 lg:pt-8 text-center">
       <AlertCircle size={40} className="text-red-400 mx-auto mb-3" />
       <p className="text-gray-600">Package not found.</p>
-      <Link href="/admin/packages" className="btn-primary mt-4 inline-flex text-sm">
+      <Link href="/superadmin/packages" className="inline-flex items-center gap-2 mt-4 text-sm font-semibold" style={{ color: '#6366f1' }}>
         Back to Packages
       </Link>
     </div>
@@ -150,24 +153,40 @@ export default function EditPackagePage() {
 
   return (
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
-      <AdminPageHeader
-        title={`Edit: ${form.name.en}`}
-        crumbs={[{ label: 'Packages', href: '/admin/packages' }, { label: 'Edit' }]}
-        action={
-          <div className="flex gap-2">
-            <Link href="/admin/packages"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
-              <ArrowLeft size={14} />Cancel
-            </Link>
-            <button onClick={handleSave} disabled={saving} className="btn-primary text-sm py-2.5 px-5">
-              {saving
-                ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Saving...</>
-                : <><Save size={15} />Save Changes</>
-              }
-            </button>
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <div className="flex items-center gap-2 mb-0.5">
+            <ShieldCheck size={16} className="text-indigo-500" />
+            <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Superadmin</p>
           </div>
-        }
-      />
+          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>
+            Edit: {form.name.en}
+          </h1>
+          <nav className="flex items-center gap-1.5 text-xs text-gray-400 mt-0.5">
+            <Link href="/superadmin" className="hover:text-indigo-600">Superadmin</Link>
+            <span>/</span>
+            <Link href="/superadmin/packages" className="hover:text-indigo-600">Packages</Link>
+            <span>/</span>
+            <span className="text-gray-600">Edit</span>
+          </nav>
+        </div>
+        <div className="flex gap-2">
+          <Link href="/superadmin/packages"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+            <ArrowLeft size={14} />Cancel
+          </Link>
+          <button onClick={handleSave} disabled={saving}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
+            style={{ background: 'linear-gradient(135deg, #1e1b4b, #312e81)', opacity: saving ? 0.7 : 1 }}>
+            {saving
+              ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Saving...</>
+              : <><Save size={15} />Save Changes</>
+            }
+          </button>
+        </div>
+      </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-5">
@@ -185,7 +204,7 @@ export default function EditPackagePage() {
                   required
                 />
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Slug (read-only)</label>
+                  <Label>Slug (read-only)</Label>
                   <input type="text" value={form.slug} disabled
                     className="input-field bg-gray-50 text-gray-400 cursor-not-allowed font-mono text-sm" />
                 </div>
@@ -202,19 +221,19 @@ export default function EditPackagePage() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Duration (days)</label>
+                  <Label>Duration (days)</Label>
                   <input type="number" min={1} value={form.duration}
                     onChange={(e) => setForm({ ...form, duration: Number(e.target.value) })}
                     className="input-field" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Nights</label>
+                  <Label>Nights</Label>
                   <input type="number" min={0} value={form.nights}
                     onChange={(e) => setForm({ ...form, nights: Number(e.target.value) })}
                     className="input-field" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Base Price (₹)</label>
+                  <Label>Base Price (₹)</Label>
                   <input type="number" min={0} value={form.basePrice}
                     onChange={(e) => setForm({ ...form, basePrice: Number(e.target.value) })}
                     className="input-field" />
@@ -269,21 +288,25 @@ export default function EditPackagePage() {
               items={form.cities}
               onChange={(items) => setForm({ ...form, cities: items })}
               label="Cities Covered"
+              addColor="#6366f1"
             />
             <BilingualListEditor
               items={form.highlights}
               onChange={(items) => setForm({ ...form, highlights: items })}
               label="Highlights"
+              addColor="#6366f1"
             />
             <BilingualListEditor
               items={form.inclusions}
               onChange={(items) => setForm({ ...form, inclusions: items })}
               label="Inclusions"
+              addColor="#6366f1"
             />
             <BilingualListEditor
               items={form.exclusions}
               onChange={(items) => setForm({ ...form, exclusions: items })}
               label="Exclusions"
+              addColor="#6366f1"
             />
           </motion.div>
 
@@ -299,7 +322,8 @@ export default function EditPackagePage() {
                   description: { en: '', hi: '' },
                   places: [],
                 }] })}
-                className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-saffron-400 text-saffron-600 hover:bg-saffron-50 transition-colors">
+                className="text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors"
+                style={{ borderColor: '#6366f1', color: '#6366f1' }}>
                 + Add Day
               </button>
             </div>
@@ -310,7 +334,7 @@ export default function EditPackagePage() {
               {form.itinerary.map((day, di) => (
                 <div key={di} className="border border-gray-100 rounded-xl p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-saffron-600 uppercase tracking-wide">Day {day.day}</span>
+                    <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#6366f1' }}>Day {day.day}</span>
                     <button type="button"
                       onClick={() => setForm({ ...form, itinerary: form.itinerary.filter((_, i) => i !== di) })}
                       className="text-xs text-red-400 hover:text-red-600 transition-colors">Remove</button>
@@ -343,6 +367,7 @@ export default function EditPackagePage() {
                       setForm({ ...form, itinerary: updated })
                     }}
                     label="Places Visited"
+                    addColor="#6366f1"
                   />
                 </div>
               ))}
@@ -368,10 +393,10 @@ export default function EditPackagePage() {
                   </div>
                   <button type="button"
                     onClick={() => setForm({ ...form, [toggle.key]: !form[toggle.key as keyof PackageForm] })}
-                    className="relative w-10 h-5 rounded-full transition-all duration-200 flex-shrink-0 mt-0.5"
-                    style={{ background: form[toggle.key as keyof PackageForm] ? '#ff7d0f' : '#d1d5db' }}>
+                    className="relative w-10 h-5 rounded-full transition-all duration-200 shrink-0 mt-0.5"
+                    style={{ background: form[toggle.key as keyof PackageForm] ? '#6366f1' : '#d1d5db' }}>
                     <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
-                      style={{ left: form[toggle.key as keyof PackageForm] ? '20px' : '2px' }} />
+                      style={{ left: form[toggle.key as keyof PackageForm] ? '22px' : '2px' }} />
                   </button>
                 </div>
               ))}
@@ -384,7 +409,8 @@ export default function EditPackagePage() {
           </Link>
 
           <button onClick={handleSave} disabled={saving}
-            className="btn-primary w-full py-3.5" style={{ opacity: saving ? 0.7 : 1 }}>
+            className="w-full py-3.5 rounded-2xl font-semibold text-white flex items-center justify-center gap-2"
+            style={{ background: 'linear-gradient(135deg, #1e1b4b, #312e81)', opacity: saving ? 0.7 : 1 }}>
             {saving
               ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Saving...</>
               : <><Save size={16} />Save Changes</>

@@ -52,9 +52,9 @@ function FooterLinkList({ items }: { items: { label: string; href: string }[] })
   )
 }
 
-export default async function Footer() {
-  const t  = await getTranslations('Footer')
-  const tc = await getTranslations('Common')
+export default async function Footer({ locale }: { locale: string }) {
+  const t  = await getTranslations({ locale, namespace: 'Footer' })
+  const tc = await getTranslations({ locale, namespace: 'Common' })
 
   const footerPackages = footerPackagesData.map((item) => ({
     label: t(`packages.${item.key}`),

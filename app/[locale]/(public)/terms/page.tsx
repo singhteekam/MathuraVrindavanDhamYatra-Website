@@ -1,10 +1,18 @@
-import type { Metadata } from 'next'
-import { Link }          from '@/i18n/navigation'
-import { FileText }      from 'lucide-react'
+import type { Metadata }    from 'next'
+import { Link }              from '@/i18n/navigation'
+import { FileText }          from 'lucide-react'
+import { getTranslations }   from 'next-intl/server'
 
-export const metadata: Metadata = {
-  title:       'Terms & Conditions — Mathura Vrindavan Dham Yatra',
-  description: 'Read the Terms & Conditions for booking tour packages and using services of Mathura Vrindavan Dham Yatra.',
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    title:       locale === 'hi' ? 'नियम और शर्तें — Mathura Vrindavan Dham Yatra' : 'Terms & Conditions — Mathura Vrindavan Dham Yatra',
+    description: locale === 'hi'
+      ? 'मथुरा वृन्दावन धाम यात्रा के साथ टूर पैकेज बुक करने और सेवाओं का उपयोग करने के लिए नियम और शर्तें पढ़ें।'
+      : 'Read the Terms & Conditions for booking tour packages and using services of Mathura Vrindavan Dham Yatra.',
+  }
 }
 
 const EFFECTIVE_DATE = 'May 1, 2026'
@@ -73,7 +81,7 @@ const SECTIONS = [
       'Our drivers are experienced, licensed, and familiar with the Braj region.',
       'Smoking is strictly prohibited inside all vehicles.',
       'Consumption of alcohol or intoxicating substances inside vehicles is not permitted.',
-      'The number of passengers must not exceed the vehicle\'s official seating capacity.',
+      "The number of passengers must not exceed the vehicle's official seating capacity.",
       'We reserve the right to substitute a vehicle of equal or higher class if the booked vehicle becomes unavailable.',
       'In case of a vehicle breakdown, we will arrange an alternative vehicle as quickly as possible. Waiting time compensation may be offered at our discretion.',
     ],
@@ -102,7 +110,7 @@ const SECTIONS = [
     list: [
       'Customers with medical conditions should consult a physician before undertaking pilgrimages, especially the Govardhan Parikrama (21 km walk).',
       'We reserve the right to refuse service to any person who appears to be in a condition that may endanger themselves or other passengers.',
-      'It is the customer\'s responsibility to carry any required medications.',
+      "It is the customer's responsibility to carry any required medications.",
       'Children below 12 years and elderly passengers are advised to inform us in advance so appropriate arrangements can be made.',
     ],
   },
@@ -138,9 +146,12 @@ const SECTIONS = [
   },
 ]
 
-export default function TermsPage() {
+export default async function TermsPage({ params }: Props) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'TermsPage' })
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-12 px-4">
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}
@@ -149,25 +160,21 @@ export default function TermsPage() {
             style={{ background: 'linear-gradient(135deg, #ff7d0f, #c74a06)' }}>
             <FileText size={26} className="text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2"
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            Terms &amp; Conditions
+            {t('title')}
           </h1>
-          <p className="text-gray-500 text-sm">
-            Last updated: <strong>{EFFECTIVE_DATE}</strong>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            {t('lastUpdated')}: <strong>{EFFECTIVE_DATE}</strong>
           </p>
-          <p className="text-gray-400 text-xs mt-1">
-            Please read these terms carefully before using our services.
-          </p>
+          <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">{t('subtitle')}</p>
         </div>
 
         {/* Introduction card */}
         <div className="card rounded-2xl p-6 mb-5"
           style={{ borderLeft: '4px solid #ff7d0f' }}>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            Welcome to <strong>{SITE_NAME}</strong>. These Terms &amp; Conditions govern your use
-            of our website, mobile experience, and all tour, travel, and pilgrimage services we
-            provide. By booking with us or browsing our website, you agree to these terms in full.
+          <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+            <strong>{SITE_NAME}</strong> {t('introCard')}
           </p>
         </div>
 
@@ -175,18 +182,18 @@ export default function TermsPage() {
         <div className="space-y-4">
           {SECTIONS.map((section, i) => (
             <div key={i} className="card rounded-2xl p-6">
-              <h2 className="font-bold text-gray-900 mb-3 text-base"
+              <h2 className="font-bold text-gray-900 dark:text-gray-100 mb-3 text-base"
                 style={{ fontFamily: 'var(--font-serif)' }}>
                 {section.title}
               </h2>
               {section.content && (
-                <p className="text-sm text-gray-600 leading-relaxed mb-3">{section.content}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-3">{section.content}</p>
               )}
               {section.list && (
                 <ul className="space-y-2">
                   {section.list.map((item, j) => (
-                    <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
-                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    <li key={j} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0"
                         style={{ background: '#ff7d0f' }} />
                       <span className="leading-relaxed">{item}</span>
                     </li>
@@ -194,7 +201,7 @@ export default function TermsPage() {
                 </ul>
               )}
               {section.footer && (
-                <p className="text-sm text-gray-500 mt-3 italic">{section.footer}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-3 italic">{section.footer}</p>
               )}
             </div>
           ))}
@@ -203,16 +210,14 @@ export default function TermsPage() {
         {/* Bottom note */}
         <div className="mt-8 p-5 rounded-2xl text-center"
           style={{ background: '#fff8ed', border: '1px solid #ffdba8' }}>
-          <p className="text-sm text-gray-600 mb-3">
-            Have questions about our terms? We&apos;re happy to help.
-          </p>
+          <p className="text-sm text-gray-700 mb-3">{t('questionsNote')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/contact" className="btn-primary text-sm py-2.5 px-5">
-              Contact Us
+              {t('contactUs')}
             </Link>
             <Link href="/privacy"
-              className="flex items-center justify-center gap-2 text-sm font-semibold py-2.5 px-5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
-              Privacy Policy
+              className="flex items-center justify-center gap-2 text-sm font-semibold py-2.5 px-5 rounded-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 transition-colors">
+              {t('privacyLink')}
             </Link>
           </div>
         </div>

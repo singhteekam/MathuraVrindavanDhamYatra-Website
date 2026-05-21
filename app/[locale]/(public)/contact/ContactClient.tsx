@@ -1,150 +1,106 @@
 'use client'
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState }                   from 'react'
+import { useTranslations, useLocale } from 'next-intl'
+import { motion }                     from 'framer-motion'
+import { Link }                       from '@/i18n/navigation'
 import {
   Phone, Mail, MapPin, Clock, Send,
   MessageCircle, Instagram, Facebook, Youtube,
 } from 'lucide-react'
-import toast from 'react-hot-toast'
-import { siteConfig } from '@/config/site'
+import toast            from 'react-hot-toast'
+import { siteConfig }   from '@/config/site'
 
-const CONTACT_ITEMS = [
-  {
-    icon: <Phone size={22} />,
-    label: 'Call or WhatsApp',
-    value: siteConfig.phone,
-    sub: 'Available 7 days, 7 AM – 10 PM',
-    href: `tel:${siteConfig.phone}`,
-    color: '#ff7d0f',
-    bg: '#fff8ed',
-  },
-  {
-    icon: <MessageCircle size={22} />,
-    label: 'WhatsApp Chat',
-    value: 'Chat with us instantly',
-    sub: 'We reply within 15 minutes',
-    href: `https://wa.me/${siteConfig.whatsapp}`,
-    color: '#16a34a',
-    bg: '#f0fdf4',
-  },
-  {
-    icon: <Mail size={22} />,
-    label: 'Email Us',
-    value: siteConfig.email,
-    sub: 'We reply within 4 hours',
-    href: `mailto:${siteConfig.email}`,
-    color: '#4338ca',
-    bg: '#eef2ff',
-  },
-  {
-    icon: <MapPin size={22} />,
-    label: 'Our Office',
-    value: 'Mathura, Uttar Pradesh',
-    sub: 'India — 281001',
-    href: 'https://maps.google.com/?q=Mathura,UP,India',
-    color: '#db2777',
-    bg: '#fdf2f8',
-  },
-]
-
-const QUICK_FAQS = [
-  {
-    q: 'How do I book a tour?',
-    a: 'You can book on our website, call us, or WhatsApp. We confirm within 1 hour.',
-  },
-  {
-    q: 'Do you provide hotel assistance?',
-    a: 'Yes, we help find and book hotels in Mathura and Vrindavan — free of charge.',
-  },
-  {
-    q: 'What is your cancellation policy?',
-    a: 'Free cancellation up to 24 hours before the trip. After that, 20% fee applies.',
-  },
-  {
-    q: 'Do you operate on festival days?',
-    a: 'Yes, we operate 365 days a year. Book festival trips well in advance.',
-  },
-]
+const QUICK_FAQS_DATA = {
+  en: [
+    { q: 'How do I book a tour?',         a: 'You can book on our website, call us, or WhatsApp. We confirm within 1 hour.' },
+    { q: 'Do you provide hotel assistance?', a: 'Yes, we help find and book hotels in Mathura and Vrindavan — free of charge.' },
+    { q: 'What is your cancellation policy?', a: 'Free cancellation up to 24 hours before the trip. After that, 20% fee applies.' },
+    { q: 'Do you operate on festival days?', a: 'Yes, we operate 365 days a year. Book festival trips well in advance.' },
+  ],
+  hi: [
+    { q: 'टूर कैसे बुक करें?',            a: 'आप हमारी वेबसाइट पर, कॉल करके, या व्हाट्सऐप से बुक कर सकते हैं। हम 1 घंटे में पुष्टि करते हैं।' },
+    { q: 'क्या आप होटल सहायता प्रदान करते हैं?', a: 'हाँ, हम मथुरा और वृन्दावन में होटल खोजने और बुक करने में निःशुल्क सहायता करते हैं।' },
+    { q: 'आपकी रद्दीकरण नीति क्या है?',    a: 'यात्रा से 24 घंटे पहले तक निःशुल्क रद्दीकरण। उसके बाद 20% शुल्क लागू होता है।' },
+    { q: 'क्या आप त्यौहारों पर काम करते हैं?', a: 'हाँ, हम वर्ष के 365 दिन काम करते हैं। त्यौहार यात्राएं काफी पहले बुक करें।' },
+  ],
+}
 
 export default function ContactClient() {
-  const [form, setForm] = useState({
-    name: '', phone: '', email: '', date: '', passengers: '', message: '',
-  })
+  const t      = useTranslations('ContactPage')
+  const locale = useLocale() as 'en' | 'hi'
+  const quickFaqs = QUICK_FAQS_DATA[locale] ?? QUICK_FAQS_DATA.en
+
+  const [form, setForm] = useState({ name: '', phone: '', email: '', date: '', passengers: '', message: '' })
   const [loading,  setLoading]  = useState(false)
   const [openFaq,  setOpenFaq]  = useState<number | null>(null)
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault()
-
     if (!form.name.trim() || !form.phone.trim()) {
-      toast.error('Please enter your name and phone number.')
+      toast.error(t('toastNamePhone'))
       return
     }
-
     setLoading(true)
     try {
       const res = await fetch('/api/contact', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name:       form.name.trim(),
           phone:      form.phone.trim(),
-          email:      form.email.trim()      || undefined,
-          message:    form.message.trim()    || `Enquiry from ${form.name}`,
-          tourDate:   form.date              || undefined,
-          passengers: form.passengers        || undefined,
+          email:      form.email.trim()   || undefined,
+          message:    form.message.trim() || `Enquiry from ${form.name}`,
+          tourDate:   form.date           || undefined,
+          passengers: form.passengers     || undefined,
         }),
       })
-
       const data = await res.json()
-
-      if (!res.ok) {
-        toast.error(data.error ?? 'Failed to send message. Please try again.')
-        return
-      }
-
-      toast.success("Message sent! We'll call you within 1 hour. Jai Shri Krishna 🙏")
+      if (!res.ok) { toast.error(data.error ?? t('toastError')); return }
+      toast.success(t('toastSuccess'))
       setForm({ name: '', phone: '', email: '', date: '', passengers: '', message: '' })
-
-    } catch (err) {
-      console.error(err)
-      toast.error('Something went wrong. Please call or WhatsApp us directly.')
+    } catch {
+      toast.error(t('toastNetworkError'))
     } finally {
       setLoading(false)
     }
   }
 
+  const CONTACT_ITEMS = [
+    { icon: <Phone size={22} />,       label: t('callLabel'),       value: siteConfig.phone,           sub: t('callSub'),       href: `tel:${siteConfig.phone}`,               color: '#ff7d0f', bg: '#fff8ed' },
+    { icon: <MessageCircle size={22}/>, label: t('whatsappLabel'),  value: t('whatsappValue'),          sub: t('whatsappSub'),   href: `https://wa.me/${siteConfig.whatsapp}`,  color: '#16a34a', bg: '#f0fdf4' },
+    { icon: <Mail size={22} />,         label: t('emailLabel'),     value: siteConfig.email,            sub: t('emailSub'),      href: `mailto:${siteConfig.email}`,            color: '#4338ca', bg: '#eef2ff' },
+    { icon: <MapPin size={22} />,       label: t('officeLabel'),    value: t('officeValue'),            sub: t('officeSub'),     href: 'https://maps.google.com/?q=Mathura,UP,India', color: '#db2777', bg: '#fdf2f8' },
+  ]
+
+  const BUSINESS_HOURS = [
+    { day: t('mondayFriday'), time: '7:00 AM – 10:00 PM' },
+    { day: t('saturday'),     time: '6:00 AM – 10:00 PM' },
+    { day: t('sunday'),       time: '6:00 AM – 9:00 PM'  },
+    { day: t('allFestivals'), time: t('extendedHours')    },
+  ]
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
 
       {/* Hero */}
-      <div
-        className="py-16 md:py-20 relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1a0a00 0%, #3d1a00 50%, #1e1b4b 100%)' }}
-      >
+      <div className="py-16 md:py-20 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #1a0a00 0%, #3d1a00 50%, #1e1b4b 100%)' }}>
         <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full opacity-10"
           style={{ background: 'radial-gradient(circle, #ff7d0f, transparent)' }} />
         <div className="container-custom relative z-10 text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-            className="text-saffron-400 font-semibold text-sm uppercase tracking-widest mb-3"
-          >
-            ✦ Get In Touch ✦
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="text-saffron-400 font-semibold text-sm uppercase tracking-widest mb-3">
+            ✦ {t('heroSubtitle')} ✦
           </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight"
-            style={{ fontFamily: 'var(--font-serif)' }}
-          >
-            We&apos;re Here to Help You
+            style={{ fontFamily: 'var(--font-serif)' }}>
+            {t('heroTitle')}
           </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-            className="text-gray-300 max-w-xl mx-auto text-base"
-          >
-            Have questions about your pilgrimage? Need a custom itinerary? Our team is
-            available 7 days a week to plan your perfect Mathura Vrindavan journey.
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className="text-gray-300 max-w-xl mx-auto text-base">
+            {t('heroDesc')}
           </motion.p>
         </div>
       </div>
@@ -154,25 +110,18 @@ export default function ContactClient() {
         {/* Contact cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-14">
           {CONTACT_ITEMS.map((item, i) => (
-            <motion.a
-              key={item.label}
-              href={item.href}
+            <motion.a key={item.label} href={item.href}
               target={item.href.startsWith('http') ? '_blank' : undefined}
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-              className="card card-hover p-6 block"
-            >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
-                style={{ background: item.bg, color: item.color }}
-              >
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
+              className="card card-hover p-6 block">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                style={{ background: item.bg, color: item.color }}>
                 {item.icon}
               </div>
-              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">{item.label}</p>
-              <p className="font-bold text-gray-900 text-sm mb-1">{item.value}</p>
-              <p className="text-xs text-gray-400">{item.sub}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-wide mb-1">{item.label}</p>
+              <p className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1">{item.value}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{item.sub}</p>
             </motion.a>
           ))}
         </div>
@@ -181,39 +130,36 @@ export default function ContactClient() {
         <div className="grid lg:grid-cols-2 gap-12">
 
           {/* Enquiry form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-          >
-            <h2 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
-              Send Us a Message
+          <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2"
+              style={{ fontFamily: 'var(--font-serif)' }}>
+              {t('sendMessage')}
             </h2>
-            <p className="text-gray-500 text-sm mb-7">
-              Fill the form and we&apos;ll get back within 1 hour with a tailored tour plan.
-            </p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-7">{t('formDesc')}</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-                    Full Name *
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                    {t('fullName')}
                   </label>
-                  <input type="text" placeholder="Ram Sharma" required
+                  <input type="text" placeholder={t('fullNamePlaceholder')} required
                     value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="input-field" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-                    Phone / WhatsApp *
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                    {t('phone')}
                   </label>
-                  <input type="tel" placeholder="+91 98765 43210" required
+                  <input type="tel" placeholder={t('phonePlaceholder')} required
                     value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     className="input-field" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-                  Email Address
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                  {t('email')}
                 </label>
                 <input type="email" placeholder="your@email.com"
                   value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -222,24 +168,24 @@ export default function ContactClient() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-                    Travel Date
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                    {t('travelDate')}
                   </label>
                   <input type="date" min={new Date().toISOString().split('T')[0]}
                     value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })}
                     className="input-field" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-                    Number of People
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                    {t('numberOfPeople')}
                   </label>
                   <select value={form.passengers}
                     onChange={(e) => setForm({ ...form, passengers: e.target.value })}
                     className="input-field">
-                    <option value="">Select</option>
+                    <option value="">{t('select')}</option>
                     {[1, 2, 3, 4, 5, 6, 7, 8, '9+'].map((n) => (
                       <option key={n} value={n}>
-                        {n} {n === 1 ? 'Person' : 'People'}
+                        {n} {n === 1 ? t('person') : t('people')}
                       </option>
                     ))}
                   </select>
@@ -247,11 +193,10 @@ export default function ContactClient() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-                  Message / Requirements
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wide">
+                  {t('messageLabel')}
                 </label>
-                <textarea rows={4}
-                  placeholder="Duration, specific temples, hotel help needed, budget..."
+                <textarea rows={4} placeholder={t('messagePlaceholder')}
                   value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
                   className="input-field resize-none" />
               </div>
@@ -259,97 +204,78 @@ export default function ContactClient() {
               <button type="submit" disabled={loading}
                 className="btn-primary w-full py-4 text-base"
                 style={{ opacity: loading ? 0.7 : 1 }}>
-                {loading ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  <><Send size={18} /> Send Message</>
-                )}
+                {loading
+                  ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> {t('sending')}</>
+                  : <><Send size={18} /> {t('sendBtn')}</>}
               </button>
-              <p className="text-center text-xs text-gray-400">
-                🔒 Your details are safe. We never share or spam.
-              </p>
+              <p className="text-center text-xs text-gray-400">{t('privacyNote')}</p>
             </form>
           </motion.div>
 
           {/* Right: hours + FAQ + social */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-            className="space-y-8"
-          >
+          <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+            className="space-y-8">
+
             {/* Hours */}
             <div className="card p-6 rounded-2xl">
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-saffron-100 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-saffron-100 dark:bg-saffron-900/30 flex items-center justify-center">
                   <Clock size={18} className="text-saffron-600" />
                 </div>
-                <h3 className="font-bold text-gray-900">Business Hours</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100">{t('businessHours')}</h3>
               </div>
               <div className="space-y-3">
-                {[
-                  { day: 'Monday – Friday', time: '7:00 AM – 10:00 PM' },
-                  { day: 'Saturday',        time: '6:00 AM – 10:00 PM' },
-                  { day: 'Sunday',          time: '6:00 AM – 9:00 PM'  },
-                  { day: 'All Festivals',   time: 'Extended hours'      },
-                ].map((item) => (
+                {BUSINESS_HOURS.map((item) => (
                   <div key={item.day}
-                    className="flex justify-between items-center py-2.5 px-3 rounded-xl"
-                    style={{ background: '#f9fafb' }}>
-                    <span className="text-sm font-medium text-gray-700">{item.day}</span>
+                    className="flex justify-between items-center py-2.5 px-3 rounded-xl bg-gray-50 dark:bg-gray-800">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{item.day}</span>
                     <span className="text-sm font-semibold text-saffron-600">{item.time}</span>
                   </div>
                 ))}
               </div>
               <div className="mt-4 p-3 rounded-xl"
                 style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
-                <p className="text-xs text-green-700 font-semibold">
-                  ✓ WhatsApp available 24/7 for urgent queries
-                </p>
+                <p className="text-xs text-green-700 font-semibold">{t('whatsAppNote')}</p>
               </div>
             </div>
 
             {/* Mini FAQ */}
             <div>
-              <h3 className="font-bold text-gray-900 mb-4 text-lg" style={{ fontFamily: 'var(--font-serif)' }}>
-                Quick Answers
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg"
+                style={{ fontFamily: 'var(--font-serif)' }}>
+                {t('quickAnswers')}
               </h3>
               <div className="space-y-3">
-                {QUICK_FAQS.map((faq, i) => (
+                {quickFaqs.map((faq, i) => (
                   <div key={i} className="card rounded-2xl overflow-hidden">
                     <button
                       onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                      className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
-                    >
-                      <span className="text-sm font-semibold text-gray-800 pr-4">{faq.q}</span>
-                      <span className="text-saffron-500 font-bold flex-shrink-0 text-lg leading-none">
+                      className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                      <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 pr-4">{faq.q}</span>
+                      <span className="text-saffron-500 font-bold shrink-0 text-lg leading-none">
                         {openFaq === i ? '−' : '+'}
                       </span>
                     </button>
                     {openFaq === i && (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
+                        initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
                         transition={{ duration: 0.2 }}
-                        className="px-4 pb-4"
-                        style={{ borderTop: '1px solid #f3f4f6' }}
-                      >
-                        <p className="text-sm text-gray-600 leading-relaxed pt-3">{faq.a}</p>
+                        className="px-4 pb-4" style={{ borderTop: '1px solid #f3f4f6' }}>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed pt-3">{faq.a}</p>
                       </motion.div>
                     )}
                   </div>
                 ))}
               </div>
-              <a href="/faq" className="inline-flex items-center gap-1 mt-4 text-sm font-semibold"
+              <Link href="/faq" className="inline-flex items-center gap-1 mt-4 text-sm font-semibold"
                 style={{ color: '#ff7d0f' }}>
-                View all FAQs →
-              </a>
+                {t('viewAllFaqs')}
+              </Link>
             </div>
 
             {/* Social */}
             <div className="card p-6 rounded-2xl">
-              <h3 className="font-bold text-gray-900 mb-4">Follow Us</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">{t('followUs')}</h3>
               <div className="flex gap-3">
                 {[
                   { icon: <Facebook size={18} />,  href: siteConfig.social.facebook,  label: 'Facebook',  color: '#1877f2', bg: '#e7f0ff' },
@@ -359,8 +285,7 @@ export default function ContactClient() {
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
                     className="flex-1 flex flex-col items-center gap-2 py-4 rounded-xl font-semibold text-xs transition-all hover:scale-105"
                     style={{ background: s.bg, color: s.color }}>
-                    {s.icon}
-                    {s.label}
+                    {s.icon}{s.label}
                   </a>
                 ))}
               </div>

@@ -41,7 +41,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
     const pkg = await Package.findOneAndUpdate(
       { slug },
       { $set: body },
-      { new: true, runValidators: true },
+      { new: true },
     )
 
     if (!pkg) return errorResponse('Package not found.', 404)

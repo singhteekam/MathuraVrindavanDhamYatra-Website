@@ -35,6 +35,11 @@ const LOCALE_BYPASS_PREFIXES = [
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function getLocale(req: NextRequest): string {
+  // Explicit user preference takes priority over browser Accept-Language
+  const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
+  if (cookieLocale && (routing.locales as readonly string[]).includes(cookieLocale)) {
+    return cookieLocale
+  }
   const headers: Record<string, string> = {}
   req.headers.forEach((value, key) => { headers[key] = value })
   const languages = new Negotiator({ headers }).languages()
@@ -91,7 +96,9 @@ export default async function proxy(req: NextRequest) {
     const redirectPath = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`
     const newUrl = new URL(redirectPath, req.url)
     newUrl.search = req.nextUrl.search
-    return NextResponse.redirect(newUrl)
+    const res = NextResponse.redirect(newUrl)
+    res.cookies.set('NEXT_LOCALE', locale, { path: '/', maxAge: 31536000, sameSite: 'lax' })
+    return res
   }
 
   // ── 3. Auth / role guards (only for protected routes) ────────────────────

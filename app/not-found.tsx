@@ -72,7 +72,7 @@ export default function NotFoundPage() {
     setFact(FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)])
   }, [])
 
-  function handleSearch(e: React.FormEvent) {
+  function handleSearch(e: React.SyntheticEvent) {
     e.preventDefault()
     if (!search.trim()) return
     const q = search.trim().toLowerCase()
@@ -84,7 +84,7 @@ export default function NotFoundPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center px-4 py-16">
       <div className="max-w-lg w-full mx-auto">
 
         {/* 404 hero */}
@@ -105,11 +105,11 @@ export default function NotFoundPage() {
             <div className="h-px flex-1" style={{ background: 'linear-gradient(to left, transparent, #e5e7eb)' }} />
           </div>
 
-          <h1 className="text-2xl font-bold text-gray-900 mb-2"
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2"
             style={{ fontFamily: 'var(--font-serif)' }}>
             This Path Leads to the Divine
           </h1>
-          <p className="text-gray-500 text-sm leading-relaxed">
+          <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
             The page you&apos;re looking for doesn&apos;t exist — but many sacred paths await you.
           </p>
 
@@ -128,7 +128,7 @@ export default function NotFoundPage() {
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="card rounded-2xl p-5 mb-4">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
             🔍 Search for what you need
           </p>
           <form onSubmit={handleSearch} className="flex gap-2">
@@ -143,7 +143,7 @@ export default function NotFoundPage() {
               />
             </div>
             <button type="submit"
-              className="px-4 py-2.5 rounded-xl text-sm font-semibold text-white flex-shrink-0"
+              className="px-4 py-2.5 rounded-xl text-sm font-semibold text-white shrink-0"
               style={{ background: '#ff7d0f' }}>
               Go
             </button>
@@ -155,14 +155,13 @@ export default function NotFoundPage() {
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
           className="card rounded-2xl p-5 mb-4">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
             🗺️ Were you looking for?
           </p>
           <div className="grid grid-cols-2 gap-2">
             {suggestions.map((route) => (
               <Link key={route.path} href={route.path}
-                className="flex items-center gap-2.5 p-3 rounded-xl text-sm font-medium transition-all hover:scale-[1.02]"
-                style={{ background: '#f9fafb', color: '#374151', border: '1px solid #f3f4f6' }}>
+                className="flex items-center gap-2.5 p-3 rounded-xl text-sm font-medium transition-all hover:scale-[1.02] bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-100 dark:border-gray-700">
                 <span style={{ color: '#ff7d0f' }}>{route.icon}</span>
                 {route.label}
                 <ArrowRight size={12} className="ml-auto text-gray-300" />
@@ -176,7 +175,7 @@ export default function NotFoundPage() {
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="card rounded-2xl p-5 mb-4">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
             ⚡ Popular Destinations
           </p>
           <div className="flex flex-wrap gap-2">
@@ -217,7 +216,7 @@ export default function NotFoundPage() {
               <p className="text-xs text-indigo-300 mt-0.5">{quote.meaning}</p>
             </div>
             <Link href="/blog"
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full flex-shrink-0 ml-3"
+              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full shrink-0 ml-3"
               style={{ background: 'rgba(255,125,15,0.2)', color: '#ff7d0f' }}>
               Read More <ArrowRight size={11} />
             </Link>

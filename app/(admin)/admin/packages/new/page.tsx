@@ -2,26 +2,28 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion }   from 'framer-motion'
-import { Save, Plus, X } from 'lucide-react'
-import toast from 'react-hot-toast'
-import AdminPageHeader from '@/components/admin/AdminPageHeader'
-import ImageManager    from '@/components/admin/ImageManager'
-import { cars }        from '@/config/site'
+import { useState }       from 'react'
+import { useRouter }      from 'next/navigation'
+import { motion }         from 'framer-motion'
+import { Save }           from 'lucide-react'
+import toast              from 'react-hot-toast'
+import AdminPageHeader    from '@/components/admin/AdminPageHeader'
+import ImageManager       from '@/components/admin/ImageManager'
+import BilingualInput,    { type BLValue } from '@/components/admin/BilingualInput'
+import BilingualListEditor from '@/components/admin/BilingualListEditor'
+import { cars }           from '@/config/site'
 
 interface PackageForm {
-  name:             string
+  name:             BLValue
   slug:             string
   duration:         number
   nights:           number
   cities:           string[]
   basePrice:        number
-  shortDescription: string
-  highlights:       string[]
-  inclusions:       string[]
-  exclusions:       string[]
+  shortDescription: BLValue
+  highlights:       BLValue[]
+  inclusions:       BLValue[]
+  exclusions:       BLValue[]
   isActive:         boolean
   isFeatured:       boolean
   isPopular:        boolean
@@ -30,28 +32,30 @@ interface PackageForm {
   pricing:          { carType: string; carName: string; price: number }[]
 }
 
+function bl(s: string): BLValue { return { en: s, hi: '' } }
+
 const INITIAL: PackageForm = {
-  name:             '',
+  name:             { en: '', hi: '' },
   slug:             '',
   duration:         1,
   nights:           0,
   cities:           ['Mathura', 'Vrindavan'],
   basePrice:        2000,
-  shortDescription: '',
-  highlights:       ['', '', ''],
-  inclusions:       [
+  shortDescription: { en: '', hi: '' },
+  highlights:       [bl(''), bl(''), bl('')],
+  inclusions: [
     'AC vehicle throughout the tour',
     'Experienced local driver',
     'All inter-city transfers',
     'Hotel assistance',
     'Fuel charges included',
-  ],
+  ].map(bl),
   exclusions: [
     'Meals',
     'Hotel accommodation cost',
     'Entry fees at temples',
     'Personal expenses',
-  ],
+  ].map(bl),
   thumbnail:  '',
   images:     [],
   isActive:   true,
@@ -60,58 +64,46 @@ const INITIAL: PackageForm = {
   pricing: cars.map((c) => ({ carType: c.id, carName: c.name, price: 0 })),
 }
 
+function slugify(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+}
+
+function updatePricingItem(
+  pricing: PackageForm['pricing'],
+  index: number,
+  price: number,
+): PackageForm['pricing'] {
+  const updated = [...pricing]
+  updated[index] = { ...updated[index], price }
+  return updated
+}
+
 export default function NewPackagePage() {
-  const router  = useRouter()
-  const [form,  setForm]  = useState<PackageForm>(INITIAL)
-  const [saving,setSaving]= useState(false)
-
-  function slugify(text: string) {
-    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-  }
-
-  function updatePricing(index: number, price: number) {
-    const updated = [...form.pricing]
-    updated[index] = { ...updated[index], price }
-    setForm({ ...form, pricing: updated })
-  }
-
-  function updateListItem(field: 'highlights' | 'inclusions' | 'exclusions', i: number, value: string) {
-    const arr = [...form[field]]
-    arr[i] = value
-    setForm({ ...form, [field]: arr })
-  }
-
-  function addListItem(field: 'highlights' | 'inclusions' | 'exclusions') {
-    setForm({ ...form, [field]: [...form[field], ''] })
-  }
-
-  function removeListItem(field: 'highlights' | 'inclusions' | 'exclusions', i: number) {
-    setForm({ ...form, [field]: form[field].filter((_, idx) => idx !== i) })
-  }
+  const router              = useRouter()
+  const [form, setForm]     = useState<PackageForm>(INITIAL)
+  const [saving, setSaving] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.name || !form.slug || !form.shortDescription) {
-      toast.error('Please fill name, slug, and description.')
+    if (!form.name.en || !form.slug || !form.shortDescription.en) {
+      toast.error('Please fill English name, slug, and description.')
       return
     }
     setSaving(true)
     try {
       const payload = {
         ...form,
-        highlights: form.highlights.filter(Boolean),
-        inclusions: form.inclusions.filter(Boolean),
-        exclusions: form.exclusions.filter(Boolean),
+        highlights: form.highlights.filter((x) => x.en),
+        inclusions: form.inclusions.filter((x) => x.en),
+        exclusions: form.exclusions.filter((x) => x.en),
         pricing:    form.pricing.filter((p) => p.price > 0),
       }
-
       const res  = await fetch('/api/packages', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(payload),
       })
       const data = await res.json()
-
       if (res.ok) {
         toast.success('Package created successfully!')
         router.push('/admin/packages')
@@ -124,36 +116,6 @@ export default function NewPackagePage() {
       setSaving(false)
     }
   }
-
-  const ListEditor = ({
-    field, label,
-  }: {
-    field: 'highlights' | 'inclusions' | 'exclusions'
-    label: string
-  }) => (
-    <div>
-      <div className="flex items-center justify-between mb-2">
-        <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{label}</label>
-        <button type="button" onClick={() => addListItem(field)}
-          className="flex items-center gap-1 text-xs font-semibold text-saffron-600 hover:text-saffron-700">
-          <Plus size={12} />Add
-        </button>
-      </div>
-      <div className="space-y-2">
-        {form[field].map((item, i) => (
-          <div key={i} className="flex gap-2">
-            <input type="text" value={item} placeholder={`${label} ${i + 1}`}
-              onChange={(e) => updateListItem(field, i, e.target.value)}
-              className="input-field text-sm py-2 flex-1" />
-            <button type="button" onClick={() => removeListItem(field, i)}
-              className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
-              <X size={14} />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
 
   return (
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
@@ -173,13 +135,19 @@ export default function NewPackagePage() {
               className="card rounded-2xl p-5">
               <h3 className="font-bold text-gray-900 mb-4">Basic Information</h3>
               <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Package Name *</label>
-                  <input type="text" placeholder="Same Day Mathura Vrindavan Tour" required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value, slug: slugify(e.target.value) })}
-                    className="input-field" />
-                </div>
+
+                <BilingualInput
+                  value={form.name}
+                  onChange={(val) => setForm((prev) => ({
+                    ...prev,
+                    name: val,
+                    slug: val.en !== prev.name.en ? slugify(val.en) : prev.slug,
+                  }))}
+                  label="Package Name"
+                  required
+                  enPlaceholder="Same Day Mathura Vrindavan Tour"
+                  hiPlaceholder="मथुरा वृन्दावन दर्शन"
+                />
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Slug (URL) *</label>
@@ -190,13 +158,16 @@ export default function NewPackagePage() {
                   <p className="text-xs text-gray-400 mt-1">URL: /packages/{form.slug || 'your-slug-here'}</p>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Short Description *</label>
-                  <textarea rows={2} placeholder="Brief description shown on listing pages..."
-                    value={form.shortDescription}
-                    onChange={(e) => setForm({ ...form, shortDescription: e.target.value })}
-                    className="input-field resize-none" required />
-                </div>
+                <BilingualInput
+                  value={form.shortDescription}
+                  onChange={(val) => setForm({ ...form, shortDescription: val })}
+                  label="Short Description"
+                  required
+                  type="textarea"
+                  rows={2}
+                  enPlaceholder="Brief description shown on listing pages..."
+                  hiPlaceholder="संक्षिप्त विवरण..."
+                />
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
@@ -251,7 +222,7 @@ export default function NewPackagePage() {
                       <span className="text-gray-500 text-sm">₹</span>
                       <input type="number" min={0} placeholder="0"
                         value={p.price || ''}
-                        onChange={(e) => updatePricing(i, Number(e.target.value))}
+                        onChange={(e) => setForm({ ...form, pricing: updatePricingItem(form.pricing, i, Number(e.target.value)) })}
                         className="input-field py-2 text-sm w-28 text-right" />
                     </div>
                   </div>
@@ -264,9 +235,21 @@ export default function NewPackagePage() {
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
               className="card rounded-2xl p-5 space-y-5">
               <h3 className="font-bold text-gray-900">Package Details</h3>
-              <ListEditor field="highlights"  label="Highlights"  />
-              <ListEditor field="inclusions"  label="Inclusions"  />
-              <ListEditor field="exclusions"  label="Exclusions"  />
+              <BilingualListEditor
+                items={form.highlights}
+                onChange={(items) => setForm({ ...form, highlights: items })}
+                label="Highlights"
+              />
+              <BilingualListEditor
+                items={form.inclusions}
+                onChange={(items) => setForm({ ...form, inclusions: items })}
+                label="Inclusions"
+              />
+              <BilingualListEditor
+                items={form.exclusions}
+                onChange={(items) => setForm({ ...form, exclusions: items })}
+                label="Exclusions"
+              />
             </motion.div>
           </div>
 
@@ -277,9 +260,9 @@ export default function NewPackagePage() {
               <h3 className="font-bold text-gray-900 mb-4">Settings</h3>
               <div className="space-y-3">
                 {[
-                  { key: 'isActive',   label: 'Active (visible on site)'      },
-                  { key: 'isFeatured', label: 'Featured (homepage display)'   },
-                  { key: 'isPopular',  label: 'Popular (badge on card)'       },
+                  { key: 'isActive',   label: 'Active (visible on site)'    },
+                  { key: 'isFeatured', label: 'Featured (homepage display)' },
+                  { key: 'isPopular',  label: 'Popular (badge on card)'     },
                 ].map((toggle) => (
                   <div key={toggle.key} className="flex items-center justify-between py-2">
                     <span className="text-sm text-gray-700">{toggle.label}</span>

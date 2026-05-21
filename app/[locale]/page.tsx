@@ -70,11 +70,16 @@ async function BookingNotice() {
   )
 }
 
-export default async function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
   // All three queries run in parallel, each independently cached
   const [featuredPackages, popularPlaces, reviews] = await Promise.all([
-    getFeaturedPackages(),
-    getFeaturedPlaces(),
+    getFeaturedPackages(locale),
+    getFeaturedPlaces(locale),
     getApprovedReviews(6),
   ])
 

@@ -1,10 +1,11 @@
 import mongoose, { Schema, Document, Model } from 'mongoose'
+import type { LocalizedString } from '@/lib/i18nHelpers'
 
 interface IItineraryDay {
   day: number
-  title: string
-  description: string
-  places: string[]
+  title: LocalizedString
+  description: LocalizedString
+  places: LocalizedString[]
 }
 
 interface IPricing {
@@ -14,18 +15,18 @@ interface IPricing {
 }
 
 export interface IPackageDoc extends Document {
-  name: string
+  name: LocalizedString
   slug: string
   duration: number
   nights: number
-  cities: string[]
+  cities: LocalizedString[]
   thumbnail: string
   images: string[]
-  shortDescription: string
-  highlights: string[]
+  shortDescription: LocalizedString
+  highlights: LocalizedString[]
   itinerary: IItineraryDay[]
-  inclusions: string[]
-  exclusions: string[]
+  inclusions: LocalizedString[]
+  exclusions: LocalizedString[]
   pricing: IPricing[]
   basePrice: number
   isActive: boolean
@@ -40,25 +41,25 @@ export interface IPackageDoc extends Document {
 
 const PackageSchema = new Schema<IPackageDoc>(
   {
-    name:             { type: String, required: true, trim: true },
+    name:             { type: Schema.Types.Mixed, required: true },
     slug:             { type: String, required: true, lowercase: true, trim: true },
     duration:         { type: Number, required: true },
     nights:           { type: Number, required: true, default: 0 },
-    cities:           [{ type: String, trim: true }],
+    cities:           [{ type: Schema.Types.Mixed }],
     thumbnail:        { type: String, default: '' },
     images:           [{ type: String }],
-    shortDescription: { type: String, required: true },
-    highlights:       [{ type: String }],
+    shortDescription: { type: Schema.Types.Mixed, required: true },
+    highlights:       [{ type: Schema.Types.Mixed }],
     itinerary: [
       {
         day:         { type: Number, required: true },
-        title:       { type: String, required: true },
-        description: { type: String, required: true },
-        places:      [{ type: String }],
+        title:       { type: Schema.Types.Mixed, required: true },
+        description: { type: Schema.Types.Mixed, required: true },
+        places:      [{ type: Schema.Types.Mixed }],
       },
     ],
-    inclusions:    [{ type: String }],
-    exclusions:    [{ type: String }],
+    inclusions:    [{ type: Schema.Types.Mixed }],
+    exclusions:    [{ type: Schema.Types.Mixed }],
     pricing: [
       {
         carType: { type: String, required: true },
@@ -82,7 +83,10 @@ PackageSchema.index({ isActive: 1 })
 PackageSchema.index({ isFeatured: 1 })
 PackageSchema.index({ duration: 1 })
 
+if (process.env.NODE_ENV !== 'production') {
+  delete (mongoose.models as Record<string, unknown>).Package
+}
 const Package: Model<IPackageDoc> =
-  mongoose.models.Package ?? mongoose.model<IPackageDoc>('Package', PackageSchema)
+  (mongoose.models.Package as Model<IPackageDoc>) ?? mongoose.model<IPackageDoc>('Package', PackageSchema)
 
 export default Package

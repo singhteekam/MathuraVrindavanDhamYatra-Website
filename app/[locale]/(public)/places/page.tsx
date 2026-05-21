@@ -14,7 +14,12 @@ export const metadata: Metadata = {
 // Places data rarely changes — cache 1 hour
 export const revalidate = 3600
 
-export default async function PlacesPage() {
-  const places = await getAllPlaces()
+export default async function PlacesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const places = await getAllPlaces(locale)
   return <PlacesClient places={places} />
 }

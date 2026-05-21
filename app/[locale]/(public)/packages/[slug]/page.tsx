@@ -8,7 +8,7 @@ import {
 } from '@/lib/fetchData'
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string; locale: string }>
 }
 
 // Pre-render all active package pages at build time
@@ -18,8 +18,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const pkg = await getPackageBySlug(slug)
+  const { slug, locale } = await params
+  const pkg = await getPackageBySlug(slug, locale)
   if (!pkg) return { title: 'Package Not Found' }
   return {
     title:       `${pkg.name} \u2014 Mathura Vrindavan Dham Yatra`,
@@ -31,13 +31,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const revalidate = 300
 
 export default async function PackageDetailPage({ params }: Props) {
-  const { slug } = await params
+  const { slug, locale } = await params
 
   // Fetch package detail and its real reviews in parallel
   const [base, dbReviews] = await Promise.all([
-    getPackageBySlug(slug),
-    // We need the _id to query reviews — do it after we have the base
-    getPackageBySlug(slug).then((p) =>
+    getPackageBySlug(slug, locale),
+    getPackageBySlug(slug, locale).then((p) =>
       p ? getPackageReviews(p._id) : Promise.resolve([]),
     ),
   ])

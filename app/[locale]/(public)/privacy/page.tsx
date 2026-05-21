@@ -1,10 +1,18 @@
-import type { Metadata } from 'next'
-import { Link }          from '@/i18n/navigation'
-import { Shield }        from 'lucide-react'
+import type { Metadata }    from 'next'
+import { Link }              from '@/i18n/navigation'
+import { Shield }            from 'lucide-react'
+import { getTranslations }   from 'next-intl/server'
 
-export const metadata: Metadata = {
-  title:       'Privacy Policy — Mathura Vrindavan Dham Yatra',
-  description: 'Learn how Mathura Vrindavan Dham Yatra collects, uses, and protects your personal information.',
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  return {
+    title:       locale === 'hi' ? 'गोपनीयता नीति — Mathura Vrindavan Dham Yatra' : 'Privacy Policy — Mathura Vrindavan Dham Yatra',
+    description: locale === 'hi'
+      ? 'जानें कि मथुरा वृन्दावन धाम यात्रा आपकी व्यक्तिगत जानकारी कैसे एकत्र, उपयोग और सुरक्षित करती है।'
+      : 'Learn how Mathura Vrindavan Dham Yatra collects, uses, and protects your personal information.',
+  }
 }
 
 const EFFECTIVE_DATE = 'May 1, 2026'
@@ -66,7 +74,7 @@ const SECTIONS = [
       'With our assigned drivers — your name, phone number, and pickup details are shared so the driver can reach you',
       'With payment processors (Razorpay) — to securely process your payments',
       'With cloud service providers (MongoDB Atlas, Vercel, Cloudinary) — to store data and deliver our service',
-      'With WhatsApp — for booking communication (subject to WhatsApp\'s privacy policy)',
+      "With WhatsApp — for booking communication (subject to WhatsApp's privacy policy)",
       'With legal authorities — if required by law, court order, or to protect our legal rights',
       'With your consent — in any other case where you have explicitly agreed to the sharing',
     ],
@@ -89,7 +97,7 @@ const SECTIONS = [
       'Passwords are hashed using bcrypt — we never store your plain-text password.',
       'We use HTTPS (SSL/TLS) encryption for all data transmitted between your browser and our servers.',
       'Payment processing is handled entirely by Razorpay, which is PCI-DSS compliant. We never store card numbers or CVVs.',
-      'Images and media are stored on Cloudinary\'s secure servers.',
+      "Images and media are stored on Cloudinary's secure servers.",
       'Access to your data is restricted to authorised staff only.',
       'Despite our best efforts, no system is completely secure. We encourage you to use a strong, unique password for your account.',
     ],
@@ -119,7 +127,7 @@ const SECTIONS = [
     footer: `To exercise any of these rights, please contact us at ${CONTACT_EMAIL}. We will respond within 30 days.`,
   },
   {
-    title: '9. Children\'s Privacy',
+    title: "9. Children's Privacy",
     content: `Our services are not directed to children under 13 years of age. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal information, please contact us at ${CONTACT_EMAIL} and we will delete it promptly.`,
   },
   {
@@ -147,9 +155,12 @@ const SECTIONS = [
   },
 ]
 
-export default function PrivacyPage() {
+export default async function PrivacyPage({ params }: Props) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'PrivacyPage' })
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-12 px-4">
       <div className="max-w-3xl mx-auto">
 
         {/* Header */}
@@ -158,26 +169,20 @@ export default function PrivacyPage() {
             style={{ background: 'linear-gradient(135deg, #4338ca, #1e1b4b)' }}>
             <Shield size={26} className="text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2"
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            Privacy Policy
+            {t('title')}
           </h1>
-          <p className="text-gray-500 text-sm">
-            Last updated: <strong>{EFFECTIVE_DATE}</strong>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            {t('lastUpdated')}: <strong>{EFFECTIVE_DATE}</strong>
           </p>
-          <p className="text-gray-400 text-xs mt-1">
-            Your privacy matters to us. Here&apos;s how we protect your data.
-          </p>
+          <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">{t('subtitle')}</p>
         </div>
 
         {/* Intro card */}
-        <div className="card rounded-2xl p-6 mb-5"
-          style={{ borderLeft: '4px solid #4338ca' }}>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            <strong>{SITE_NAME}</strong> (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;)
-            operates <strong>{SITE_URL}</strong>. This policy describes how we collect and use
-            your personal information when you book our pilgrimage and tour services.
-            We are committed to keeping your data safe and using it only to serve you better.
+        <div className="card rounded-2xl p-6 mb-5" style={{ borderLeft: '4px solid #4338ca' }}>
+          <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+            <strong>{SITE_NAME}</strong> (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) {t('introCard')}
           </p>
         </div>
 
@@ -185,47 +190,38 @@ export default function PrivacyPage() {
         <div className="space-y-4">
           {SECTIONS.map((section, i) => (
             <div key={i} className="card rounded-2xl p-6">
-              <h2 className="font-bold text-gray-900 mb-3 text-base"
+              <h2 className="font-bold text-gray-900 dark:text-gray-100 mb-3 text-base"
                 style={{ fontFamily: 'var(--font-serif)' }}>
                 {section.title}
               </h2>
-
               {section.content && (
-                <p className="text-sm text-gray-600 leading-relaxed mb-3">{section.content}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-3">{section.content}</p>
               )}
-
-              {/* Subsections (for section 2) */}
               {section.subsections && section.subsections.map((sub, j) => (
                 <div key={j} className="mb-4">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">{sub.subtitle}</p>
+                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">{sub.subtitle}</p>
                   <ul className="space-y-2">
                     {sub.list.map((item, k) => (
-                      <li key={k} className="flex items-start gap-2 text-sm text-gray-600">
-                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                          style={{ background: '#4338ca' }} />
+                      <li key={k} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: '#4338ca' }} />
                         <span className="leading-relaxed">{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               ))}
-
               {section.list && (
                 <ul className="space-y-2">
                   {section.list.map((item, j) => (
-                    <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
-                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                        style={{ background: '#4338ca' }} />
+                    <li key={j} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: '#4338ca' }} />
                       <span className="leading-relaxed">{item}</span>
                     </li>
                   ))}
                 </ul>
               )}
-
               {section.footer && (
-                <p className="text-sm text-gray-500 mt-3 italic leading-relaxed">
-                  {section.footer}
-                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-3 italic leading-relaxed">{section.footer}</p>
               )}
             </div>
           ))}
@@ -234,17 +230,15 @@ export default function PrivacyPage() {
         {/* Bottom note */}
         <div className="mt-8 p-5 rounded-2xl text-center"
           style={{ background: '#ede9fe', border: '1px solid #c4b5fd' }}>
-          <p className="text-sm text-gray-700 mb-3">
-            Questions about your privacy or data? We&apos;re here to help.
-          </p>
+          <p className="text-sm text-gray-700 mb-3">{t('questionsNote')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/contact" className="btn-primary text-sm py-2.5 px-5"
               style={{ background: 'linear-gradient(135deg, #4338ca, #1e1b4b)' }}>
-              Contact Us
+              {t('contactUs')}
             </Link>
             <Link href="/terms"
-              className="flex items-center justify-center gap-2 text-sm font-semibold py-2.5 px-5 rounded-full border border-gray-300 text-gray-600 hover:bg-white transition-colors">
-              Terms &amp; Conditions
+              className="flex items-center justify-center gap-2 text-sm font-semibold py-2.5 px-5 rounded-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 transition-colors">
+              {t('termsLink')}
             </Link>
           </div>
         </div>

@@ -11,10 +11,18 @@
  *   'packages' — bust when package created / updated / deleted
  *   'places'   — bust when place   created / updated / deleted
  *   'reviews'  — bust when review  approved / unpublished / deleted
+ *
+ * Locale:
+ *   All package/place functions accept a locale string ('en' | 'hi', default 'en').
+ *   unstable_cache includes function arguments in the cache key, so ('en') and ('hi')
+ *   are stored as separate cache entries automatically.
+ *   Consumer-facing interfaces keep string types — localization is applied internally.
  */
 
 import { unstable_cache } from 'next/cache'
 import { connectDB }      from '@/lib/db'
+import type { LocalizedString } from '@/lib/i18nHelpers'
+import { getLocalized }   from '@/lib/i18nHelpers'
 
 // ─── Shared Types ─────────────────────────────────────────────────────────────
 // These are exported and used by BOTH server pages (page.tsx) and
@@ -149,15 +157,98 @@ function ser<T>(doc: Record<string, unknown>): T {
   return out as T
 }
 
+// ─── Internal localization helpers ───────────────────────────────────────────
+// After ser(), translatable fields are LocalizedString ({en,hi} | string).
+// These helpers resolve them to the correct locale string, producing the
+// consumer-facing interfaces (which have plain string fields).
+
+function L(field: unknown, locale: string): string {
+  return getLocalized(field as LocalizedString, locale)
+}
+
+function localizePackageSummary(raw: Record<string, unknown>, locale: string): PackageSummary {
+  const p = raw as unknown as PackageSummary
+  return {
+    ...p,
+    name:             L(p.name, locale),
+    shortDescription: L(p.shortDescription, locale),
+    cities:           ((p.cities as unknown[]) || []).map(c => L(c as LocalizedString, locale)),
+    highlights:       (p.highlights as unknown[]).map(h => L(h, locale)),
+  }
+}
+
+function localizePackageDetail(raw: Record<string, unknown>, locale: string): PackageDetail {
+  const p = raw as unknown as PackageDetail
+  return {
+    ...localizePackageSummary(raw, locale),
+    inclusions: p.inclusions.map(x => L(x, locale)),
+    exclusions: p.exclusions.map(x => L(x, locale)),
+    itinerary:  p.itinerary.map(day => ({
+      ...day,
+      title:       L(day.title, locale),
+      description: L(day.description, locale),
+      places:      ((day.places as unknown[]) || []).map(pl => L(pl as LocalizedString, locale)),
+    })),
+  }
+}
+
+function localizePlaceSummary(raw: Record<string, unknown>, locale: string): PlaceSummary {
+  const p = raw as unknown as PlaceSummary
+  return {
+    ...p,
+    name:             L(p.name, locale),
+    shortDescription: L(p.shortDescription, locale),
+    city:             L(p.city, locale),
+    type:             L(p.type, locale),
+    tags:             ((p.tags as unknown[]) || []).map(t => L(t as LocalizedString, locale)),
+    location: p.location
+      ? { ...p.location, address: L(p.location.address, locale) }
+      : p.location,
+    entryFee:         p.entryFee     ? L(p.entryFee, locale)     : undefined,
+    timeRequired:     p.timeRequired ? L(p.timeRequired, locale) : undefined,
+    timings: p.timings
+      ? {
+          morning: p.timings.morning ? L(p.timings.morning, locale) : undefined,
+          evening: p.timings.evening ? L(p.timings.evening, locale) : undefined,
+          note:    p.timings.note    ? L(p.timings.note, locale)    : undefined,
+        }
+      : undefined,
+  }
+}
+
+function localizeFullPlace(raw: Record<string, unknown>, locale: string): PlaceDetail {
+  const p = raw as unknown as PlaceDetail
+  return {
+    ...localizePlaceSummary(raw, locale),
+    sections: p.sections.map(sec => ({
+      ...sec,
+      title:   L(sec.title, locale),
+      content: sec.content ? L(sec.content, locale) : undefined,
+      items:   (sec.items || []).map((item: unknown) => {
+        if (typeof item === 'object' && item !== null) {
+          const i = item as Record<string, unknown>
+          if ('from' in i) return {
+            ...i,
+            from:     L(i.from     as LocalizedString, locale),
+            distance: L(i.distance as LocalizedString, locale),
+            time:     L(i.time     as LocalizedString, locale),
+          }
+          return L(item as LocalizedString, locale)
+        }
+        return item
+      }),
+    })),
+  }
+}
+
 // ─── Package queries ──────────────────────────────────────────────────────────
 
 /** Featured packages for homepage — max 8, cached 5 min */
 export const getFeaturedPackages = unstable_cache(
-  async (): Promise<PackageSummary[]> => {
+  async (locale: string = 'en'): Promise<PackageSummary[]> => {
     await connectDB()
     const PackageModel = (await import('@/models/Package')).default
 
-    // First try packages explicitly marked as featured
     let docs = await PackageModel
       .find({ isActive: true, isFeatured: true })
       .sort({ totalBookings: -1, duration: 1 })
@@ -165,8 +256,6 @@ export const getFeaturedPackages = unstable_cache(
       .select('-itinerary -inclusions -exclusions')
       .lean()
 
-    // Fallback: if no featured packages exist yet (e.g. fresh seed without isFeatured set),
-    // return all active packages sorted by popularity so the homepage is never empty
     if (docs.length === 0) {
       docs = await PackageModel
         .find({ isActive: true })
@@ -176,7 +265,9 @@ export const getFeaturedPackages = unstable_cache(
         .lean()
     }
 
-    return docs.map((d) => ser<PackageSummary>(d as Record<string, unknown>))
+    return docs
+      .map(d => ser<Record<string, unknown>>(d as Record<string, unknown>))
+      .map(d => localizePackageSummary(d, locale))
   },
   ['featured-packages'],
   { revalidate: 300, tags: ['packages'] },
@@ -184,7 +275,7 @@ export const getFeaturedPackages = unstable_cache(
 
 /** All active packages for /packages listing — cached 5 min */
 export const getAllPackages = unstable_cache(
-  async (): Promise<PackageSummary[]> => {
+  async (locale: string = 'en'): Promise<PackageSummary[]> => {
     await connectDB()
     const PackageModel = (await import('@/models/Package')).default
     const docs = await PackageModel
@@ -192,7 +283,9 @@ export const getAllPackages = unstable_cache(
       .sort({ isFeatured: -1, totalBookings: -1, duration: 1 })
       .select('-itinerary -inclusions -exclusions')
       .lean()
-    return docs.map((d) => ser<PackageSummary>(d as Record<string, unknown>))
+    return docs
+      .map(d => ser<Record<string, unknown>>(d as Record<string, unknown>))
+      .map(d => localizePackageSummary(d, locale))
   },
   ['all-packages'],
   { revalidate: 300, tags: ['packages'] },
@@ -200,12 +293,13 @@ export const getAllPackages = unstable_cache(
 
 /** Single package full detail for /packages/[slug] — cached 5 min */
 export const getPackageBySlug = unstable_cache(
-  async (slug: string): Promise<PackageDetail | null> => {
+  async (slug: string, locale: string = 'en'): Promise<PackageDetail | null> => {
     await connectDB()
     const PackageModel = (await import('@/models/Package')).default
     const doc = await PackageModel.findOne({ slug, isActive: true }).lean()
     if (!doc) return null
-    return ser<PackageDetail>(doc as Record<string, unknown>)
+    const raw = ser<Record<string, unknown>>(doc as Record<string, unknown>)
+    return localizePackageDetail(raw, locale)
   },
   ['package-by-slug'],
   { revalidate: 300, tags: ['packages'] },
@@ -227,16 +321,18 @@ export const getAllPackageSlugs = unstable_cache(
 
 /** Featured places for homepage — max 8, cached 1 hour */
 export const getFeaturedPlaces = unstable_cache(
-  async (): Promise<PlaceSummary[]> => {
+  async (locale: string = 'en'): Promise<PlaceSummary[]> => {
     await connectDB()
     const PlaceModel = (await import('@/models/Place')).default
     const docs = await PlaceModel
       .find({ isFeatured: true })
-      .sort({ name: 1 })
+      .sort({ _id: 1 })
       .limit(8)
       .select('-sections')
       .lean()
-    return docs.map((d) => ser<PlaceSummary>(d as Record<string, unknown>))
+    return docs
+      .map(d => ser<Record<string, unknown>>(d as Record<string, unknown>))
+      .map(d => localizePlaceSummary(d, locale))
   },
   ['featured-places'],
   { revalidate: 3600, tags: ['places'] },
@@ -244,15 +340,17 @@ export const getFeaturedPlaces = unstable_cache(
 
 /** All places for /places listing — cached 1 hour */
 export const getAllPlaces = unstable_cache(
-  async (): Promise<PlaceSummary[]> => {
+  async (locale: string = 'en'): Promise<PlaceSummary[]> => {
     await connectDB()
     const PlaceModel = (await import('@/models/Place')).default
     const docs = await PlaceModel
       .find({})
-      .sort({ isFeatured: -1, name: 1 })
+      .sort({ isFeatured: -1, _id: 1 })
       .select('-sections')
       .lean()
-    return docs.map((d) => ser<PlaceSummary>(d as Record<string, unknown>))
+    return docs
+      .map(d => ser<Record<string, unknown>>(d as Record<string, unknown>))
+      .map(d => localizePlaceSummary(d, locale))
   },
   ['all-places'],
   { revalidate: 3600, tags: ['places'] },
@@ -260,12 +358,13 @@ export const getAllPlaces = unstable_cache(
 
 /** Single place full detail for /places/[slug] — cached 1 hour */
 export const getPlaceBySlug = unstable_cache(
-  async (slug: string): Promise<PlaceDetail | null> => {
+  async (slug: string, locale: string = 'en'): Promise<PlaceDetail | null> => {
     await connectDB()
     const PlaceModel = (await import('@/models/Place')).default
     const doc = await PlaceModel.findOne({ slug }).lean()
     if (!doc) return null
-    return ser<PlaceDetail>(doc as Record<string, unknown>)
+    const raw = ser<Record<string, unknown>>(doc as Record<string, unknown>)
+    return localizeFullPlace(raw, locale)
   },
   ['place-by-slug'],
   { revalidate: 3600, tags: ['places'] },
@@ -289,7 +388,7 @@ export const getAllPlaceSlugs = unstable_cache(
 export const getApprovedReviews = unstable_cache(
   async (limit = 6): Promise<ReviewSummary[]> => {
     await connectDB()
-    await import('@/models/User') 
+    await import('@/models/User')
     const Review = (await import('@/models/Review')).default
     const docs = await Review
       .find({ isApproved: true })
@@ -307,7 +406,7 @@ export const getApprovedReviews = unstable_cache(
       customer: { name: (r.customer as { name?: string } | null)?.name ?? 'Devotee' },
       package:  r.package
         ? {
-            name: (r.package as { name?: string })?.name ?? '',
+            name: L((r.package as { name?: unknown })?.name, 'en'),
             slug: (r.package as { slug?: string })?.slug ?? '',
           }
         : undefined,

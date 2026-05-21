@@ -1,41 +1,46 @@
-import { Link } from '@/i18n/navigation'
+'use client'
+
+import { useTranslations } from 'next-intl'
+import { Link }            from '@/i18n/navigation'
 
 export default function NotFound() {
+  const t = useTranslations('NotFound')
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-4">
       <div className="text-center max-w-md mx-auto">
         <p className="text-8xl mb-6">🙏</p>
         <h1
-          className="text-4xl font-bold text-gray-900 mb-3"
+          className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3"
           style={{ fontFamily: 'var(--font-serif)' }}
         >
-          Page Not Found
+          {t('notFoundLabel')}
         </h1>
-        <p className="text-gray-500 mb-2 text-base">
-          This page has gone on a Vrindavan Parikrama and hasn&apos;t returned yet.
+        <p className="text-gray-500 dark:text-gray-400 mb-2 text-base">
+          {t('notExist')}
         </p>
         <p className="text-saffron-500 font-semibold text-sm mb-8">
           Jai Shri Krishna 🌸
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
           <Link href="/" className="btn-primary">
-            Back to Home
+            {t('backHome')}
           </Link>
           <Link href="/packages" className="btn-secondary">
-            View Packages
+            {t('navPackages')}
           </Link>
         </div>
         <div className="mt-8 flex flex-wrap gap-3 justify-center text-sm">
           {[
-            { label: 'Places',      href: '/places' },
-            { label: 'Hotels',      href: '/hotels' },
-            { label: 'Contact',     href: '/contact' },
-            { label: 'Book a Tour', href: '/booking' },
+            { label: t('navPlaces'),  href: '/places' },
+            { label: t('navHotels'),  href: '/hotels' },
+            { label: t('navContact'), href: '/contact' },
+            { label: t('navBooking'), href: '/booking' },
           ].map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-gray-400 hover:text-saffron-600 transition-colors"
+              className="text-gray-400 dark:text-gray-500 hover:text-saffron-600 transition-colors"
             >
               {link.label}
             </Link>

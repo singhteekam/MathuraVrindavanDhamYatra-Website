@@ -5,13 +5,16 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams }               from 'next/navigation'
 import { Link }                          from '@/i18n/navigation'
+import { useLocale, useTranslations }     from 'next-intl'
 import { motion }                        from 'framer-motion'
 import {
   CheckCircle, Phone, MessageCircle, Home, Package,
   Calendar, Car, MapPin, Clock, Copy, Check,
 } from 'lucide-react'
 import { siteConfig }      from '@/config/site'
-import { formatCurrency, formatDate } from '@/lib/utils'
+import { formatCurrency } from '@/lib/utils'
+
+const INTL_LOCALE = { en: 'en-IN', hi: 'hi-IN' } as const
 
 interface BookingDetail {
   bookingId:      string
@@ -27,6 +30,8 @@ interface BookingDetail {
 
 function ConfirmationContent() {
   const searchParams = useSearchParams()
+  const locale       = useLocale() as keyof typeof INTL_LOCALE
+  const t            = useTranslations('BookingConfirmation')
   const bookingId    = searchParams.get('id')      ?? ''
   const amount       = Number(searchParams.get('amount')  ?? 0)
   const advance      = Number(searchParams.get('advance') ?? 0)
@@ -53,10 +58,19 @@ function ConfirmationContent() {
 
   const displayAmount  = booking?.totalAmount  ?? amount
   const displayAdvance = booking?.advanceAmount ?? advance
-  const whatsappMsg    = `Namaste! I just confirmed my tour booking. Booking ID: *${bookingId}*. Please confirm the details. 🙏`
+  const dateLocale     = INTL_LOCALE[locale] ?? 'en-IN'
+  const whatsappMsg    = t('whatsAppMessage', { bookingId })
+
+  function formatDisplayDate(value: string) {
+    return new Date(value).toLocaleDateString(dateLocale, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-10 px-4">
       <div className="max-w-lg mx-auto">
 
         {/* Success animation */}
@@ -70,11 +84,11 @@ function ConfirmationContent() {
             style={{ background: 'linear-gradient(135deg, #ff7d0f, #c74a06)' }}>
             <CheckCircle size={40} className="text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1"
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1"
             style={{ fontFamily: 'var(--font-serif)' }}>
-            Booking Confirmed!
+            {t('title')}
           </h1>
-          <p className="text-saffron-500 font-semibold">Jai Shri Krishna 🙏</p>
+          <p className="text-saffron-500 font-semibold">{t('subtitle')}</p>
         </motion.div>
 
         {/* Booking ID card */}
@@ -83,22 +97,22 @@ function ConfirmationContent() {
           className="rounded-2xl p-6 mb-5 text-center"
           style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}
         >
-          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">Your Booking ID</p>
+          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">{t('yourBookingId')}</p>
           <div className="flex items-center justify-center gap-3">
             <p className="text-2xl font-bold" style={{ color: '#ff7d0f', fontFamily: 'var(--font-serif)' }}>
-              {bookingId || 'Processing...'}
+              {bookingId || t('processing')}
             </p>
             {bookingId && (
               <button onClick={copyBookingId}
                 className="p-2 rounded-lg transition-colors"
                 style={{ background: '#fff', border: '1px solid #ffdba8' }}
-                title="Copy booking ID">
+                title={t('copyBookingId')}>
                 {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} className="text-gray-400" />}
               </button>
             )}
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            Save this ID — you&apos;ll need it to track your booking
+            {t('saveIdNote')}
           </p>
         </motion.div>
 
@@ -108,46 +122,46 @@ function ConfirmationContent() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className="card rounded-2xl p-5 mb-5"
           >
-            <h3 className="font-bold text-gray-900 mb-4">Booking Details</h3>
+            <h3 className="font-bold text-gray-900 dark:text-white mb-4">{t('bookingDetails')}</h3>
             <div className="space-y-3">
               {booking?.carName && (
                 <div className="flex items-center gap-2 text-sm">
                   <Car size={14} className="text-saffron-500 flex-shrink-0" />
-                  <span className="text-gray-500">Vehicle:</span>
-                  <span className="font-semibold text-gray-800">{booking.carName}</span>
+                  <span className="text-gray-500 dark:text-gray-400">{t('vehicle')}:</span>
+                  <span className="font-semibold text-gray-800 dark:text-gray-100">{booking.carName}</span>
                 </div>
               )}
               {booking?.startDate && (
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar size={14} className="text-saffron-500 flex-shrink-0" />
-                  <span className="text-gray-500">Date:</span>
-                  <span className="font-semibold text-gray-800">{formatDate(booking.startDate)}</span>
+                  <span className="text-gray-500 dark:text-gray-400">{t('date')}:</span>
+                  <span className="font-semibold text-gray-800 dark:text-gray-100">{formatDisplayDate(booking.startDate)}</span>
                 </div>
               )}
               {booking?.pickupLocation && (
                 <div className="flex items-start gap-2 text-sm">
                   <MapPin size={14} className="text-saffron-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-500">Pickup:</span>
-                  <span className="font-semibold text-gray-800">{booking.pickupLocation}</span>
+                  <span className="text-gray-500 dark:text-gray-400">{t('pickup')}:</span>
+                  <span className="font-semibold text-gray-800 dark:text-gray-100">{booking.pickupLocation}</span>
                 </div>
               )}
 
               {/* Payment summary */}
               {displayAmount > 0 && (
-                <div className="mt-4 pt-4" style={{ borderTop: '1px solid #f3f4f6' }}>
+                <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border-muted)' }}>
                   <div className="flex justify-between text-sm mb-1.5">
-                    <span className="text-gray-500">Total Amount</span>
-                    <span className="font-bold text-gray-900">{formatCurrency(displayAmount)}</span>
+                    <span className="text-gray-500 dark:text-gray-400">{t('totalAmount')}</span>
+                    <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(displayAmount)}</span>
                   </div>
                   {displayAdvance > 0 && (
                     <>
                       <div className="flex justify-between text-sm mb-1.5">
-                        <span className="text-gray-500">Advance to pay</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t('advanceToPay')}</span>
                         <span className="font-bold text-saffron-600">{formatCurrency(displayAdvance)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-500">Balance on trip day</span>
-                        <span className="font-semibold text-gray-700">{formatCurrency(displayAmount - displayAdvance)}</span>
+                        <span className="text-gray-500 dark:text-gray-400">{t('balanceOnTripDay')}</span>
+                        <span className="font-semibold text-gray-700 dark:text-gray-200">{formatCurrency(displayAmount - displayAdvance)}</span>
                       </div>
                     </>
                   )}
@@ -162,15 +176,15 @@ function ConfirmationContent() {
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
           className="card rounded-2xl p-5 mb-5"
         >
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Clock size={16} className="text-saffron-500" />What happens next?
+          <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <Clock size={16} className="text-saffron-500" />{t('whatNext')}
           </h3>
           <div className="space-y-3">
             {[
-              { step: '1', text: 'Our team will call you within 30 minutes to confirm your booking.', time: 'Within 30 min' },
-              { step: '2', text: 'We assign a verified driver and share their name, photo & number.', time: 'Same day' },
-              { step: '3', text: 'A WhatsApp confirmation with full details is sent to your number.', time: 'After call' },
-              { step: '4', text: 'Your driver arrives at the pickup point on time, ready for your journey.', time: 'Trip day' },
+              { step: '1', text: t('nextStep1Text'), time: t('nextStep1Time') },
+              { step: '2', text: t('nextStep2Text'), time: t('nextStep2Time') },
+              { step: '3', text: t('nextStep3Text'), time: t('nextStep3Time') },
+              { step: '4', text: t('nextStep4Text'), time: t('nextStep4Time') },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 mt-0.5"
@@ -178,7 +192,7 @@ function ConfirmationContent() {
                   {item.step}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-700 leading-relaxed">{item.text}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{item.text}</p>
                   <p className="text-xs text-saffron-500 font-semibold mt-0.5">{item.time}</p>
                 </div>
               </div>
@@ -196,32 +210,32 @@ function ConfirmationContent() {
             target="_blank" rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-4 rounded-full font-semibold text-sm"
             style={{ background: '#22c55e', color: '#fff' }}>
-            <MessageCircle size={18} />Confirm via WhatsApp
+            <MessageCircle size={18} />{t('confirmViaWhatsApp')}
           </a>
 
           <a href={`tel:${siteConfig.phone}`}
-            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-semibold text-sm border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors">
+            className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-semibold text-sm border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
             <Phone size={16} />{siteConfig.phone}
           </a>
 
           <div className="grid grid-cols-3 gap-3">
             <Link href="/" className="flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-semibold transition-colors"
-              style={{ background: '#f3f4f6', color: '#374151' }}>
-              <Home size={16} />Home
+              style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-secondary)' }}>
+              <Home size={16} />{t('home')}
             </Link>
             <Link href="/packages" className="flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-semibold transition-colors"
-              style={{ background: '#f3f4f6', color: '#374151' }}>
-              <Package size={16} />Packages
+              style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-secondary)' }}>
+              <Package size={16} />{t('packages')}
             </Link>
             <Link href="/customer" className="flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-semibold transition-colors"
-              style={{ background: '#fff8ed', color: '#ff7d0f' }}>
-              <Car size={16} />My Trips
+              style={{ background: 'rgba(255, 125, 15, 0.12)', color: '#ff7d0f' }}>
+              <Car size={16} />{t('myTrips')}
             </Link>
           </div>
         </motion.div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
-          A confirmation email will be sent if you provided your email address.
+        <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-6">
+          {t('emailNote')}
         </p>
       </div>
     </div>
@@ -231,7 +245,7 @@ function ConfirmationContent() {
 export default function ConfirmationPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
         <div className="w-8 h-8 border-4 border-saffron-500 border-t-transparent rounded-full animate-spin" />
       </div>
     }>

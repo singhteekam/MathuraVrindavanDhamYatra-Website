@@ -41,7 +41,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
     const place = await Place.findOneAndUpdate(
       { slug },
       { $set: body },
-      { new: true, runValidators: true },
+      { new: true },
     )
 
     if (!place) return errorResponse('Place not found.', 404)

@@ -12,16 +12,22 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
+type BLField = string | { en: string; hi: string }
+function str(v: BLField | undefined): string {
+  if (!v) return ''
+  return typeof v === 'string' ? v : v.en
+}
+
 interface Place {
   _id:        string
   slug:       string
-  name:       string
-  city:       string
-  type:       string
+  name:       BLField
+  city:       BLField
+  type:       BLField
   thumbnail?: string
   isFeatured: boolean
-  entryFee?:  string
-  tags:       string[]
+  entryFee?:  BLField
+  tags:       BLField[]
 }
 
 const CITIES = ['All', 'Mathura', 'Vrindavan', 'Govardhan', 'Gokul', 'Barsana', 'Nandgaon']
@@ -70,8 +76,8 @@ export default function SuperadminPlacesPage() {
   }
 
   const filtered = places.filter((p) => {
-    if (city !== 'All' && p.city !== city) return false
-    if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false
+    if (city !== 'All' && str(p.city) !== city) return false
+    if (search && !str(p.name).toLowerCase().includes(search.toLowerCase())) return false
     return true
   })
 
@@ -135,10 +141,10 @@ export default function SuperadminPlacesPage() {
               {/* Image */}
               <div className="relative h-32 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center">
                 {place.thumbnail ? (
-                  <Image src={place.thumbnail} alt={place.name} fill
+                  <Image src={place.thumbnail} alt={str(place.name)} fill
                     sizes="300px" className="object-cover" />
                 ) : (
-                  <span className="text-4xl">{TYPE_EMOJI[place.type] ?? '📍'}</span>
+                  <span className="text-4xl">{TYPE_EMOJI[str(place.type)] ?? '📍'}</span>
                 )}
                 {place.isFeatured && (
                   <div className="absolute top-2 left-2">
@@ -151,10 +157,10 @@ export default function SuperadminPlacesPage() {
               {/* Content */}
               <div className="p-3 flex flex-col flex-1">
                 <p className="text-xs text-gray-400 flex items-center gap-1 mb-0.5">
-                  <MapPin size={9} />{place.city}
+                  <MapPin size={9} />{str(place.city)}
                 </p>
                 <h3 className="font-bold text-gray-900 text-sm leading-tight mb-2 line-clamp-2">
-                  {place.name}
+                  {str(place.name)}
                 </h3>
 
                 <div className="flex gap-2 mt-auto">

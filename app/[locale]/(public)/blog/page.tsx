@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Link }          from '@/i18n/navigation'
 import { Clock, Tag }    from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
+import { BLOG_POSTS, getLocalizedPost } from '@/lib/blogContent'
 
 export const metadata: Metadata = {
   title: 'Travel Blog — Mathura Vrindavan Dham Yatra',
@@ -9,93 +10,15 @@ export const metadata: Metadata = {
     'Travel guides, temple timings, festival dates, and tips for visiting Mathura and Vrindavan. Everything you need to plan your pilgrimage.',
 }
 
-const POSTS = [
-  {
-    slug:     'best-time-to-visit-mathura-vrindavan',
-    title:    'Best Time to Visit Mathura and Vrindavan',
-    excerpt:  'October to March is perfect — pleasant weather, clear skies, and peaceful darshan. Here is a month-by-month guide to help you plan.',
-    date:     'January 15, 2025',
-    readTime: '5 min read',
-    category: 'Travel Guide',
-    emoji:    '🗓️',
-    featured: true,
-  },
-  {
-    slug:     'complete-mathura-vrindavan-temples-guide',
-    title:    'Complete Guide to 20 Must-Visit Temples in Mathura Vrindavan',
-    excerpt:  'From Krishna Janmabhoomi to Prem Mandir — timings, significance, and practical tips for visiting every major temple in Braj.',
-    date:     'December 10, 2024',
-    readTime: '12 min read',
-    category: 'Temple Guide',
-    emoji:    '🛕',
-    featured: true,
-  },
-  {
-    slug:     'govardhan-parikrama-complete-guide',
-    title:    'Govardhan Parikrama — The Complete Pilgrim\'s Guide',
-    excerpt:  'Everything about the sacred 21 km circumambulation — route, stops, best time, e-rickshaw options, and what to expect.',
-    date:     'November 22, 2024',
-    readTime: '8 min read',
-    category: 'Pilgrimage',
-    emoji:    '⛰️',
-    featured: false,
-  },
-  {
-    slug:     'mathura-holi-festival-guide',
-    title:    'Mathura Holi — The World\'s Most Colourful Festival Guide',
-    excerpt:  'Barsana Lathmar Holi, Vrindavan Phoolon Ki Holi, and Mathura Holi — dates, locations, and how to experience each one safely.',
-    date:     'October 5, 2024',
-    readTime: '7 min read',
-    category: 'Festivals',
-    emoji:    '🎨',
-    featured: true,
-  },
-  {
-    slug:     'janmashtami-mathura-guide',
-    title:    'Janmashtami in Mathura — The Ultimate Experience Guide',
-    excerpt:  'Krishna\'s birthday is celebrated like nowhere else on Earth. Here\'s how to witness this spectacular festival in his birthplace.',
-    date:     'September 18, 2024',
-    readTime: '6 min read',
-    category: 'Festivals',
-    emoji:    '🎉',
-    featured: false,
-  },
-  {
-    slug:     'mathura-vrindavan-one-day-itinerary',
-    title:    'Perfect One Day Itinerary for Mathura and Vrindavan',
-    excerpt:  'How to see the best of both cities in a single day — temple order, timings, lunch spots, and what to skip if time is short.',
-    date:     'August 30, 2024',
-    readTime: '6 min read',
-    category: 'Itinerary',
-    emoji:    '📍',
-    featured: false,
-  },
-  {
-    slug:     '84-kos-braj-yatra-guide',
-    title:    '84 Kos Braj Yatra — What You Need to Know',
-    excerpt:  'The sacred 84 Kos circumambulation of all Braj Mandal. Route, duration, important stops, and how to join an organized yatra.',
-    date:     'July 12, 2024',
-    readTime: '10 min read',
-    category: 'Pilgrimage',
-    emoji:    '🚶',
-    featured: false,
-  },
-  {
-    slug:     'mathura-vrindavan-family-travel-guide',
-    title:    'Mathura Vrindavan with Family — Complete Tips',
-    excerpt:  'Travelling with children or elderly parents? Here is everything you need for a comfortable, safe and spiritually enriching family trip.',
-    date:     'June 20, 2024',
-    readTime: '7 min read',
-    category: 'Family Travel',
-    emoji:    '👨‍👩‍👧‍👦',
-    featured: false,
-  },
-]
+type Props = { params: Promise<{ locale: string }> }
 
-export default async function BlogPage() {
-  const t          = await getTranslations('BlogPage')
-  const featured   = POSTS.filter((p) => p.featured)
-  const regular    = POSTS.filter((p) => !p.featured)
+export default async function BlogPage({ params }: Props) {
+  const { locale } = await params
+  const t          = await getTranslations({ locale, namespace: 'BlogPage' })
+
+  const posts    = BLOG_POSTS.map((p) => ({ ...getLocalizedPost(p, locale), date: p.date, emoji: p.emoji, featured: p.featured }))
+  const featured = posts.filter((p) => p.featured)
+  const regular  = posts.filter((p) => !p.featured)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -174,7 +97,7 @@ export default async function BlogPage() {
               <div key={post.slug}
                 className="card card-hover rounded-2xl p-5 flex items-start gap-5"
               >
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-3xl"
+                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 text-3xl"
                   style={{ background: '#fff8ed' }}>
                   {post.emoji}
                 </div>
@@ -190,7 +113,7 @@ export default async function BlogPage() {
                   <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed line-clamp-2">{post.excerpt}</p>
                 </div>
                 <Link href={`/blog/${post.slug}`}
-                  className="text-xs font-semibold whitespace-nowrap flex-shrink-0 self-center"
+                  className="text-xs font-semibold whitespace-nowrap shrink-0 self-center"
                   style={{ color: '#ff7d0f' }}>
                   {t('read')}
                 </Link>

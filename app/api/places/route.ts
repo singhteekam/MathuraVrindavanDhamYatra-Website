@@ -21,20 +21,35 @@ export async function GET(req: NextRequest) {
     const skip     = (page - 1) * limit
 
     const filter: Record<string, unknown> = {}
-    if (city)     filter.city       = { $regex: city, $options: 'i' }
-    if (type)     filter.type       = type
+    if (city) {
+      const re = { $regex: city, $options: 'i' }
+      filter.$and = [{ $or: [{ 'city.en': re }, { city: re }] }]
+    }
+    if (type) {
+      const typeClause = { $or: [{ 'type.en': type }, { type }] }
+      filter.$and = filter.$and
+        ? [...(filter.$and as unknown[]), typeClause]
+        : [typeClause]
+    }
     if (featured) filter.isFeatured = true
     if (search) {
+      const re = { $regex: search, $options: 'i' }
       filter.$or = [
-        { name:             { $regex: search, $options: 'i' } },
-        { shortDescription: { $regex: search, $options: 'i' } },
-        { tags:             { $in: [new RegExp(search, 'i')] } },
+        { 'name.en':             re },
+        { 'name.hi':             re },
+        { 'shortDescription.en': re },
+        { 'shortDescription.hi': re },
+        { name:             re },
+        { shortDescription: re },
+        { 'tags.en': re },
+        { 'tags.hi': re },
+        { tags: { $in: [new RegExp(search, 'i')] } },
       ]
     }
 
     const [places, total] = await Promise.all([
       Place.find(filter)
-        .sort({ isFeatured: -1, name: 1 })
+        .sort({ isFeatured: -1, _id: 1 })
         .skip(skip)
         .limit(limit)
         .select('-sections')  // omit heavy sections for listing

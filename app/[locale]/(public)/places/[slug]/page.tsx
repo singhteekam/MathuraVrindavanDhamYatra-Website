@@ -4,7 +4,7 @@ import PlaceDetailClient   from './PlaceDetailClient'
 import { getPlaceBySlug, getAllPlaces, getAllPlaceSlugs } from '@/lib/fetchData'
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string; locale: string }>
 }
 
 export async function generateStaticParams() {
@@ -13,8 +13,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const place    = await getPlaceBySlug(slug)
+  const { slug, locale } = await params
+  const place    = await getPlaceBySlug(slug, locale)
   if (!place) return { title: 'Place Not Found' }
   return {
     title:       `${place.name} \u2014 Mathura Vrindavan Dham Yatra`,
@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const revalidate = 3600
 
 export default async function PlaceDetailPage({ params }: Props) {
-  const { slug } = await params
+  const { slug, locale } = await params
 
   // Fetch full place detail + all places (for related section) in parallel
   const [place, allPlaces] = await Promise.all([
-    getPlaceBySlug(slug),
-    getAllPlaces(),
+    getPlaceBySlug(slug, locale),
+    getAllPlaces(locale),
   ])
 
   if (!place) notFound()

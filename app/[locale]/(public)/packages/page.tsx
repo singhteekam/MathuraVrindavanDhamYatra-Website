@@ -14,8 +14,12 @@ export const metadata: Metadata = {
 // Cached 5 min; busted instantly when admin adds/edits a package
 export const revalidate = 300
 
-export default async function PackagesPage() {
-  // Fetches from MongoDB — cached via unstable_cache with tag 'packages'
-  const packages = await getAllPackages()
+export default async function PackagesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const packages = await getAllPackages(locale)
   return <PackagesClient packages={packages} />
 }

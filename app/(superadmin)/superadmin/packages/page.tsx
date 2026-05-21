@@ -12,10 +12,16 @@ import {
 import toast           from 'react-hot-toast'
 import { formatCurrency } from '@/lib/utils'
 
+type BLField = string | { en: string; hi: string }
+function str(v: BLField | undefined): string {
+  if (!v) return ''
+  return typeof v === 'string' ? v : v.en
+}
+
 interface Pkg {
   _id:          string
   slug:         string
-  name:         string
+  name:         BLField
   duration:     number
   basePrice:    number
   isActive:     boolean
@@ -69,7 +75,7 @@ export default function SuperadminPackagesPage() {
   }
 
   const filtered = packages.filter((p) =>
-    !search || p.name.toLowerCase().includes(search.toLowerCase()),
+    !search || str(p.name).toLowerCase().includes(search.toLowerCase()),
   )
 
   return (
@@ -135,7 +141,7 @@ export default function SuperadminPackagesPage() {
                           <Package size={14} style={{ color: '#6366f1' }} />
                         </div>
                         <span className="font-semibold text-gray-800 text-sm max-w-[200px] truncate">
-                          {pkg.name}
+                          {str(pkg.name)}
                         </span>
                       </div>
                     </td>
@@ -196,7 +202,7 @@ export default function SuperadminPackagesPage() {
                 className="p-4">
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="min-w-0">
-                    <p className="font-bold text-gray-900 text-sm leading-snug truncate">{pkg.name}</p>
+                    <p className="font-bold text-gray-900 text-sm leading-snug truncate">{str(pkg.name)}</p>
                     <p className="text-xs text-gray-400 mt-0.5">
                       {pkg.duration}D · {formatCurrency(pkg.basePrice)}
                     </p>

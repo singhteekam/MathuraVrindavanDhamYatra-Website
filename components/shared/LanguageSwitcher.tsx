@@ -36,9 +36,14 @@ export default function LanguageSwitcher({ variant = 'default' }: Props) {
       setOpen(false)
       return
     }
+    // Persist preference in cookie so middleware can restore it on unprefixed navigation
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`
     startTransition(() => {
+      // Strip 'locale' from params — it's a [locale] segment, NOT a regular route param.
+      // Passing it causes router to double-apply the locale prefix (/hi/hi/).
+      const { locale: _loc, ...routeParams } = params as Record<string, string | string[]>
       // @ts-expect-error -- pathname is dynamic
-      router.replace({ pathname, params }, { locale: newLocale })
+      router.replace({ pathname, params: routeParams }, { locale: newLocale })
       setOpen(false)
     })
   }

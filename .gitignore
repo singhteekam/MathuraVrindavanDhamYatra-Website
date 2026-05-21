@@ -44,3 +44,7 @@ next-env.d.ts
 PROJECT_CONTEXT.json
 
 Context.txt
+PROJECT_HANDOFF.md
+PROJECT_PROGRESS.md
+temp_prompt.txt
+/.claude/

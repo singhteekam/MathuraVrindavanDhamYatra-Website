@@ -10,10 +10,16 @@ import toast from 'react-hot-toast'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
 import { formatCurrency } from '@/lib/utils'
 
+type BLField = string | { en: string; hi: string }
+function str(v: BLField | undefined): string {
+  if (!v) return ''
+  return typeof v === 'string' ? v : v.en
+}
+
 interface Package {
   _id: string
   slug: string
-  name: string
+  name: BLField
   duration: number
   cities: string[]
   basePrice: number
@@ -47,7 +53,7 @@ export default function AdminPackagesPage() {
 
   const filtered = search.trim()
     ? packages.filter((p) =>
-        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        str(p.name).toLowerCase().includes(search.toLowerCase()) ||
         p.cities.join(' ').toLowerCase().includes(search.toLowerCase())
       )
     : packages
@@ -129,7 +135,7 @@ export default function AdminPackagesPage() {
                 >
                   <td className="px-4 py-3">
                     <div>
-                      <p className="font-semibold text-gray-800 text-sm">{pkg.name}</p>
+                      <p className="font-semibold text-gray-800 text-sm">{str(pkg.name)}</p>
                       <p className="text-xs text-gray-400">{pkg.cities.join(' · ')}</p>
                     </div>
                   </td>
