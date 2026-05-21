@@ -1,0 +1,8 @@
+After completing the assigned task:
+
+1. Update PROJECT_PROGRESS.md incrementally
+2. Move completed tasks from "In Progress" to "Completed"
+3. Add next logical task to "In Progress"
+4. Do NOT rewrite the full file
+5. Modify only affected lines/sections
+6. Keep updates minimal
