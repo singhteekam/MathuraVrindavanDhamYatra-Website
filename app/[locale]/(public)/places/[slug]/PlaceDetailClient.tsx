@@ -1,6 +1,7 @@
 'use client'
 
 import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import {
   MapPin, Clock, Ticket, ChevronRight,
@@ -30,17 +31,17 @@ function SectionRenderer({ section }: { section: PlaceSection }) {
     case 'rich_text':
       return (
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-3" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3" style={{ fontFamily: 'var(--font-serif)' }}>
             {section.title}
           </h2>
-          <p className="text-gray-600 leading-relaxed text-base">{section.content}</p>
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-base">{section.content}</p>
         </div>
       )
 
     case 'highlights':
       return (
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
             {section.title}
           </h2>
           <div className="grid sm:grid-cols-2 gap-3">
@@ -51,11 +52,10 @@ function SectionRenderer({ section }: { section: PlaceSection }) {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="flex items-start gap-3 p-4 rounded-xl"
-                style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}
+                className="flex items-start gap-3 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/40"
               >
                 <span className="text-green-500 font-bold flex-shrink-0 mt-0.5">✓</span>
-                <span className="text-sm text-gray-700">{item}</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">{item}</span>
               </motion.div>
             ))}
           </div>
@@ -65,15 +65,14 @@ function SectionRenderer({ section }: { section: PlaceSection }) {
     case 'travel_tips':
       return (
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
             {section.title}
           </h2>
           <div className="space-y-3">
             {(section.items as string[]).map((tip, i) => (
-              <div key={i} className="flex items-start gap-3 p-4 rounded-xl"
-                style={{ background: '#fffbeb', border: '1px solid #fef3c7' }}>
+              <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/40">
                 <span className="text-amber-500 flex-shrink-0 font-bold">{i + 1}.</span>
-                <span className="text-sm text-gray-700">{tip}</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">{tip}</span>
               </div>
             ))}
           </div>
@@ -84,29 +83,26 @@ function SectionRenderer({ section }: { section: PlaceSection }) {
       type DistanceItem = { from: string; distance: string; time: string }
       return (
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
             {section.title}
           </h2>
-          <div className="overflow-hidden rounded-2xl border border-gray-200">
+          <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-800">
             {(section.items as DistanceItem[]).map((item, i) => (
               <div
                 key={i}
-                className="flex items-center justify-between p-4 gap-4"
-                style={{
-                  borderBottom: i < (section.items?.length ?? 0) - 1 ? '1px solid #f3f4f6' : 'none',
-                  background: i % 2 === 0 ? '#fff' : '#f9fafb',
-                }}
+                className={`flex items-center justify-between p-4 gap-4 ${
+                  i < (section.items?.length ?? 0) - 1 ? 'border-b border-gray-100 dark:border-gray-800' : ''
+                } ${i % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-950'}`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: '#fff8ed' }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-saffron-50 dark:bg-saffron-900/30">
                     <MapPin size={14} style={{ color: '#ff7d0f' }} />
                   </div>
-                  <span className="text-sm font-medium text-gray-800">{item.from}</span>
+                  <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{item.from}</span>
                 </div>
                 <div className="flex items-center gap-4 flex-shrink-0 text-right">
                   <span className="text-sm font-bold" style={{ color: '#ff7d0f' }}>{item.distance}</span>
-                  <span className="text-xs text-gray-400 flex items-center gap-1">
+                  <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
                     <Clock size={11} />{item.time}
                   </span>
                 </div>
@@ -121,20 +117,20 @@ function SectionRenderer({ section }: { section: PlaceSection }) {
       type FaqItem = { question: string; answer: string }
       return (
         <div className="mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
             {section.title}
           </h2>
           <div className="space-y-3">
             {(section.items as FaqItem[]).map((item, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden border border-gray-200">
-                <div className="p-4 bg-gray-50">
-                  <p className="font-semibold text-gray-900 text-sm flex items-start gap-2">
+              <div key={i} className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
+                <div className="p-4 bg-gray-50 dark:bg-gray-900">
+                  <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm flex items-start gap-2">
                     <span className="text-saffron-500 flex-shrink-0 font-bold">Q.</span>
                     {item.question}
                   </p>
                 </div>
-                <div className="p-4 bg-white">
-                  <p className="text-gray-600 text-sm leading-relaxed flex items-start gap-2">
+                <div className="p-4 bg-white dark:bg-gray-950">
+                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed flex items-start gap-2">
                     <span className="font-bold flex-shrink-0" style={{ color: '#16a34a' }}>A.</span>
                     {item.answer}
                   </p>
@@ -158,7 +154,8 @@ interface Props {
 }
 
 export default function PlaceDetailClient({ place, related }: Props) {
-  const whatsappMsg = `Namaste! I want to visit ${place.name} in ${place.city}. Please help me plan a tour. 🙏`
+  const t           = useTranslations('PlaceDetail')
+  const whatsappMsg = t('whatsAppGreeting', { name: place.name, city: place.city })
 
   function handleShare() {
     if (navigator.share) {
@@ -169,12 +166,12 @@ export default function PlaceDetailClient({ place, related }: Props) {
       })
     } else {
       navigator.clipboard.writeText(window.location.href)
-      alert('Link copied!')
+      alert(t('linkCopied'))
     }
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
 
       {/* ── Hero ── */}
       <div
@@ -191,9 +188,9 @@ export default function PlaceDetailClient({ place, related }: Props) {
         <div className="container-custom relative z-10">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6 flex-wrap">
-            <Link href="/"       className="hover:text-saffron-400 transition-colors">Home</Link>
+            <Link href="/"       className="hover:text-saffron-400 transition-colors">{t('breadcrumbHome')}</Link>
             <ChevronRight size={12} />
-            <Link href="/places" className="hover:text-saffron-400 transition-colors">Places</Link>
+            <Link href="/places" className="hover:text-saffron-400 transition-colors">{t('breadcrumbPlaces')}</Link>
             <ChevronRight size={12} />
             <Link href={`/places?city=${place.city.toLowerCase()}`}
               className="hover:text-saffron-400 transition-colors">{place.city}</Link>
@@ -213,7 +210,7 @@ export default function PlaceDetailClient({ place, related }: Props) {
                 </span>
                 {place.isFeatured && (
                   <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>
-                    ⭐ Must Visit
+                    {t('mustVisit')}
                   </span>
                 )}
               </div>
@@ -244,14 +241,14 @@ export default function PlaceDetailClient({ place, related }: Props) {
                   <div className="flex items-center gap-2 text-sm">
                     <Ticket size={14} className="text-green-400 flex-shrink-0" />
                     <span className={place.entryFee === 'Free' ? 'text-green-400 font-semibold' : 'text-gray-300'}>
-                      Entry: {place.entryFee}
+                      {t('entry')}: {place.entryFee}
                     </span>
                   </div>
                 )}
                 {place.timeRequired && (
                   <div className="flex items-center gap-2 text-sm text-gray-300">
                     <span className="text-blue-400">⏱</span>
-                    Time needed: {place.timeRequired}
+                    {t('timeNeeded')}: {place.timeRequired}
                   </div>
                 )}
               </div>
@@ -267,9 +264,9 @@ export default function PlaceDetailClient({ place, related }: Props) {
               }}
             >
               <p className="text-white font-bold text-lg mb-1" style={{ fontFamily: 'var(--font-serif)' }}>
-                Visit {place.name}
+                {t('visitPlace', { name: place.name })}
               </p>
-              <p className="text-gray-400 text-sm mb-5">Plan your trip with us</p>
+              <p className="text-gray-400 text-sm mb-5">{t('planYourTrip')}</p>
 
               {/* Address */}
               <div className="flex items-start gap-3 mb-5 p-3 rounded-xl"
@@ -289,7 +286,7 @@ export default function PlaceDetailClient({ place, related }: Props) {
 
               <Link href={`/booking?place=${place.slug}`} className="btn-primary w-full mb-3 justify-center">
                 <Calendar size={16} />
-                Book a Tour to Visit
+                {t('bookATour')}
               </Link>
 
               <a
@@ -299,7 +296,7 @@ export default function PlaceDetailClient({ place, related }: Props) {
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-full font-semibold text-sm mb-3 transition-colors"
                 style={{ background: '#dcfce7', color: '#16a34a' }}
               >
-                WhatsApp for Tour Help
+                {t('whatsAppHelp')}
               </a>
 
               <a href={`tel:${siteConfig.phone}`}
@@ -312,7 +309,7 @@ export default function PlaceDetailClient({ place, related }: Props) {
                 onClick={handleShare}
                 className="mt-3 flex items-center justify-center gap-2 w-full py-2.5 rounded-full text-sm font-medium transition-colors text-gray-400 hover:text-gray-200"
               >
-                <Share2 size={14} /> Share this place
+                <Share2 size={14} /> {t('sharePlace')}
               </button>
             </div>
           </div>
@@ -320,22 +317,13 @@ export default function PlaceDetailClient({ place, related }: Props) {
       </div>
 
       {/* ── Tags ── */}
-      <div className="border-b border-gray-100 py-4 bg-white">
+      <div className="border-b border-gray-100 dark:border-gray-800 py-4 bg-white dark:bg-gray-900">
         <div className="container-custom flex flex-wrap gap-2">
           {place.tags.map((tag) => (
             <Link
               key={tag}
               href={`/places?search=${tag}`}
-              className="text-xs px-3 py-1.5 rounded-full transition-colors"
-              style={{ background: '#f3f4f6', color: '#6b7280' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#fff8ed'
-                e.currentTarget.style.color = '#c74a06'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#f3f4f6'
-                e.currentTarget.style.color = '#6b7280'
-              }}
+              className="text-xs px-3 py-1.5 rounded-full transition-colors bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-saffron-50 dark:hover:bg-saffron-900/30 hover:text-saffron-700 dark:hover:text-saffron-300"
             >
               #{tag}
             </Link>
@@ -383,32 +371,31 @@ export default function PlaceDetailClient({ place, related }: Props) {
 
             {/* Quick info card */}
             <div className="card p-5 rounded-2xl">
-              <h3 className="font-bold text-gray-900 mb-4 text-base">Quick Information</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-base">{t('quickInformation')}</h3>
               <div className="space-y-3">
                 {[
-                  { icon: '📍', label: 'City',       value: place.city },
-                  { icon: '🛕', label: 'Type',       value: place.type.replace('-', ' ') },
-                  { icon: '🎟️', label: 'Entry Fee',  value: place.entryFee ?? 'Not specified' },
-                  { icon: '⏱️', label: 'Time Needed',value: place.timeRequired ?? 'Not specified' },
+                  { icon: '📍', label: t('city'),            value: place.city },
+                  { icon: '🛕', label: t('type'),            value: place.type.replace('-', ' ') },
+                  { icon: '🎟️', label: t('entryFee'),        value: place.entryFee ?? t('notSpecified') },
+                  { icon: '⏱️', label: t('timeNeededLabel'), value: place.timeRequired ?? t('notSpecified') },
                 ].map((item) => (
                   <div key={item.label}
-                    className="flex items-center justify-between text-sm py-2"
-                    style={{ borderBottom: '1px solid #f3f4f6' }}
+                    className="flex items-center justify-between text-sm py-2 border-b border-gray-100 dark:border-gray-800"
                   >
-                    <span className="text-gray-500 flex items-center gap-2">
+                    <span className="text-gray-500 dark:text-gray-400 flex items-center gap-2">
                       <span>{item.icon}</span>{item.label}
                     </span>
-                    <span className="font-semibold text-gray-800 capitalize">{item.value}</span>
+                    <span className="font-semibold text-gray-800 dark:text-gray-200 capitalize">{item.value}</span>
                   </div>
                 ))}
                 {place.timings?.morning && (
-                  <div className="text-sm py-2" style={{ borderBottom: '1px solid #f3f4f6' }}>
-                    <p className="text-gray-500 mb-1 flex items-center gap-2">
-                      <span>🕐</span>Timings
+                  <div className="text-sm py-2 border-b border-gray-100 dark:border-gray-800">
+                    <p className="text-gray-500 dark:text-gray-400 mb-1 flex items-center gap-2">
+                      <span>🕐</span>{t('timings')}
                     </p>
-                    <p className="font-semibold text-gray-800">{place.timings.morning}</p>
+                    <p className="font-semibold text-gray-800 dark:text-gray-200">{place.timings.morning}</p>
                     {place.timings.evening && (
-                      <p className="font-semibold text-gray-800">{place.timings.evening}</p>
+                      <p className="font-semibold text-gray-800 dark:text-gray-200">{place.timings.evening}</p>
                     )}
                   </div>
                 )}
@@ -425,14 +412,14 @@ export default function PlaceDetailClient({ place, related }: Props) {
             >
               <p className="text-3xl mb-3">🙏</p>
               <h3 className="font-bold text-gray-900 mb-2 text-sm">
-                Want to Visit {place.city}?
+                {t('wantToVisit', { city: place.city })}
               </h3>
               <p className="text-gray-500 text-xs mb-4 leading-relaxed">
-                Book a guided tour with our expert drivers who know every temple in Braj.
+                {t('wantToVisitDesc')}
               </p>
               <Link href={`/packages?city=${place.city.toLowerCase()}`}
                 className="btn-primary w-full justify-center text-sm py-3">
-                View {place.city} Packages
+                {t('viewCityPackages', { city: place.city })}
               </Link>
             </div>
 
@@ -449,15 +436,14 @@ export default function PlaceDetailClient({ place, related }: Props) {
                 </div>
               </div>
               <div className="p-4">
-                <p className="text-xs text-gray-500 leading-relaxed">{place.location.address}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{place.location.address}</p>
                 <a
                   href={`https://maps.google.com/?q=${place.location.lat},${place.location.lng}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 flex items-center gap-1.5 text-xs font-semibold transition-colors"
-                  style={{ color: '#4338ca' }}
+                  className="mt-3 flex items-center gap-1.5 text-xs font-semibold transition-colors text-krishna-700 dark:text-krishna-400"
                 >
-                  <MapPin size={12} /> Open in Google Maps
+                  <MapPin size={12} /> {t('openMaps')}
                 </a>
               </div>
             </div>
@@ -468,13 +454,13 @@ export default function PlaceDetailClient({ place, related }: Props) {
         {related.length > 0 && (
           <div className="mt-14">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>
-                More Places in {place.city}
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
+                {t('morePlacesIn', { city: place.city })}
               </h2>
               <Link href={`/places?city=${place.city.toLowerCase()}`}
                 className="text-sm font-semibold flex items-center gap-1"
                 style={{ color: '#ff7d0f' }}>
-                View all <ChevronRight size={15} />
+                {t('viewAll')} <ChevronRight size={15} />
               </Link>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -499,8 +485,8 @@ export default function PlaceDetailClient({ place, related }: Props) {
         {/* Back link */}
         <div className="mt-12">
           <Link href="/places"
-            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-saffron-600 transition-colors font-medium">
-            <ArrowLeft size={15} /> Back to all places
+            className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-saffron-600 dark:hover:text-saffron-400 transition-colors font-medium">
+            <ArrowLeft size={15} /> {t('backToPlaces')}
           </Link>
         </div>
       </div>
