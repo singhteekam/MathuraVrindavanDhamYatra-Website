@@ -95,7 +95,7 @@ export default async function HomePage({
       <WhyChooseUs />
       <Testimonials />
       <CTASection />
-      <Footer />
+      <Footer locale={locale} />
       <WhatsAppButton />
     </>
   )
