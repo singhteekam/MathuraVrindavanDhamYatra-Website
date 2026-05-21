@@ -188,7 +188,7 @@ export default function SuperadminNewPlacePage() {
       sections: prev.sections.map((s, idx) => {
         if (idx !== si) return s
         const isDistance = s.type === 'distances'
-        const newItem: SectionItem = isDistance ? { from: { en: '', hi: '' }, distance: '', time: '' } : { en: '', hi: '' }
+        const newItem: SectionItem = isDistance ? { from: { en: '', hi: '' }, distance: { en: '', hi: '' }, time: { en: '', hi: '' } } : { en: '', hi: '' }
         return { ...s, items: [...s.items, newItem] }
       }),
     }))
