@@ -21,8 +21,11 @@ function LoginForm() {
   const errorParam   = searchParams.get('error')
   const reasonParam  = searchParams.get('reason')
 
+  const verifiedParam = searchParams.get('verified')
+  const emailParam    = searchParams.get('email') ?? ''
+
   const [tab,       setTab]       = useState<LoginTab>('portal')
-  const [email,     setEmail]     = useState('')
+  const [email,     setEmail]     = useState(emailParam)
   const [password,  setPassword]  = useState('')
   const [secretKey, setSecretKey] = useState('')
   const [showPass,  setShowPass]  = useState(false)
@@ -46,6 +49,17 @@ function LoginForm() {
         redirect:  false,
       })
 
+      if (result?.error === 'EMAIL_NOT_VERIFIED') {
+        // Unverified account — send a fresh OTP and redirect to verify-email
+        toast(t('toast.notVerified'), { icon: '📧' })
+        await fetch('/api/auth/send-otp', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ email: email.trim().toLowerCase() }),
+        }).catch(() => {})
+        router.push(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}`)
+        return
+      }
       if (result?.error) {
         toast.error(
           tab === 'superadmin'
@@ -176,6 +190,15 @@ function LoginForm() {
               </p>
             </div>
           </>
+        )}
+
+        {/* Success: email verified */}
+        {verifiedParam === 'true' && (
+          <div className="flex items-center gap-2 p-3 rounded-xl mb-4 text-sm"
+            style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}>
+            <span className="text-lg flex-shrink-0">✅</span>
+            {t('emailVerifiedSuccess')}
+          </div>
         )}
 
         {/* Error messages */}

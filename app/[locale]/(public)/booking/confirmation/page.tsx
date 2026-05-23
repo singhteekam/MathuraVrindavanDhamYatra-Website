@@ -35,18 +35,18 @@ function ConfirmationContent() {
   const bookingId    = searchParams.get('id')      ?? ''
   const amount       = Number(searchParams.get('amount')  ?? 0)
   const advance      = Number(searchParams.get('advance') ?? 0)
+  const method       = searchParams.get('method') ?? ''      // cash | full | advance | whatsapp | pending
+  const paid         = Number(searchParams.get('paid')    ?? 0)
 
-  const [booking,  setBooking]  = useState<BookingDetail | null>(null)
-  const [loading,  setLoading]  = useState(true)
-  const [copied,   setCopied]   = useState(false)
+  const [booking, setBooking] = useState<BookingDetail | null>(null)
+  const [copied,  setCopied]  = useState(false)
 
   useEffect(() => {
-    if (!bookingId) { setLoading(false); return }
+    if (!bookingId) return
     fetch(`/api/bookings/${bookingId}`)
       .then((r) => r.json())
       .then((d) => { if (d.success) setBooking(d.data) })
       .catch(() => {/* use URL params as fallback */})
-      .finally(() => setLoading(false))
   }, [bookingId])
 
   function copyBookingId() {
@@ -58,6 +58,8 @@ function ConfirmationContent() {
 
   const displayAmount  = booking?.totalAmount  ?? amount
   const displayAdvance = booking?.advanceAmount ?? advance
+  // Resolve paid amount: prefer URL param (set by payment handler) over DB value
+  const displayPaid    = paid > 0 ? paid : (booking as (BookingDetail & { paidAmount?: number }) | null)?.paidAmount ?? 0
   const dateLocale     = INTL_LOCALE[locale] ?? 'en-IN'
   const whatsappMsg    = t('whatsAppMessage', { bookingId })
 
@@ -146,18 +148,70 @@ function ConfirmationContent() {
                 </div>
               )}
 
-              {/* Payment summary */}
+              {/* Payment summary — varies by payment method */}
               {displayAmount > 0 && (
                 <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border-muted)' }}>
-                  <div className="flex justify-between text-sm mb-1.5">
+                  {/* Row: total */}
+                  <div className="flex justify-between text-sm mb-2">
                     <span className="text-gray-500 dark:text-gray-400">{t('totalAmount')}</span>
                     <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(displayAmount)}</span>
                   </div>
-                  {displayAdvance > 0 && (
+
+                  {/* Full payment paid online */}
+                  {method === 'full' && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-green-600 dark:text-green-400 font-semibold">✓ {t('paidOnline')}</span>
+                      <span className="font-bold text-green-600 dark:text-green-400">{formatCurrency(displayPaid || displayAmount)}</span>
+                    </div>
+                  )}
+
+                  {/* Advance paid online — show paid + balance */}
+                  {method === 'advance' && (
+                    <>
+                      <div className="flex justify-between text-sm mb-1.5">
+                        <span className="text-green-600 dark:text-green-400 font-semibold">✓ {t('paidOnline')}</span>
+                        <span className="font-bold text-green-600 dark:text-green-400">{formatCurrency(displayPaid || displayAdvance)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-500 dark:text-gray-400">{t('balanceOnTripDay')}</span>
+                        <span className="font-semibold text-gray-700 dark:text-gray-200">
+                          {formatCurrency(displayAmount - (displayPaid || displayAdvance))}
+                        </span>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Cash — show advance to pay + balance */}
+                  {method === 'cash' && (
+                    <>
+                      {displayAdvance > 0 && (
+                        <div className="flex justify-between text-sm mb-1.5">
+                          <span className="text-gray-500 dark:text-gray-400">{t('advanceToPay')}</span>
+                          <span className="font-bold" style={{ color: '#ff7d0f' }}>{formatCurrency(displayAdvance)}</span>
+                        </div>
+                      )}
+                      <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">ℹ️ {t('payLaterCash')}</p>
+                    </>
+                  )}
+
+                  {/* WhatsApp — pending */}
+                  {method === 'whatsapp' && (
+                    <p className="text-xs text-green-700 dark:text-green-400 mt-1">💬 {t('whatsappNote')}</p>
+                  )}
+
+                  {/* Online payment dismissed/failed — still pending */}
+                  {method === 'pending' && (
+                    <div className="mt-2 p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
+                      <p className="text-xs text-amber-700 dark:text-amber-400">⚠️ {t('paymentPendingNote')}</p>
+                    </div>
+                  )}
+
+                  {/* Legacy / unknown method — old behaviour */}
+                  {!['full','advance','cash','whatsapp','pending'].includes(method) && displayAdvance > 0 && (
                     <>
                       <div className="flex justify-between text-sm mb-1.5">
                         <span className="text-gray-500 dark:text-gray-400">{t('advanceToPay')}</span>
-                        <span className="font-bold text-saffron-600">{formatCurrency(displayAdvance)}</span>
+                        <span className="font-bold" style={{ color: '#ff7d0f' }}>{formatCurrency(displayAdvance)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-500 dark:text-gray-400">{t('balanceOnTripDay')}</span>
@@ -235,7 +289,11 @@ function ConfirmationContent() {
         </motion.div>
 
         <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-6">
-          {t('emailNote')}
+          {(method === 'full' || method === 'advance')
+            ? t('emailConfirmed')
+            : method === 'pending'
+            ? t('emailPending')
+            : t('emailNote')}
         </p>
       </div>
     </div>

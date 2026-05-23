@@ -5,16 +5,23 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { Link, useRouter }     from '@/i18n/navigation'
-import { useTranslations }     from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { motion }              from 'framer-motion'
 import {
   CalendarCheck, Clock, CheckCircle, XCircle,
   RefreshCw, MapPin, Car, Phone, LogOut,
-  Star, MessageCircle, User, IndianRupee,
+  Star, MessageCircle, User, IndianRupee, ChevronRight,
 } from 'lucide-react'
 import toast               from 'react-hot-toast'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { siteConfig }      from '@/config/site'
+
+type BLField = string | { en: string; hi: string }
+function bl(v: BLField | undefined, locale: string): string {
+  if (!v) return ''
+  if (typeof v === 'string') return v
+  return locale === 'hi' ? (v.hi || v.en) : v.en
+}
 
 interface Booking {
   _id:             string
@@ -24,15 +31,18 @@ interface Booking {
   startDate:       string
   totalAmount:     number
   advanceAmount:   number
+  paidAmount?:     number
+  paymentMethod?:  string
   pickupLocation:  string
   totalPassengers: number
   addons:          string[]
-  package?:        { _id: string; name: string; slug: string }
+  package?:        { _id: string; name: BLField; slug: string }
   driver?:         { name: string; phone: string; vehicle: { name: string; number: string } }
 }
 
 export default function CustomerPage() {
   const t                              = useTranslations('CustomerPortal')
+  const locale                         = useLocale()
   const { data: session, status }      = useSession()
   const router                         = useRouter()
   const [bookings,         setBookings]         = useState<Booking[]>([])
@@ -40,7 +50,7 @@ export default function CustomerPage() {
   const [loading,          setLoading]          = useState(true)
   const [activeTab,        setActiveTab]        = useState('All')
 
-  const user = session?.user as { name?: string; email?: string; role?: string } | undefined
+  const user = session?.user as { name?: string; email?: string; role?: string; isVerified?: boolean } | undefined
 
   const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
     pending:         { label: t('statusPending'),        color: '#d97706', bg: '#fffbeb', icon: <Clock       size={13} /> },
@@ -185,6 +195,29 @@ export default function CustomerPage() {
           ))}
         </div>
 
+        {/* Email verification banner */}
+        {user && user.isVerified === false && (
+          <div
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl mb-6"
+            style={{ background: '#fff8ed', border: '1px solid #fde68a' }}
+          >
+            <div className="flex items-start gap-3">
+              <span className="text-2xl shrink-0">📧</span>
+              <div>
+                <p className="font-semibold text-amber-800">{t('verifyEmailTitle')}</p>
+                <p className="text-sm text-amber-700">{t('verifyEmailDesc')}</p>
+              </div>
+            </div>
+            <Link
+              href={`/verify-email?email=${encodeURIComponent(user.email ?? '')}`}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold shrink-0 whitespace-nowrap"
+              style={{ background: '#ff7d0f', color: '#fff' }}
+            >
+              {t('verifyEmailBtn')}
+            </Link>
+          </div>
+        )}
+
         {/* Bookings */}
         <div className="card rounded-2xl overflow-hidden">
           <div className="p-5 border-b border-gray-100 dark:border-gray-700">
@@ -242,7 +275,7 @@ export default function CustomerPage() {
                         </div>
 
                         <h3 className="font-bold text-gray-900 dark:text-white mb-1">
-                          {booking.package?.name ?? booking.carName}
+                          {bl(booking.package?.name, locale) || booking.carName}
                         </h3>
 
                         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400 mb-3">
@@ -272,21 +305,59 @@ export default function CustomerPage() {
                           </div>
                         )}
 
-                        {/* Amount */}
-                        <div className="flex items-center gap-4 text-sm">
-                          <div>
-                            <span className="text-gray-400 dark:text-gray-500 text-xs">{t('labelTotal')}</span>
-                            <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(booking.totalAmount)}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-400 dark:text-gray-500 text-xs">{t('labelAdvancePaid')}</span>
-                            <span className="font-semibold text-green-600">{formatCurrency(booking.advanceAmount)}</span>
-                          </div>
-                        </div>
+                        {/* Payment info — based on actual paidAmount, not advanceAmount */}
+                        {(() => {
+                          const paid   = booking.paidAmount ?? 0
+                          const method = booking.paymentMethod ?? ''
+                          const isCashOrWA = method === 'cash' || method === 'whatsapp'
+                          const balance    = booking.totalAmount - paid
+                          return (
+                            <div className="flex items-center gap-4 text-sm flex-wrap">
+                              <div>
+                                <span className="block text-gray-400 dark:text-gray-500 text-xs">{t('labelTotal')}</span>
+                                <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(booking.totalAmount)}</span>
+                              </div>
+
+                              {paid > 0 ? (
+                                /* Online payment verified */
+                                <>
+                                  <div>
+                                    <span className="block text-gray-400 dark:text-gray-500 text-xs">{t('labelPaid')}</span>
+                                    <span className="font-semibold text-green-600">✓ {formatCurrency(paid)}</span>
+                                  </div>
+                                  {balance > 0 && (
+                                    <div>
+                                      <span className="block text-gray-400 dark:text-gray-500 text-xs">{t('labelBalance')}</span>
+                                      <span className="font-semibold text-amber-600">{formatCurrency(balance)}</span>
+                                    </div>
+                                  )}
+                                </>
+                              ) : isCashOrWA ? (
+                                /* Cash / WhatsApp — will pay on trip day */
+                                <div>
+                                  <span className="block text-gray-400 dark:text-gray-500 text-xs">{t('labelAdvanceDue')}</span>
+                                  <span className="font-semibold text-amber-600">{t('labelPaymentCash')}</span>
+                                </div>
+                              ) : (
+                                /* Online payment created but not yet completed */
+                                <div>
+                                  <span className="block text-gray-400 dark:text-gray-500 text-xs">{t('labelAdvanceDue')}</span>
+                                  <span className="font-semibold text-orange-500">{t('labelPaymentPending')}</span>
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })()}
                       </div>
 
                       {/* Actions */}
                       <div className="flex sm:flex-col gap-2 shrink-0">
+                        <Link
+                          href={`/customer/booking/${booking.bookingId}`}
+                          className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap"
+                          style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                          <ChevronRight size={12} />{t('viewDetails')}
+                        </Link>
                         <a
                           href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('whatsappMsg', { bookingId: booking.bookingId }))}`}
                           target="_blank" rel="noopener noreferrer"
@@ -304,7 +375,7 @@ export default function CustomerPage() {
                               </span>
                             ) : (
                               <Link
-                                href={`/review?booking=${encodeURIComponent(booking._id)}&package=${encodeURIComponent(booking.package?._id ?? '')}&name=${encodeURIComponent(booking.package?.name ?? booking.carName)}`}
+                                href={`/review?booking=${encodeURIComponent(booking._id)}&package=${encodeURIComponent(booking.package?._id ?? '')}&name=${encodeURIComponent(bl(booking.package?.name, locale) || booking.carName)}`}
                                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap"
                                 style={{ background: '#fff8ed', color: '#ff7d0f' }}>
                                 <Star size={12} />{t('leaveReview')}
@@ -336,9 +407,10 @@ export default function CustomerPage() {
             </h3>
             <div className="space-y-3 text-sm">
               {[
-                { label: t('labelName'),  value: user?.name  ?? '—' },
-                { label: t('labelEmail'), value: user?.email ?? '—' },
-                { label: t('labelRole'),  value: user?.role  ?? 'customer' },
+                { label: t('labelName'),   value: user?.name  ?? '—' },
+                { label: t('labelEmail'),  value: user?.email ?? '—' },
+                { label: t('labelRole'),   value: user?.role  ?? 'customer' },
+                { label: t('labelStatus'), value: user?.isVerified ? t('statusVerified') : t('statusNotVerified') },
               ].map((row) => (
                 <div key={row.label} className="flex justify-between p-3 rounded-xl"
                   style={{ background: 'var(--bg-surface-muted)' }}>

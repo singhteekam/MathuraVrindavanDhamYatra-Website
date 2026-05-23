@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Star, Quote } from 'lucide-react'
 import SectionHeader from '@/components/shared/SectionHeader'
 import { getInitials } from '@/lib/utils'
@@ -67,17 +67,25 @@ const STATIC_TESTIMONIALS = [
   },
 ]
 
+// ── BLField resolver ──────────────────────────────────────────────────────────
+type BLField = string | { en: string; hi: string }
+function bl(v: BLField | undefined, locale: string): string {
+  if (!v) return ''
+  if (typeof v === 'string') return v
+  return locale === 'hi' ? (v.hi || v.en) : v.en
+}
+
 // ── Helper: convert a DB ReviewSummary to the same shape as static data ──────
-function reviewToTestimonial(r: ReviewSummary, staticLocation: string) {
+function reviewToTestimonial(r: ReviewSummary, locale: string, staticLocation: string) {
   return {
     name:     r.customer.name,
-    location: staticLocation,         // DB reviews don't store location
+    location: staticLocation,
     rating:   r.rating,
-    date:     new Date(r.createdAt).toLocaleDateString('en-IN', {
+    date:     new Date(r.createdAt).toLocaleDateString(locale === 'hi' ? 'hi-IN' : 'en-IN', {
       month: 'long', year: 'numeric',
     }),
-    review:   r.comment,
-    package:  r.package?.name ?? '',
+    review:   bl(r.comment, locale),
+    package:  bl(r.package?.name, locale),
   }
 }
 
@@ -102,12 +110,13 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export default function Testimonials({ reviews: propReviews }: Props) {
-  const t = useTranslations('Testimonials')
+  const t      = useTranslations('Testimonials')
+  const locale = useLocale()
 
   // Use real DB reviews when available; fall back to static for fresh deployments
   const testimonials =
     propReviews && propReviews.length > 0
-      ? propReviews.map((r) => reviewToTestimonial(r, t('staticLocation')))
+      ? propReviews.map((r) => reviewToTestimonial(r, locale, t('staticLocation')))
       : STATIC_TESTIMONIALS
 
   return (

@@ -53,7 +53,10 @@ export async function POST(req: NextRequest) {
     if (user?.role !== 'admin' && user?.role !== 'superadmin') return errorResponse('Forbidden.', 403)
 
     const body = await req.json()
-    const { name, email, phone, password, licenseNumber, vehicle } = body
+    const {
+      name, email, phone, password, licenseNumber, vehicle, gender,
+      avatar, aadharNumber, aadharFront, aadharBack, panNumber, panCard,
+    } = body
 
     if (!name || !email || !phone || !password || !licenseNumber || !vehicle) {
       return errorResponse('All fields are required.')
@@ -79,6 +82,13 @@ export async function POST(req: NextRequest) {
       name, email, phone,
       licenseNumber,
       vehicle,
+      ...(gender       ? { gender }       : {}),
+      ...(avatar       ? { avatar }       : {}),
+      ...(aadharNumber ? { aadharNumber } : {}),
+      ...(aadharFront  ? { aadharFront }  : {}),
+      ...(aadharBack   ? { aadharBack }   : {}),
+      ...(panNumber    ? { panNumber }    : {}),
+      ...(panCard      ? { panCard }      : {}),
     })
 
     return successResponse({ user: newUser._id, driver: driver._id }, 201)

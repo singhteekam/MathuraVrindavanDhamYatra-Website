@@ -9,15 +9,11 @@ import { successResponse, errorResponse, paginatedResponse } from '@/lib/apiResp
 import { generateBookingId } from '@/lib/utils'
 import bcrypt from 'bcryptjs'
 
-// POST /api/bookings — create a new booking (must be authenticated)
+// POST /api/bookings — create a new booking (auth required for online payment; guests allowed for cash/whatsapp)
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user) {
-      return errorResponse('You must be signed in to create a booking.', 401)
-    }
-
-    const body = await req.json()
+    const body    = await req.json()
     const {
       packageId,
       carType,
@@ -35,21 +31,36 @@ export async function POST(req: NextRequest) {
       customerName,
       customerPhone,
       customerEmail,
+      paymentMethod,
     } = body
 
     if (!carType || !startDate || !pickupLocation || !totalAmount) {
       return errorResponse('Missing required booking fields.')
     }
 
+    const resolvedMethodEarly = (body.paymentMethod ?? 'cash') as string
+    const isOnlinePaymentEarly = resolvedMethodEarly === 'online_full' || resolvedMethodEarly === 'online_advance'
+
+    // Online payment requires auth; cash/whatsapp allowed as guest
+    if (!session?.user && isOnlinePaymentEarly) {
+      return errorResponse('You must be signed in to pay online.', 401)
+    }
+
+    // Guest booking requires contact details
+    if (!session?.user && (!customerName || !customerPhone || !customerEmail)) {
+      return errorResponse('Name, phone, and email are required for guest booking.')
+    }
+
     await connectDB()
 
-    const customerId  = (session.user as { id: string }).id
+    const customerId  = session?.user ? (session.user as { id: string }).id : null
     const bookingId   = generateBookingId()
-    const calcAdvance = advanceAmount ?? Math.round(totalAmount * 0.3)
+    const calcAdvance = advanceAmount ?? 500   // frontend always sends the admin-set amount; 500 is a safe fallback
 
+    const resolvedMethod = paymentMethod ?? 'cash'
     const booking = await Booking.create({
       bookingId,
-      customer:       customerId,
+      ...(customerId ? { customer: customerId } : {}),
       package:        packageId  ?? undefined,
       carType,
       carName:        carName    ?? carType,
@@ -61,26 +72,37 @@ export async function POST(req: NextRequest) {
       totalPassengers:totalPassengers ?? 1,
       totalAmount,
       advanceAmount:  calcAdvance,
+      paidAmount:     0,          // nothing paid yet — updated by /payment/verify
       addons:         addons     ?? [],
       specialRequests:specialRequests ?? undefined,
+      customerName:   customerName   ?? undefined,
+      customerPhone:  customerPhone  ?? undefined,
+      customerEmail:  customerEmail  ?? undefined,  // form-entered email (may differ from account email)
+      paymentMethod:  resolvedMethod,
       status:         'pending',
       paymentStatus:  'pending',
     })
 
-    // Send confirmation email (non-blocking)
-    const emailTarget = customerEmail ?? session.user.email
-    if (emailTarget) {
-      sendBookingConfirmation({
-        bookingId,
-        customerName:   customerName ?? session.user.name ?? 'Valued Customer',
-        customerEmail:  emailTarget,
-        carName:        carName ?? carType,
-        startDate:      new Date(startDate).toLocaleDateString('en-IN', {
-          day: 'numeric', month: 'long', year: 'numeric',
-        }),
-        pickupLocation: pickupLocation.trim(),
-        totalAmount,
-      }).catch(console.error)
+    // Send confirmation email only for non-online methods (cash / whatsapp).
+    // Online payment bookings get their email after /api/payment/verify succeeds.
+    const isOnlinePayment = resolvedMethod === 'online_full' || resolvedMethod === 'online_advance'
+    if (!isOnlinePayment) {
+      // Collect both account email and form-entered email, deduplicated
+      const emailList = [session?.user?.email, customerEmail]
+        .filter((e): e is string => Boolean(e?.trim()))
+      if (emailList.length > 0) {
+        sendBookingConfirmation({
+          bookingId,
+          customerName:   customerName ?? session?.user?.name ?? 'Valued Customer',
+          customerEmail:  emailList,
+          carName:        carName ?? carType,
+          startDate:      new Date(startDate).toLocaleDateString('en-IN', {
+            day: 'numeric', month: 'long', year: 'numeric',
+          }),
+          pickupLocation: pickupLocation.trim(),
+          totalAmount,
+        }).catch(console.error)
+      }
     }
 
     return successResponse(

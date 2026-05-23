@@ -72,7 +72,7 @@ export default function AdminSettingsPage() {
 
   // Admin-editable booking config
   const [bookingConfig, setBookingConfig] = useState({
-    advancePercent:    30,
+    advanceAmount:     500,
     cancellationHours: 24,
     autoConfirm:       false,
     whatsappNotify:    true,
@@ -220,13 +220,13 @@ export default function AdminSettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-                  Advance Payment %
+                  Advance Payment (₹)
                 </label>
-                <input type="number" min={0} max={100}
-                  value={bookingConfig.advancePercent}
-                  onChange={(e) => setBookingConfig({ ...bookingConfig, advancePercent: Number(e.target.value) })}
+                <input type="number" min={0} step={50}
+                  value={bookingConfig.advanceAmount}
+                  onChange={(e) => setBookingConfig({ ...bookingConfig, advanceAmount: Number(e.target.value) })}
                   className="input-field" />
-                <p className="text-xs text-gray-400 mt-1">Customers pay this % upfront to confirm</p>
+                <p className="text-xs text-gray-400 mt-1">Fixed ₹ amount customers pay online to confirm</p>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">

@@ -5,21 +5,30 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence }           from 'framer-motion'
 import {
-  Star, Check, X, Trash2, RefreshCw,
+  Star, Check, X, Trash2, RefreshCw, Languages, Edit2,
   MessageSquare, ThumbsUp, Clock, Filter,
 } from 'lucide-react'
 import toast           from 'react-hot-toast'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
+import ReviewEditModal, { type ReviewForEdit } from './ReviewEditModal'
+
+type BLField = string | { en: string; hi: string }
+function str(v: BLField): string {
+  return typeof v === 'string' ? v : v.en
+}
+function strHi(v: BLField): string | null {
+  return typeof v === 'string' ? null : (v.hi || null)
+}
 
 interface Review {
   _id:        string
   rating:     number
-  title:      string
-  comment:    string
+  title:      BLField
+  comment:    BLField
   isApproved: boolean
   createdAt:  string
   customer:   { name: string; email: string }
-  package?:   { name: string; slug: string }
+  package?:   { name: BLField; slug: string }
 }
 
 type FilterStatus = 'pending' | 'approved' | 'all'
@@ -39,10 +48,12 @@ function StarDisplay({ count }: { count: number }) {
 export default function AdminReviewsPage() {
   const [reviews,      setReviews]      = useState<Review[]>([])
   const [loading,      setLoading]      = useState(true)
-  const [filter,       setFilter]       = useState<FilterStatus>('pending')
+  const [filter,       setFilter]       = useState<FilterStatus>('all')
   const [ratingFilter, setRatingFilter] = useState<number | null>(null)
-  const [deletingId,   setDeletingId]   = useState<string | null>(null)
-  const [actionId,     setActionId]     = useState<string | null>(null)
+  const [deletingId,    setDeletingId]    = useState<string | null>(null)
+  const [actionId,      setActionId]      = useState<string | null>(null)
+  const [translatingId, setTranslatingId] = useState<string | null>(null)
+  const [editingReview, setEditingReview] = useState<ReviewForEdit | null>(null)
 
   const fetchReviews = useCallback(async () => {
     setLoading(true)
@@ -82,7 +93,7 @@ export default function AdminReviewsPage() {
         body:    JSON.stringify({ isApproved: !review.isApproved }),
       })
       if (res.ok) {
-        toast.success(review.isApproved ? 'Review unpublished.' : 'Review approved and published! ⭐')
+        toast.success(review.isApproved ? 'Review unpublished.' : 'Review published! ⭐')
         setReviews((prev) =>
           prev.map((r) => r._id === review._id ? { ...r, isApproved: !r.isApproved } : r),
         )
@@ -111,6 +122,37 @@ export default function AdminReviewsPage() {
       toast.error('Network error.')
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  function hasHindi(v: BLField): boolean {
+    return typeof v !== 'string' && !!v.hi
+  }
+
+  async function translateReview(review: Review) {
+    setTranslatingId(review._id)
+    try {
+      const res = await fetch(`/api/reviews/${review._id}`, {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ action: 'translate' }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setReviews((prev) =>
+          prev.map((r) => r._id === review._id
+            ? { ...r, title: data.data.title, comment: data.data.comment }
+            : r,
+          ),
+        )
+        toast.success('Hindi translation saved.')
+      } else {
+        toast.error(data.error ?? 'Translation failed.')
+      }
+    } catch {
+      toast.error('Network error.')
+    } finally {
+      setTranslatingId(null)
     }
   }
 
@@ -252,16 +294,30 @@ export default function AdminReviewsPage() {
                         </span>
                       </div>
 
-                      {/* Review text */}
-                      <p className="font-semibold text-gray-800 text-sm mb-1">{review.title}</p>
-                      <p className="text-sm text-gray-600 leading-relaxed mb-3">{review.comment}</p>
+                      {/* Review text — EN */}
+                      <p className="font-semibold text-gray-800 text-sm mb-0.5">{str(review.title)}</p>
+                      <p className="text-sm text-gray-600 leading-relaxed mb-1">{str(review.comment)}</p>
+
+                      {/* Hindi translation (shown when available) */}
+                      {strHi(review.title) && (
+                        <div className="mb-3 pl-3 border-l-2 border-indigo-100">
+                          <p className="font-semibold text-indigo-700 text-xs mb-0.5"
+                            style={{ fontFamily: 'var(--font-hindi)' }}>
+                            {strHi(review.title)}
+                          </p>
+                          <p className="text-xs text-indigo-500 leading-relaxed"
+                            style={{ fontFamily: 'var(--font-hindi)' }}>
+                            {strHi(review.comment)}
+                          </p>
+                        </div>
+                      )}
 
                       {/* Meta */}
                       <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400">
                         {review.package && (
                           <span className="px-2.5 py-1 rounded-full"
                             style={{ background: '#fff8ed', color: '#c74a06' }}>
-                            📦 {review.package.name}
+                            📦 {str(review.package.name)}
                           </span>
                         )}
                         <span>
@@ -288,7 +344,32 @@ export default function AdminReviewsPage() {
                         ) : review.isApproved ? (
                           <><X size={13} /> Unpublish</>
                         ) : (
-                          <><Check size={13} /> Approve</>
+                          <><Check size={13} /> Publish</>
+                        )}
+                      </button>
+
+                      {/* Edit */}
+                      <button type="button"
+                        onClick={() => setEditingReview(review)}
+                        className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap"
+                        style={{ background: '#fff8ed', color: '#c74a06', border: '1px solid #fddcaa' }}>
+                        <Edit2 size={13} /> Edit
+                      </button>
+
+                      {/* Translate */}
+                      <button type="button"
+                        onClick={() => translateReview(review)}
+                        disabled={translatingId === review._id}
+                        className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap disabled:opacity-60"
+                        style={hasHindi(review.title)
+                          ? { background: '#f0f9ff', color: '#0369a1', border: '1px solid #bae6fd' }
+                          : { background: '#eef2ff', color: '#4338ca', border: '1px solid #c7d2fe' }
+                        }
+                        title={hasHindi(review.title) ? 'Re-translate to Hindi' : 'Translate to Hindi'}>
+                        {translatingId === review._id ? (
+                          <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <><Languages size={13} />{hasHindi(review.title) ? 'Re-translate' : 'Translate'}</>
                         )}
                       </button>
 
@@ -312,6 +393,16 @@ export default function AdminReviewsPage() {
           </AnimatePresence>
         </div>
       )}
+
+      <ReviewEditModal
+        review={editingReview}
+        onClose={() => setEditingReview(null)}
+        onSaved={(id, title, comment) => {
+          setReviews((prev) =>
+            prev.map((r) => r._id === id ? { ...r, title, comment } : r),
+          )
+        }}
+      />
     </div>
   )
 }

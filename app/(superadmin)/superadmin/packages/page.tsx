@@ -39,8 +39,7 @@ export default function SuperadminPackagesPage() {
   const fetchPackages = useCallback(async () => {
     setLoading(true)
     try {
-      // Use ?all=true so inactive packages are also shown for superadmin
-      const res  = await fetch('/api/packages?limit=100')
+      const res  = await fetch('/api/packages?limit=100&all=true')
       const data = await res.json()
       if (data.success) setPackages(data.data)
       else toast.error(data.error ?? 'Failed to load packages.')

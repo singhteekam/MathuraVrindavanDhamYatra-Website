@@ -6,11 +6,9 @@ import { connectDB } from '@/lib/db'
 import UserModel from '@/models/User'
 
 // Token lifetime constants
-const ACCESS_TOKEN_MAX_AGE  = 60 * 60 * 8          // 8 hours  (re-validate on every request)
-const SESSION_MAX_AGE       = 60 * 60 * 24 * 7     // 7 days   (JWT cookie lifetime)
-const TOKEN_REFRESH_BUFFER  = 60 * 60              // Refresh token if < 1 hr left
-const SERVER_INACTIVITY_TTL = 60 * 60 * 24         // Server-side: expire after 24 hrs of no API call
-                                                   // Client-side: InactivityWatcher fires at 30 min
+const ACCESS_TOKEN_MAX_AGE = 60 * 60 * 8  // 8 hours  (re-validate from DB)
+const SESSION_MAX_AGE      = 60 * 60 * 24 // 24 hours (absolute session lifetime — auto-logout)
+const TOKEN_REFRESH_BUFFER = 60 * 60      // Refresh token if < 1 hr left
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -40,6 +38,11 @@ export const authOptions: NextAuthOptions = {
           const isValid = await bcrypt.compare(credentials.password, user.password)
           if (!isValid) return null
 
+          // Block unverified customers — admins/drivers are created by superadmin (no email flow)
+          if (!user.emailVerified && user.role === 'customer') {
+            throw new Error('EMAIL_NOT_VERIFIED')
+          }
+
           // Superadmin requires an additional secret key
           if (user.role === 'superadmin') {
             const SUPERADMIN_SECRET = process.env.SUPERADMIN_SECRET_KEY ?? ''
@@ -55,12 +58,13 @@ export const authOptions: NextAuthOptions = {
 
           // Return the minimal user object stored in the JWT
           return {
-            id:    user._id.toString(),
-            name:  user.name,
-            email: user.email,
-            role:  user.role,
-            image: user.avatar ?? null,
-          } as NextAuthUser & { role: string }
+            id:         user._id.toString(),
+            name:       user.name,
+            email:      user.email,
+            role:       user.role,
+            image:      user.avatar ?? null,
+            isVerified: !!user.emailVerified,
+          } as NextAuthUser & { role: string; isVerified: boolean }
         } catch (err) {
           console.error('[Auth] authorize error:', err)
           return null
@@ -80,27 +84,22 @@ export const authOptions: NextAuthOptions = {
 
       // First sign-in — populate token from user object
       if (user) {
-        const u = user as NextAuthUser & { role?: string }
-        token.id          = u.id
-        token.role        = u.role ?? 'customer'
-        token.issuedAt    = now
-        token.lastActive  = now                         // track last activity
-        token.accessExp   = now + ACCESS_TOKEN_MAX_AGE
+        const u = user as NextAuthUser & { role?: string; isVerified?: boolean }
+        token.id         = u.id
+        token.role       = u.role ?? 'customer'
+        token.issuedAt   = now
+        token.accessExp  = now + ACCESS_TOKEN_MAX_AGE
+        token.isVerified = u.isVerified ?? false
         return token
       }
 
-      // ── Server-side inactivity check ─────────────────────────────────────
-      // If the JWT hasn't been touched for SERVER_INACTIVITY_TTL, force logout.
-      // The client-side InactivityWatcher catches short inactivity (30 min).
-      // This catches cases like: browser closed without logging out for 24+ hrs.
-      const lastActive = token.lastActive as number | undefined
-      if (lastActive && now - lastActive > SERVER_INACTIVITY_TTL) {
-        console.info('[Auth] Server-side inactivity logout — user:', token.id)
-        return { ...token, error: 'SessionExpiredInactivity' }
+      // ── Absolute 24-hour session expiry ──────────────────────────────────
+      // Regardless of activity, force logout 24 hours after login.
+      const issuedAt = token.issuedAt as number | undefined
+      if (issuedAt && now - issuedAt > SESSION_MAX_AGE) {
+        console.info('[Auth] 24-hour session expired — user:', token.id)
+        return { ...token, error: 'SessionExpired' }
       }
-
-      // Update lastActive on every token check (proves the session is being used)
-      token.lastActive = now
 
       // Subsequent requests — check if access token has expired
       const accessExp = token.accessExp as number | undefined
@@ -118,7 +117,7 @@ export const authOptions: NextAuthOptions = {
           await connectDB()
           const dbUser = await UserModel
             .findById(token.id as string)
-            .select('isActive role name email')
+            .select('isActive role name email emailVerified')
             .lean()
 
           // User deactivated by admin — invalidate session
@@ -126,9 +125,10 @@ export const authOptions: NextAuthOptions = {
             return { ...token, error: 'AccountDeactivated' }
           }
 
-          // Refresh the access token window + pick up any role changes
-          token.role      = dbUser.role
-          token.accessExp = now + ACCESS_TOKEN_MAX_AGE
+          // Refresh the access token window + pick up any role/verification changes
+          token.role       = dbUser.role
+          token.accessExp  = now + ACCESS_TOKEN_MAX_AGE
+          token.isVerified = !!dbUser.emailVerified
         } catch (err) {
           console.error('[Auth] jwt refresh error:', err)
           // On DB error keep token alive — don't log out user on infra issue
@@ -151,11 +151,15 @@ export const authOptions: NextAuthOptions = {
 
       if (token && session.user) {
         const u = session.user as typeof session.user & {
-          id?:   string
-          role?: string
+          id?:         string
+          role?:       string
+          isVerified?: boolean
+          issuedAt?:   number
         }
-        u.id   = token.id   as string
-        u.role = token.role as string
+        u.id         = token.id         as string
+        u.role       = token.role       as string
+        u.isVerified = token.isVerified as boolean
+        u.issuedAt   = token.issuedAt   as number
       }
 
       return session
@@ -169,9 +173,8 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: 'jwt',
-    maxAge:   SESSION_MAX_AGE,
-    // Update session cookie expiry on every activity
-    updateAge: 60 * 60 * 24,   // Extend every 24 hrs of activity
+    maxAge:   SESSION_MAX_AGE,  // 24 hours absolute
+    updateAge: 0,               // Never extend — fixed 24 hr window from login
   },
 
   jwt: {

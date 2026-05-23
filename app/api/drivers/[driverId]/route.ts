@@ -54,15 +54,26 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
     if (!isOwnProfile && !isAdmin) return errorResponse('Forbidden.', 403)
 
-    // Driver can toggle availability and update vehicle info
+    // Driver can toggle availability
     if (isOwnProfile || isAdmin) {
       if (body.isAvailable !== undefined) driver.isAvailable = body.isAvailable
-      if (body.vehicle)                   driver.vehicle     = { ...driver.vehicle, ...body.vehicle }
     }
 
-    // Admin-only fields
+    // Admin can update all profile fields
     if (isAdmin) {
-      if (body.isVerified !== undefined)  driver.isVerified  = body.isVerified
+      if (body.isVerified   !== undefined) driver.isVerified   = body.isVerified
+      if (body.name)                       driver.name         = body.name
+      if (body.phone)                      driver.phone        = body.phone
+      if (body.gender)                     driver.set('gender', body.gender)
+      if (body.avatar       !== undefined) driver.set('avatar',       body.avatar)
+      if (body.licenseNumber)              driver.licenseNumber = body.licenseNumber
+      if (body.aadharNumber !== undefined) driver.set('aadharNumber', body.aadharNumber)
+      if (body.aadharFront  !== undefined) driver.set('aadharFront',  body.aadharFront)
+      if (body.aadharBack   !== undefined) driver.set('aadharBack',   body.aadharBack)
+      if (body.panNumber    !== undefined) driver.set('panNumber',    body.panNumber)
+      if (body.panCard      !== undefined) driver.set('panCard',      body.panCard)
+      if (body.rating       !== undefined) driver.set('rating',       Number(body.rating))
+      if (body.vehicle)                    driver.vehicle = { ...driver.vehicle, ...body.vehicle }
     }
 
     await driver.save()

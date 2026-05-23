@@ -6,86 +6,31 @@ import { useTranslations } from 'next-intl'
 import { Star, MapPin, Phone, Wifi, UtensilsCrossed, Car, Snowflake } from 'lucide-react'
 import { siteConfig } from '@/config/site'
 
-const HOTELS = [
-  {
-    name: 'Hotel Brijwasi Royal',
-    city: 'Mathura',
-    address: 'Near Vishram Ghat, Mathura',
-    rating: 4.3,
-    priceRange: { min: 1200, max: 3500 },
-    amenities: ['AC', 'WiFi', 'Restaurant', 'Parking'],
-    description:
-      'Well-located hotel near Vishram Ghat with clean rooms, pure veg restaurant, and great views of the Yamuna.',
-    isVegOnly: true,
-    isFeatured: true,
-    category: 'mid-range',
-  },
-  {
-    name: 'Radha Ashok Hotel',
-    city: 'Mathura',
-    address: 'Masani Bypass Road, Mathura',
-    rating: 4.1,
-    priceRange: { min: 900, max: 2200 },
-    amenities: ['AC', 'WiFi', 'Restaurant', 'Parking'],
-    description:
-      'Budget-friendly hotel with comfortable rooms, ideal for families and pilgrim groups visiting Mathura.',
-    isVegOnly: true,
-    isFeatured: false,
-    category: 'budget',
-  },
-  {
-    name: 'Nidhivan Sarovar Portico',
-    city: 'Vrindavan',
-    address: 'Raman Reti Road, Vrindavan',
-    rating: 4.6,
-    priceRange: { min: 3500, max: 8000 },
-    amenities: ['AC', 'WiFi', 'Restaurant', 'Parking'],
-    description:
-      'The most premium hotel in Vrindavan — walking distance from Prem Mandir with excellent pure veg dining.',
-    isVegOnly: true,
-    isFeatured: true,
-    category: 'premium',
-  },
-  {
-    name: 'Hotel Vrindavan Palace',
-    city: 'Vrindavan',
-    address: 'Bhaktivedanta Swami Marg, Vrindavan',
-    rating: 4.2,
-    priceRange: { min: 1500, max: 4000 },
-    amenities: ['AC', 'WiFi', 'Restaurant', 'Parking'],
-    description:
-      'Comfortable mid-range hotel near ISKCON Temple, popular with devotee groups and families.',
-    isVegOnly: true,
-    isFeatured: false,
-    category: 'mid-range',
-  },
-  {
-    name: 'ISKCON Guesthouse',
-    city: 'Vrindavan',
-    address: 'ISKCON Campus, Vrindavan',
-    rating: 4.4,
-    priceRange: { min: 800, max: 2500 },
-    amenities: ['AC', 'Restaurant', 'Parking'],
-    description:
-      'Stay inside the ISKCON campus — simple, clean rooms with prasadam included. Ideal for spiritual retreats.',
-    isVegOnly: true,
-    isFeatured: true,
-    category: 'budget',
-  },
-  {
-    name: 'Govardhan Eco Village',
-    city: 'Govardhan',
-    address: 'Near Govardhan Hill, Govardhan',
-    rating: 4.5,
-    priceRange: { min: 2000, max: 5000 },
-    amenities: ['AC', 'WiFi', 'Restaurant', 'Parking'],
-    description:
-      'A spiritual retreat at the base of Govardhan Hill — perfect for devotees doing the Govardhan Parikrama.',
-    isVegOnly: true,
-    isFeatured: false,
-    category: 'mid-range',
-  },
-]
+type BLField = string | { en: string; hi: string }
+
+interface HotelData {
+  _id:         string
+  name:        BLField
+  city:        BLField
+  address:     BLField
+  description: BLField
+  amenities:   { en: string; hi: string }[]
+  category:    BLField
+  rating:      number
+  priceRange:  { min: number; max: number }
+  isVegOnly:   boolean
+  isFeatured:  boolean
+}
+
+function bl(v: BLField, locale: string): string {
+  if (typeof v === 'string') return v
+  return locale === 'hi' ? (v.hi || v.en) : v.en
+}
+
+interface Props {
+  hotels: HotelData[]
+  locale: string
+}
 
 const CITY_KEYS = [
   { slug: 'All',       key: 'cityAll' },
@@ -112,7 +57,7 @@ function formatPrice(min: number, max: number, perNightLabel: string) {
   return `₹${min.toLocaleString('en-IN')} – ₹${max.toLocaleString('en-IN')}${perNightLabel}`
 }
 
-export default function HotelsClient() {
+export default function HotelsClient({ hotels, locale }: Props) {
   const t                       = useTranslations('HotelsPage')
   const [city,     setCity]     = useState('All')
   const [category, setCategory] = useState('all')
@@ -120,13 +65,13 @@ export default function HotelsClient() {
   const CITIES     = CITY_KEYS.map((c) => ({ ...c, label: t(c.key) }))
   const CATEGORIES = CATEGORY_KEYS.map((c) => ({ ...c, label: t(c.key) }))
 
-  const filtered = HOTELS
-    .filter((h) => {
-      if (city !== 'All' && h.city !== city) return false
-      if (category !== 'all' && h.category !== category) return false
+  const filtered = hotels
+    .filter((h: HotelData) => {
+      if (city     !== 'All'  && bl(h.city,     'en') !== city)     return false
+      if (category !== 'all'  && bl(h.category, 'en') !== category) return false
       return true
     })
-    .sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0))
+    .sort((a: HotelData, b: HotelData) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0))
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -208,9 +153,9 @@ export default function HotelsClient() {
 
         {/* Hotel grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((hotel, i) => (
+          {filtered.map((hotel: HotelData, i: number) => (
             <motion.div
-              key={hotel.name}
+              key={hotel._id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -225,7 +170,7 @@ export default function HotelsClient() {
                 </div>
                 <div className="absolute top-3 left-3 flex gap-2">
                   <span className="badge-saffron badge">
-                    <MapPin size={9} />{hotel.city}
+                    <MapPin size={9} />{bl(hotel.city, locale)}
                   </span>
                   {hotel.isVegOnly && (
                     <span className="badge" style={{ background: '#f0fdf4', color: '#16a34a' }}>
@@ -250,19 +195,19 @@ export default function HotelsClient() {
 
               {/* Content */}
               <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-bold text-gray-900 text-base mb-1">{hotel.name}</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-base mb-1">{bl(hotel.name, locale)}</h3>
                 <p className="text-xs text-gray-400 flex items-center gap-1 mb-3">
-                  <MapPin size={10} />{hotel.address}
+                  <MapPin size={10} />{bl(hotel.address, locale)}
                 </p>
-                <p className="text-sm text-gray-600 leading-relaxed mb-4 flex-1">{hotel.description}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4 flex-1">{bl(hotel.description, locale)}</p>
 
                 {/* Amenities */}
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                  {hotel.amenities.map((am) => (
-                    <span key={am}
+                  {hotel.amenities.map((am: { en: string; hi: string }) => (
+                    <span key={am.en}
                       className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium"
                       style={{ background: '#f3f4f6', color: '#6b7280' }}>
-                      {AMENITY_ICONS[am] ?? null}{am}
+                      {AMENITY_ICONS[am.en] ?? null}{bl(am, locale)}
                     </span>
                   ))}
                 </div>
@@ -277,9 +222,9 @@ export default function HotelsClient() {
                     </p>
                   </div>
                   <a
-                    href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('enquireGreeting', { hotel: hotel.name, city: hotel.city }))}`}
+                    href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('enquireGreeting', { hotel: bl(hotel.name, locale), city: bl(hotel.city, locale) }))}`}
                     target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-colors shrink-0"
                     style={{ background: '#dcfce7', color: '#16a34a' }}
                   >
                     <Phone size={11} /> {t('enquire')}

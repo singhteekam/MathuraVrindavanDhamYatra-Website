@@ -17,9 +17,17 @@ export async function GET(req: NextRequest) {
     const featured  = searchParams.get('featured') === 'true'
     const city      = searchParams.get('city')
     const duration  = searchParams.get('duration')
+    const all       = searchParams.get('all') === 'true'
     const skip      = (page - 1) * limit
 
-    const filter: Record<string, unknown> = { isActive: true }
+    const filter: Record<string, unknown> = {}
+    if (!all) {
+      filter.isActive = true
+    } else {
+      const session = await getServerSession(authOptions)
+      const user    = session?.user as { role?: string } | undefined
+      if (user?.role !== 'superadmin') filter.isActive = true
+    }
     if (featured) filter.isFeatured = true
     if (city)     filter.cities     = { $in: [city] }
     if (duration) filter.duration   = Number(duration)

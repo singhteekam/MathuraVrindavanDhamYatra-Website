@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Phone, Menu, X, ChevronDown, Mail, MapPin,
   LogIn, LayoutDashboard, Car, CalendarCheck,
-  LogOut, User,
+  LogOut, User, ShieldCheck,
 } from 'lucide-react'
 import { useSession, signOut } from 'next-auth/react'
 import { cn } from '@/lib/utils'
@@ -56,9 +56,10 @@ const NAV_ITEMS: NavItem[] = [
 ]
 
 const ROLE_CONFIG: Record<string, { portal: string; labelKey: string; icon: React.ReactNode }> = {
-  admin:    { portal: '/admin',    labelKey: 'adminPanel',   icon: <LayoutDashboard size={14} /> },
-  driver:   { portal: '/driver',   labelKey: 'driverPortal', icon: <Car             size={14} /> },
-  customer: { portal: '/customer', labelKey: 'myBookings',   icon: <CalendarCheck   size={14} /> },
+  superadmin: { portal: '/superadmin', labelKey: 'superadminPanel', icon: <ShieldCheck     size={14} /> },
+  admin:      { portal: '/admin',      labelKey: 'adminPanel',      icon: <LayoutDashboard size={14} /> },
+  driver:     { portal: '/driver',     labelKey: 'driverPortal',    icon: <Car             size={14} /> },
+  customer:   { portal: '/customer',   labelKey: 'myBookings',      icon: <CalendarCheck   size={14} /> },
 }
 
 // ── Profile dropdown ──────────────────────────────────────
@@ -148,7 +149,7 @@ function ProfileDropdown() {
               </Link>
             ) : (
               <NextLink
-                href={role === 'driver' ? '/driver/profile' : '/admin/settings'}
+                href={role === 'driver' ? '/driver/profile' : role === 'superadmin' ? '/superadmin' : '/admin/settings'}
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-saffron-50 dark:hover:bg-gray-800 hover:text-saffron-600 dark:hover:text-saffron-400 transition-colors"
               >

@@ -8,11 +8,12 @@ export type BookingStatus =
   | 'completed'
   | 'cancelled'
 
-export type PaymentStatus = 'pending' | 'partial' | 'paid' | 'refunded'
+export type PaymentStatus  = 'pending' | 'partial' | 'paid' | 'refunded'
+export type PaymentMethod  = 'cash' | 'online_full' | 'online_advance' | 'whatsapp'
 
 export interface IBookingDoc extends Document {
   bookingId: string
-  customer: Types.ObjectId
+  customer?: Types.ObjectId
   package?: Types.ObjectId
   driver?: Types.ObjectId
   carType: string
@@ -26,10 +27,15 @@ export interface IBookingDoc extends Document {
   totalAmount: number
   advanceAmount: number
   status: BookingStatus
-  paymentStatus: PaymentStatus
-  paymentId?: string
+  paymentStatus:  PaymentStatus
+  paymentMethod?: PaymentMethod
+  paidAmount?:    number
+  paymentId?:     string
   razorpayOrderId?: string
   addons: string[]
+  customerEmail?: string
+  customerPhone?: string
+  customerName?:  string
   specialRequests?: string
   adminNotes?: string
   cancelReason?: string
@@ -40,7 +46,7 @@ export interface IBookingDoc extends Document {
 const BookingSchema = new Schema<IBookingDoc>(
   {
     bookingId:       { type: String, required: true },
-    customer:        { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    customer:        { type: Schema.Types.ObjectId, ref: 'User' },
     package:         { type: Schema.Types.ObjectId, ref: 'Package' },
     driver:          { type: Schema.Types.ObjectId, ref: 'Driver' },
     carType:         { type: String, required: true },
@@ -63,9 +69,17 @@ const BookingSchema = new Schema<IBookingDoc>(
       enum:    ['pending', 'partial', 'paid', 'refunded'],
       default: 'pending',
     },
+    paymentMethod: {
+      type:    String,
+      enum:    ['cash', 'online_full', 'online_advance', 'whatsapp'],
+    },
+    paidAmount:     { type: Number, default: 0 },
     paymentId:      { type: String },
     razorpayOrderId:{ type: String },
     addons:         [{ type: String }],
+    customerEmail:  { type: String },
+    customerPhone:  { type: String },
+    customerName:   { type: String },
     specialRequests:{ type: String },
     adminNotes:     { type: String },
     cancelReason:   { type: String },

@@ -36,7 +36,7 @@ export function slugify(text: string): string {
 }
 
 export function generateBookingId(): string {
-  const prefix = 'MVT'
+  const prefix = 'MVDY'
   const timestamp = Date.now().toString(36).toUpperCase()
   const random = Math.random().toString(36).substring(2, 6).toUpperCase()
   return `${prefix}-${timestamp}-${random}`

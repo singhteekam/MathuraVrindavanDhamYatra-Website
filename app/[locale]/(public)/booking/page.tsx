@@ -11,11 +11,24 @@ import { motion, AnimatePresence }       from 'framer-motion'
 import {
   Car, Calendar, Users, MapPin, Phone, Mail, User,
   ChevronRight, Check, ArrowLeft, MessageCircle, LogIn,
+  Banknote, CreditCard, Wallet,
 } from 'lucide-react'
 import toast                   from 'react-hot-toast'
 import { cars, durations, addons, siteConfig } from '@/config/site'
 import { formatCurrency }       from '@/lib/utils'
 import type { PackageSummary }  from '@/lib/fetchData'
+
+// Minimal Razorpay types — only what we use
+interface RzpOptions {
+  key: string; amount: number; currency: string; name: string
+  description: string; order_id: string
+  prefill: { name: string; email?: string; contact: string }
+  theme: { color: string }
+  config?: { display?: { preferences?: { show_default_blocks?: boolean } } }
+  handler(r: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }): void
+  modal?: { ondismiss?(): void }
+}
+declare global { interface Window { Razorpay: new (o: RzpOptions) => { open(): void } } }
 
 const INTL_LOCALE = { en: 'en-IN', hi: 'hi-IN' } as const
 
@@ -56,6 +69,7 @@ function BookingForm() {
   const [travelDate,       setTravelDate]        = useState('')
   const [pickupLocation,   setPickupLocation]    = useState('')
   const [selectedAddons,   setSelectedAddons]    = useState<string[]>(['hotel_help', 'restaurant_help'])
+  const [advanceAmount,    setAdvanceAmount]     = useState(500)
 
   // Step 2
   const [name,       setName]       = useState('')
@@ -73,14 +87,24 @@ function BookingForm() {
     }
   }, [session])
 
-  /* Fetch active packages for selector */
+  /* Fetch active packages + advance percent */
   useEffect(() => {
     fetch('/api/packages?limit=20')
       .then((r) => r.json())
-      .then((d) => {
-        if (d.success) setPackages(d.data)
-      })
-      .catch(() => {/* silently fail — selector just shows empty */})
+      .then((d) => { if (d.success) setPackages(d.data) })
+      .catch(() => {})
+    fetch('/api/settings/booking')
+      .then((r) => r.json())
+      .then((d) => { if (d.success && typeof d.data.advanceAmount === 'number') setAdvanceAmount(d.data.advanceAmount) })
+      .catch(() => {})
+
+    // Load Razorpay script once
+    if (!document.getElementById('rzp-script')) {
+      const s = document.createElement('script')
+      s.id  = 'rzp-script'
+      s.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      document.head.appendChild(s)
+    }
   }, [])
 
   /* Derived pricing */
@@ -96,8 +120,9 @@ function BookingForm() {
     ? (pkgData.pricing?.find((p) => p.carType === selectedCar)?.price ?? pkgData.basePrice)
     : carData.basePrice * durationData.days
 
-  const totalPrice    = basePrice + addonTotal
-  const advanceAmount = Math.round(totalPrice * 0.3)
+  const totalPrice = basePrice + addonTotal
+  // advanceAmount is a fixed ₹ value set by admin — never exceeds totalPrice
+  const safeAdvance = Math.min(advanceAmount, totalPrice)
 
   const optionStyle = (selected: boolean) => selected
     ? { border: '2px solid #ff7d0f', background: 'rgba(255, 125, 15, 0.12)' }
@@ -152,64 +177,167 @@ function BookingForm() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  /* ── Final submit ── */
-  async function handleConfirm() {
+  /* ── Shared: create booking in DB ── */
+  async function createBooking(paymentMethod: 'cash' | 'online_full' | 'online_advance' | 'whatsapp') {
+    const start = new Date(travelDate)
+    const end   = new Date(start)
+    end.setDate(end.getDate() + durationData.days - 1)
+
+    const res = await fetch('/api/bookings', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        packageId:       pkgData?._id ?? undefined,
+        carType:         selectedCar,
+        carName:         carData.name,
+        startDate:       travelDate,
+        endDate:         end.toISOString().split('T')[0],
+        duration:        durationData.days,
+        pickupLocation:  pickupLocation.trim(),
+        totalPassengers: Number(passengers),
+        totalAmount:     totalPrice,
+        advanceAmount:   safeAdvance,
+        addons:          selectedAddons,
+        specialRequests: requests.trim() || undefined,
+        customerName:    name.trim(),
+        customerPhone:   phone.trim(),
+        customerEmail:   email.trim() || undefined,
+        paymentMethod,
+      }),
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      toast.error(data.error ?? t('toast.bookingFailed'))
+      return null
+    }
+    return data.data as { bookingId: string; id: string; totalAmount: number; advanceAmount: number }
+  }
+
+  /* ── Pay Cash ── */
+  async function handlePayCash() {
     setLoading(true)
     try {
-      /* If not logged in, create a guest session or redirect to register */
-      if (status === 'unauthenticated') {
-        toast.error(t('toast.signInRequired'))
-        router.push(`/login?callbackUrl=/booking?package=${selectedPackage}&car=${selectedCar}`)
-        return
-      }
+      const booking = await createBooking('cash')
+      if (!booking) return
+      toast.success(t('toast.bookingConfirmed', { bookingId: booking.bookingId }), { duration: 5000 })
+      router.push(`/booking/confirmation?id=${booking.bookingId}&amount=${totalPrice}&advance=0&method=cash`)
+    } catch { toast.error(t('toast.somethingWentWrong')) }
+    finally    { setLoading(false) }
+  }
 
-      const start = new Date(travelDate)
-      const end   = new Date(start)
-      end.setDate(end.getDate() + durationData.days - 1)
+  /* ── Razorpay helper ── */
+  async function initiateRazorpay(paymentType: 'full' | 'advance') {
+    if (status === 'unauthenticated') {
+      toast.error(t('toast.signInRequired'))
+      router.push(`/login?callbackUrl=/booking?package=${selectedPackage}&car=${selectedCar}`)
+      return
+    }
+    setLoading(true)
+    let savedBookingId = ''
+    try {
+      const method  = paymentType === 'full' ? 'online_full' : 'online_advance'
+      const booking = await createBooking(method)
+      if (!booking) { setLoading(false); return }
+      savedBookingId = booking.bookingId
 
-      const res = await fetch('/api/bookings', {
+      const amount = paymentType === 'full' ? totalPrice : safeAdvance
+      const orderRes  = await fetch('/api/payment/create-order', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          packageId:       pkgData?._id ?? undefined,
-          carType:         selectedCar,
-          carName:         carData.name,
-          startDate:       travelDate,
-          endDate:         end.toISOString().split('T')[0],
-          duration:        durationData.days,
-          pickupLocation:  pickupLocation.trim(),
-          totalPassengers: Number(passengers),
-          totalAmount:     totalPrice,
-          advanceAmount,
-          addons:          selectedAddons,
-          specialRequests: requests.trim() || undefined,
-          customerName:    name.trim(),
-          customerPhone:   phone.trim(),
-          customerEmail:   email.trim() || undefined,
-        }),
+        body:    JSON.stringify({ amount, bookingId: booking.bookingId }),
       })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        toast.error(data.error ?? t('toast.bookingFailed'))
+      const orderData = await orderRes.json()
+      if (!orderRes.ok) {
+        toast.error(orderData.error ?? 'Could not create payment order.')
+        router.push(`/booking/confirmation?id=${booking.bookingId}&amount=${totalPrice}&advance=${safeAdvance}&method=pending`)
         return
       }
 
-      /* Success! */
-      toast.success(
-        t('toast.bookingConfirmed', { bookingId: data.data.bookingId }),
-        { duration: 7000 },
-      )
-
-      router.push(`/booking/confirmation?id=${data.data.bookingId}&amount=${totalPrice}&advance=${advanceAmount}`)
-
-    } catch (err) {
-      console.error(err)
+      // Keep loading=true until the modal fires (handler or ondismiss)
+      // so the button can't be clicked again while the modal is open
+      const rzp = new window.Razorpay({
+        key:         process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ?? '',
+        amount:      orderData.data.amount,
+        currency:    orderData.data.currency,
+        name:        'MV Dham Yatra',
+        description: paymentType === 'full' ? 'Full Tour Payment' : `Advance Payment ₹${safeAdvance}`,
+        order_id:    orderData.data.orderId,
+        prefill:     { name: name.trim(), email: email.trim() || undefined, contact: phone.trim() },
+        theme:       { color: '#ff7d0f' },
+        // Show all payment methods (UPI intent + QR, cards, netbanking, wallets)
+        config: {
+          display: {
+            preferences: { show_default_blocks: true },
+          },
+        },
+        handler: async (response) => {
+          try {
+            const verifyRes  = await fetch('/api/payment/verify', {
+              method:  'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body:    JSON.stringify({
+                ...response,
+                bookingId:   booking.bookingId,
+                paymentType,
+                paidAmount:  amount,
+              }),
+            })
+            const verifyData = await verifyRes.json()
+            if (verifyRes.ok && verifyData.data?.verified) {
+              toast.success(t('toast.paymentSuccess'), { duration: 5000 })
+              router.push(`/booking/confirmation?id=${booking.bookingId}&amount=${totalPrice}&advance=${safeAdvance}&method=${paymentType}&paid=${amount}`)
+            } else {
+              toast.error('Payment verification failed. Please contact support.')
+              setLoading(false)
+            }
+          } catch {
+            toast.error(t('toast.somethingWentWrong'))
+            setLoading(false)
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            // User closed modal without paying — booking stays pending in DB
+            toast.error(t('toast.paymentFailed'), { duration: 5000 })
+            setLoading(false)
+            router.push(`/booking/confirmation?id=${savedBookingId}&amount=${totalPrice}&advance=${safeAdvance}&method=pending`)
+          },
+        },
+      })
+      rzp.open()
+      // loading stays true until handler/ondismiss fires — blocks re-clicks
+      return // skip the setLoading(false) below
+    } catch {
       toast.error(t('toast.somethingWentWrong'))
-    } finally {
       setLoading(false)
     }
+  }
+
+  /* ── Book on WhatsApp ── */
+  async function handleWhatsAppBook() {
+    const phone_no = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? siteConfig.whatsapp
+    const msg = encodeURIComponent(
+      `Namaste! I want to book a ${carData.name} for ${getDurationLabel(durationData.id, durationData.label)} on ${travelDate}. Pickup: ${pickupLocation.trim()}. Name: ${name.trim()}, Phone: ${phone.trim()}. Total: ${formatCurrency(totalPrice)}. 🙏 (Note: If our team does not contact within 30 minutes, please call ${siteConfig.phone})`,
+    )
+    const waUrl = `https://wa.me/${phone_no}?text=${msg}`
+
+    // If logged in → also create a DB record
+    if (status === 'authenticated') {
+      setLoading(true)
+      try {
+        const booking = await createBooking('whatsapp')
+        if (booking) {
+          toast.success(t('toast.whatsappBooked'), { duration: 4000 })
+          window.open(waUrl, '_blank')
+          router.push(`/booking/confirmation?id=${booking.bookingId}&amount=${totalPrice}&advance=0&method=whatsapp`)
+          return
+        }
+      } catch { /* fall through to just opening WhatsApp */ }
+      finally   { setLoading(false) }
+    }
+
+    // Not logged in or booking failed — just open WhatsApp
+    window.open(waUrl, '_blank')
   }
 
   /* ── Render ── */
@@ -470,6 +598,9 @@ function BookingForm() {
                           <input type="email" placeholder={t('emailPlaceholder')}
                             value={email} onChange={(e) => setEmail(e.target.value)}
                             className="input-field" autoComplete="email" />
+                          <p className="text-xs text-amber-600 dark:text-amber-400 mt-1.5 flex items-center gap-1">
+                            <span>📧</span>{t('emailNote')}
+                          </p>
                         </div>
                         <div>
                           <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
@@ -601,58 +732,155 @@ function BookingForm() {
                         <span className="text-gray-900 dark:text-white">{t('total')}</span>
                         <span style={{ color: '#ff7d0f' }}>{formatCurrency(totalPrice)}</span>
                       </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                        {t.rich('paymentNote', {
-                          advance: formatCurrency(advanceAmount),
-                          remaining: formatCurrency(totalPrice - advanceAmount),
-                          strong: (chunks) => <strong className="text-saffron-600 dark:text-saffron-400">{chunks}</strong>,
-                        })}
-                      </p>
+                      {safeAdvance > 0 && (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                          Pay <strong className="text-saffron-600 dark:text-saffron-400">{formatCurrency(safeAdvance)}</strong> advance online now (same for all bookings),{' '}
+                          or pay full {formatCurrency(totalPrice)}. Balance{' '}
+                          <strong className="text-saffron-600 dark:text-saffron-400">{formatCurrency(totalPrice - safeAdvance)}</strong> due before/during trip.
+                        </p>
+                      )}
                     </div>
 
-                    {/* Not logged in CTA */}
+                    {/* 50% onboarding note */}
+                    <div className="flex items-start gap-2 p-3 rounded-xl mb-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60">
+                      <span className="text-amber-500 text-sm mt-0.5">ℹ️</span>
+                      <p className="text-xs text-amber-800 dark:text-amber-300">{t('onboardingNote')}</p>
+                    </div>
+
+                    {/* Sign-in notice (non-blocking — WhatsApp still works) */}
                     {status === 'unauthenticated' && (
-                      <div className="p-4 rounded-2xl mb-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/60">
-                        <p className="text-sm text-blue-700 dark:text-blue-300 font-semibold mb-2">{t('signInToConfirm')}</p>
-                        <p className="text-xs text-blue-600 dark:text-blue-300/80 mb-3">
-                          {t('accountNeeded')}
-                        </p>
+                      <div className="p-3 rounded-xl mb-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/60 flex items-center justify-between gap-3">
+                        <p className="text-xs text-blue-700 dark:text-blue-300">{t('signInToConfirm')}</p>
                         <Link href="/login?callbackUrl=/booking"
-                          className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-full"
+                          className="flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
                           style={{ background: '#2563eb', color: '#fff' }}>
-                          <LogIn size={13} />{t('signInCreateAccount')}
+                          <LogIn size={11} />{t('signInCreateAccount')}
                         </Link>
                       </div>
                     )}
 
-                    <button
-                      onClick={handleConfirm}
-                      disabled={loading || status === 'unauthenticated'}
-                      className="btn-primary w-full py-4 text-base"
-                      style={{ opacity: (loading || status === 'unauthenticated') ? 0.7 : 1 }}>
-                      {loading ? (
-                        <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />{t('processing')}</>
-                      ) : (
-                        <>{t('confirmBookingWithPrice', { price: formatCurrency(totalPrice) })}</>
-                      )}
-                    </button>
+                    {/* Priority nudge */}
+                    <div className="flex items-start gap-2.5 p-3.5 rounded-xl mb-4"
+                      style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.07),rgba(124,58,237,0.07))', border: '1px solid rgba(37,99,235,0.2)' }}>
+                      <span className="text-base shrink-0 mt-0.5">⚡</span>
+                      <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+                        <strong className="text-blue-800 dark:text-blue-100">Pay online now</strong> ({formatCurrency(safeAdvance)} advance or full {formatCurrency(totalPrice)}) to get{' '}
+                        <strong className="text-blue-800 dark:text-blue-100">priority review</strong> from our team and faster booking confirmation!
+                      </p>
+                    </div>
 
-                    <a
-                      href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
-                        t('whatsAppBookingMessage', {
-                          car: carData.name,
-                          duration: getDurationLabel(durationData.id, durationData.label),
-                          date: travelDate,
-                          pickup: pickupLocation,
-                          name,
-                          phone,
-                          total: formatCurrency(totalPrice),
-                        })
-                      )}`}
-                      target="_blank" rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-semibold text-sm mt-3 transition-colors bg-green-100 dark:bg-green-950/40 text-green-600 dark:text-green-300">
-                      <MessageCircle size={16} />{t('bookViaWhatsApp')}
-                    </a>
+                    {/* ── 4 Payment option cards ── */}
+                    <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-3">
+                      {t('choosePaymentMethod')}
+                    </h3>
+                    <div className="space-y-3">
+
+                      {/* 1 — Pay Cash */}
+                      <button type="button" onClick={handlePayCash}
+                        disabled={loading || status === 'unauthenticated'}
+                        className="w-full text-left p-4 rounded-2xl border transition-all disabled:opacity-60"
+                        style={{ border: '1.5px solid var(--border-default)', background: 'var(--bg-surface)' }}>
+                        <div className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ background: 'rgba(22,163,74,0.12)' }}>
+                            <Banknote size={18} className="text-green-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{t('payOpt.cash.title')}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('payOpt.cash.desc')}</p>
+                            <p className="text-xs font-semibold text-green-600 dark:text-green-400 mt-1">✓ {t('payOpt.cash.note')}</p>
+                          </div>
+                          <span className="text-xs font-bold text-green-600 flex-shrink-0">FREE</span>
+                        </div>
+                        <div className="mt-3 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white"
+                          style={{ background: 'linear-gradient(135deg, #16a34a, #15803d)' }}>
+                          {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                   : <>{t('payOpt.cash.btn')}</>}
+                        </div>
+                      </button>
+
+                      {/* 2 — Pay Full Now */}
+                      <button type="button" onClick={() => initiateRazorpay('full')}
+                        disabled={loading || status === 'unauthenticated'}
+                        className="w-full text-left p-4 rounded-2xl border transition-all disabled:opacity-60"
+                        style={{ border: '1.5px solid var(--border-default)', background: 'var(--bg-surface)' }}>
+                        <div className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ background: 'rgba(37,99,235,0.12)' }}>
+                            <CreditCard size={18} className="text-blue-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{t('payOpt.full.title')}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                              {t('payOpt.full.desc', { amount: formatCurrency(totalPrice) })}
+                            </p>
+                          </div>
+                          <span className="text-xs font-bold flex-shrink-0" style={{ color: '#ff7d0f' }}>{formatCurrency(totalPrice)}</span>
+                        </div>
+                        <div className="mt-3 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white"
+                          style={{ background: 'linear-gradient(135deg, #ff7d0f, #c74a06)' }}>
+                          {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                   : <>{t('payOpt.full.btn', { amount: formatCurrency(totalPrice) })}</>}
+                        </div>
+                      </button>
+
+                      {/* 3 — Pay Advance (only if safeAdvance > 0) */}
+                      {safeAdvance > 0 && (
+                        <button type="button" onClick={() => initiateRazorpay('advance')}
+                          disabled={loading || status === 'unauthenticated'}
+                          className="w-full text-left p-4 rounded-2xl border transition-all disabled:opacity-60"
+                          style={{ border: '1.5px solid #ff7d0f', background: 'rgba(255,125,15,0.06)' }}>
+                          <div className="flex items-start gap-3">
+                            <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+                              style={{ background: 'rgba(255,125,15,0.15)' }}>
+                              <Wallet size={18} style={{ color: '#ff7d0f' }} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                                Pay Advance — {formatCurrency(safeAdvance)} <span className="text-xs font-normal text-gray-400">(same for all bookings)</span>
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                Pay {formatCurrency(safeAdvance)} now to confirm · {formatCurrency(totalPrice - safeAdvance)} balance due on trip
+                              </p>
+                            </div>
+                            <span className="text-xs font-bold flex-shrink-0" style={{ color: '#ff7d0f' }}>{formatCurrency(safeAdvance)}</span>
+                          </div>
+                          <div className="mt-3 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white"
+                            style={{ background: 'linear-gradient(135deg, #ff7d0f, #c74a06)' }}>
+                            {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                     : <>Pay {formatCurrency(safeAdvance)} Now →</>}
+                          </div>
+                        </button>
+                      )}
+
+                      {/* 4 — Book on WhatsApp */}
+                      <button type="button" onClick={handleWhatsAppBook}
+                        disabled={loading}
+                        className="w-full text-left p-4 rounded-2xl border transition-all disabled:opacity-60"
+                        style={{ border: '1.5px solid var(--border-default)', background: 'var(--bg-surface)' }}>
+                        <div className="flex items-start gap-3">
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ background: 'rgba(34,197,94,0.12)' }}>
+                            <MessageCircle size={18} className="text-green-500" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{t('payOpt.whatsapp.title')}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('payOpt.whatsapp.desc')}</p>
+                            <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                              {t('payOpt.whatsapp.note', { phone: siteConfig.phone })}
+                            </p>
+                          </div>
+                          <span className="text-xs font-bold text-green-600 flex-shrink-0">FREE</span>
+                        </div>
+                        <div className="mt-3 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white"
+                          style={{ background: '#22c55e' }}>
+                          <MessageCircle size={14} />
+                          {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                   : <>{t('payOpt.whatsapp.btn')}</>}
+                        </div>
+                      </button>
+
+                    </div>
 
                     <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-3">
                       {t('secureBookingNote')}
@@ -718,12 +946,14 @@ function BookingForm() {
                     {formatCurrency(totalPrice)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-xs text-gray-400 dark:text-gray-500">{t('advanceNow')}</span>
-                  <span className="text-xs font-semibold text-green-600">
-                    {formatCurrency(advanceAmount)}
-                  </span>
-                </div>
+                {safeAdvance > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-xs text-gray-400 dark:text-gray-500">Advance now</span>
+                    <span className="text-xs font-semibold text-green-600">
+                      {formatCurrency(safeAdvance)}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="rounded-xl p-3 text-xs leading-relaxed bg-green-50 dark:bg-green-950/30 text-green-800 dark:text-green-300">

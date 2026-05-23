@@ -1,8 +1,7 @@
 import { withAuth, NextRequestWithAuth } from 'next-auth/middleware'
 import { NextResponse, NextRequest }     from 'next/server'
 import { getToken }                      from 'next-auth/jwt'
-import { match }                         from '@formatjs/intl-localematcher'
-import Negotiator                        from 'negotiator'
+
 import { routing }                       from '@/i18n/routing'
 
 // ─── Routes that bypass maintenance mode ─────────────────────────────────────
@@ -35,19 +34,14 @@ const LOCALE_BYPASS_PREFIXES = [
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function getLocale(req: NextRequest): string {
-  // Explicit user preference takes priority over browser Accept-Language
+  // Only honour an explicit user cookie — never auto-detect from browser headers.
+  // This ensures first-time visitors always land on English (/en/),
+  // regardless of the browser's Accept-Language setting.
   const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
   if (cookieLocale && (routing.locales as readonly string[]).includes(cookieLocale)) {
     return cookieLocale
   }
-  const headers: Record<string, string> = {}
-  req.headers.forEach((value, key) => { headers[key] = value })
-  const languages = new Negotiator({ headers }).languages()
-  return match(
-    languages,
-    routing.locales as unknown as string[],
-    routing.defaultLocale,
-  )
+  return routing.defaultLocale
 }
 
 function pathHasLocale(pathname: string): boolean {

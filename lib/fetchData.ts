@@ -112,14 +112,16 @@ export interface PlaceDetail extends PlaceSummary {
   sections: PlaceSection[]
 }
 
+type BLField = string | { en: string; hi: string }
+
 export interface ReviewSummary {
   _id:       string
   rating:    number
-  title:     string
-  comment:   string
+  title:     BLField
+  comment:   BLField
   createdAt: string
   customer:  { name: string }
-  package?:  { name: string; slug: string }
+  package?:  { name: BLField; slug: string }
 }
 
 // ─── Internal serializer ──────────────────────────────────────────────────────
@@ -400,13 +402,13 @@ export const getApprovedReviews = unstable_cache(
     return docs.map((r) => ({
       _id:      (r._id as { toString(): string }).toString(),
       rating:   r.rating,
-      title:    r.title,
-      comment:  r.comment,
+      title:    r.title    as string | { en: string; hi: string },
+      comment:  r.comment  as string | { en: string; hi: string },
       createdAt:(r.createdAt as Date).toISOString(),
       customer: { name: (r.customer as { name?: string } | null)?.name ?? 'Devotee' },
       package:  r.package
         ? {
-            name: L((r.package as { name?: unknown })?.name, 'en'),
+            name: (r.package as { name?: unknown })?.name as string | { en: string; hi: string } ?? '',
             slug: (r.package as { slug?: string })?.slug ?? '',
           }
         : undefined,
@@ -431,8 +433,8 @@ export const getPackageReviews = unstable_cache(
     return docs.map((r) => ({
       _id:      (r._id as { toString(): string }).toString(),
       rating:   r.rating,
-      title:    r.title,
-      comment:  r.comment,
+      title:    r.title   as string | { en: string; hi: string },
+      comment:  r.comment as string | { en: string; hi: string },
       createdAt:(r.createdAt as Date).toISOString(),
       customer: { name: (r.customer as { name?: string } | null)?.name ?? 'Devotee' },
     }))

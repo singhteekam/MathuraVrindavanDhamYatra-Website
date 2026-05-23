@@ -6,120 +6,28 @@ import { useTranslations } from 'next-intl'
 import { MapPin, Star, Clock, IndianRupee } from 'lucide-react'
 import { siteConfig } from '@/config/site'
 
-const RESTAURANTS = [
-  {
-    name:        'Brijwasi Mithai Wala',
-    city:        'Mathura',
-    address:     'Holi Gate, Mathura',
-    type:        'Sweet Shop & Snacks',
-    specialty:   'Peda, Mathura Peda, Kachori',
-    rating:      4.8,
-    priceRange:  '₹50–200',
-    timings:     '7 AM – 10 PM',
-    isPopular:   true,
-    emoji:       '🍬',
-    description: 'The most famous sweet shop in Mathura — their Mathura Peda is legendary and a must-try for every visitor.',
-    tags:        ['Sweets', 'Snacks', 'Takeaway'],
-  },
-  {
-    name:        'Govinda Restaurant (ISKCON)',
-    city:        'Vrindavan',
-    address:     'ISKCON Temple Campus, Vrindavan',
-    type:        'Temple Restaurant',
-    specialty:   'Prasadam Thali, Sattvic food',
-    rating:      4.7,
-    priceRange:  '₹150–350',
-    timings:     '11 AM – 3 PM, 6 PM – 9 PM',
-    isPopular:   true,
-    emoji:       '🍱',
-    description: 'Pure sattvic food served inside the ISKCON campus. The prasadam thali is spiritually nourishing and delicious.',
-    tags:        ['Thali', 'Prasadam', 'Sattvic'],
-  },
-  {
-    name:        'Radha Vallabh Dhaba',
-    city:        'Vrindavan',
-    address:     'Banke Bihari Temple Road, Vrindavan',
-    type:        'Traditional Dhaba',
-    specialty:   'Dal Baati, Churma, Kadhi Chawal',
-    rating:      4.5,
-    priceRange:  '₹80–200',
-    timings:     '8 AM – 10 PM',
-    isPopular:   false,
-    emoji:       '🍲',
-    description: 'Authentic Braj-style dhaba serving hot and hearty meals perfect for pilgrims after morning darshan.',
-    tags:        ['Dhaba', 'Thali', 'Braj Cuisine'],
-  },
-  {
-    name:        'Madhuvan Restaurant',
-    city:        'Mathura',
-    address:     'Near Vishram Ghat, Mathura',
-    type:        'Restaurant',
-    specialty:   'North Indian Thali, Paneer dishes',
-    rating:      4.3,
-    priceRange:  '₹120–300',
-    timings:     '7 AM – 11 PM',
-    isPopular:   false,
-    emoji:       '🍛',
-    description: 'Well-established restaurant near Vishram Ghat with spacious seating, fast service, and hearty north Indian meals.',
-    tags:        ['Thali', 'North Indian', 'Family'],
-  },
-  {
-    name:        'Nidhivan Prasad Bhandar',
-    city:        'Vrindavan',
-    address:     'Near Nidhivan, Vrindavan',
-    type:        'Prasadam & Sweets',
-    specialty:   'Panchamrit, Charnamrit, Ladoo',
-    rating:      4.6,
-    priceRange:  '₹30–150',
-    timings:     '6 AM – 8 PM',
-    isPopular:   true,
-    emoji:       '🙏',
-    description: 'The go-to place for temple prasadam and traditional Braj sweets. Their Charnamrit is divine.',
-    tags:        ['Prasadam', 'Sweets', 'Budget'],
-  },
-  {
-    name:        'Gokul Dhaba',
-    city:        'Gokul',
-    address:     'Near Gokul Chaurasi Khamba, Gokul',
-    type:        'Village Dhaba',
-    specialty:   'Makhan Mishri, Lassi, Chole Bhature',
-    rating:      4.4,
-    priceRange:  '₹50–180',
-    timings:     '7 AM – 9 PM',
-    isPopular:   false,
-    emoji:       '🥛',
-    description: 'Rustic village dhaba serving fresh makhan mishri — the very food Krishna loved. The fresh lassi is unmissable.',
-    tags:        ['Village Food', 'Lassi', 'Budget'],
-  },
-  {
-    name:        'Govardhan Parikrama Dhaba',
-    city:        'Govardhan',
-    address:     'Govardhan Parikrama Road, Govardhan',
-    type:        'Pilgrim Dhaba',
-    specialty:   'Poori Sabzi, Khichdi, Lassi',
-    rating:      4.2,
-    priceRange:  '₹60–150',
-    timings:     '5 AM – 9 PM',
-    isPopular:   false,
-    emoji:       '⛰️',
-    description: 'The perfect rest stop during Govardhan Parikrama. Simple, clean food that keeps you energized for the walk.',
-    tags:        ['Pilgrim Food', 'Budget', 'Quick Meals'],
-  },
-  {
-    name:        'Barsana Maa Radha Hotel',
-    city:        'Barsana',
-    address:     'Near Radha Rani Temple, Barsana',
-    type:        'Restaurant',
-    specialty:   'Thali, Kachori, Halwa',
-    rating:      4.1,
-    priceRange:  '₹80–200',
-    timings:     '7 AM – 8 PM',
-    isPopular:   false,
-    emoji:       '🌸',
-    description: 'The best dining option in Barsana, located near the Radha Rani Temple. Good thali and refreshing buttermilk.',
-    tags:        ['Thali', 'Temple Town', 'Vegetarian'],
-  },
-]
+type BLField = string | { en: string; hi: string }
+
+interface RestaurantData {
+  _id:         string
+  name:        BLField
+  city:        BLField
+  address:     BLField
+  type:        BLField
+  specialty:   BLField
+  description: BLField
+  priceRange:  BLField
+  timings:     BLField
+  tags:        { en: string; hi: string }[]
+  emoji:       string
+  rating:      number
+  isPopular:   boolean
+}
+
+function bl(v: BLField, locale: string): string {
+  if (typeof v === 'string') return v
+  return locale === 'hi' ? (v.hi || v.en) : v.en
+}
 
 const CITY_KEYS = [
   { slug: 'All',       key: 'cityAll' },
@@ -146,7 +54,12 @@ const BRAJ_FOOD_KEYS = [
   { emoji: '🍲', nameKey: 'mustTry.dalBaatiName',   descKey: 'mustTry.dalBaatiDesc' },
 ]
 
-export default function RestaurantsClient() {
+interface Props {
+  restaurants: RestaurantData[]
+  locale:      string
+}
+
+export default function RestaurantsClient({ restaurants, locale }: Props) {
   const t                     = useTranslations('RestaurantsPage')
   const [city,    setCity]    = useState('All')
   const [typeTag, setTypeTag] = useState('All')
@@ -155,13 +68,13 @@ export default function RestaurantsClient() {
   const TYPES      = TYPE_KEYS.map((tp) => ({ ...tp, label: t(tp.key) }))
   const BRAJ_FOODS = BRAJ_FOOD_KEYS.map((f) => ({ ...f, name: t(f.nameKey), desc: t(f.descKey) }))
 
-  const filtered = RESTAURANTS
-    .filter((r) => {
-      if (city    !== 'All' && r.city !== city)                                  return false
-      if (typeTag !== 'All' && !r.tags.some((tag) => tag.includes(typeTag)))    return false
+  const filtered = restaurants
+    .filter((r: RestaurantData) => {
+      if (city    !== 'All' && bl(r.city, 'en') !== city)                             return false
+      if (typeTag !== 'All' && !r.tags.some((tag) => tag.en.includes(typeTag) || tag.hi.includes(typeTag))) return false
       return true
     })
-    .sort((a, b) => (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0))
+    .sort((a: RestaurantData, b: RestaurantData) => (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0))
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -250,8 +163,8 @@ export default function RestaurantsClient() {
 
         {/* Restaurant grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filtered.map((r, i) => (
-            <motion.div key={r.name}
+          {filtered.map((r: RestaurantData, i: number) => (
+            <motion.div key={r._id}
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.07 }}
               className="card card-hover rounded-2xl overflow-hidden flex flex-col">
@@ -273,28 +186,28 @@ export default function RestaurantsClient() {
 
               <div className="p-5 flex flex-col flex-1">
                 <div className="flex items-start justify-between gap-2 mb-1">
-                  <h3 className="font-bold text-gray-900 text-sm leading-tight">{r.name}</h3>
-                  <span className="flex items-center gap-1 text-xs font-bold flex-shrink-0"
+                  <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-tight">{bl(r.name, locale)}</h3>
+                  <span className="flex items-center gap-1 text-xs font-bold shrink-0"
                     style={{ color: '#f59e0b' }}>
                     <Star size={11} fill="currentColor" />{r.rating}
                   </span>
                 </div>
 
                 <p className="text-xs text-gray-400 flex items-center gap-1 mb-1">
-                  <MapPin size={10} />{r.address}
+                  <MapPin size={10} />{bl(r.address, locale)}
                 </p>
                 <p className="text-xs font-semibold mb-3" style={{ color: '#ff7d0f' }}>
-                  {r.type} · {r.specialty}
+                  {bl(r.type, locale)} · {bl(r.specialty, locale)}
                 </p>
 
-                <p className="text-sm text-gray-600 leading-relaxed mb-4 flex-1">{r.description}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4 flex-1">{bl(r.description, locale)}</p>
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-1.5 mb-4">
-                  {r.tags.map((tag) => (
-                    <span key={tag} className="text-xs px-2.5 py-1 rounded-full font-medium"
+                  {r.tags.map((tag: { en: string; hi: string }) => (
+                    <span key={tag.en} className="text-xs px-2.5 py-1 rounded-full font-medium"
                       style={{ background: '#f3f4f6', color: '#6b7280' }}>
-                      {tag}
+                      {bl(tag, locale)}
                     </span>
                   ))}
                 </div>
@@ -303,16 +216,16 @@ export default function RestaurantsClient() {
                   style={{ borderTop: '1px solid #f3f4f6' }}>
                   <div className="space-y-0.5">
                     <p className="text-xs flex items-center gap-1 text-gray-500">
-                      <IndianRupee size={10} />{r.priceRange} {t('perPerson')}
+                      <IndianRupee size={10} />{bl(r.priceRange, locale)} {t('perPerson')}
                     </p>
                     <p className="text-xs flex items-center gap-1 text-gray-500">
-                      <Clock size={10} />{r.timings}
+                      <Clock size={10} />{bl(r.timings, locale)}
                     </p>
                   </div>
                   <a
-                    href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('directionsGreeting', { name: r.name, city: r.city }))}`}
+                    href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('directionsGreeting', { name: bl(r.name, locale), city: bl(r.city, locale) }))}`}
                     target="_blank" rel="noopener noreferrer"
-                    className="text-xs font-semibold px-3 py-2 rounded-full transition-colors"
+                    className="text-xs font-semibold px-3 py-2 rounded-full transition-colors shrink-0"
                     style={{ background: '#dcfce7', color: '#16a34a' }}>
                     {t('directions')}
                   </a>

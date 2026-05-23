@@ -46,10 +46,14 @@ export default function RegisterPage() {
       })
       const data = await res.json()
 
-      if (res.ok) {
-        toast.success(t('toast.accountCreated'))
-        router.push('/login')
-      } else {
+      if (res.ok && data.data?.needsVerification) {
+        toast.success(t('toast.otpSent'))
+        router.push(`/verify-email?email=${encodeURIComponent(form.email.trim().toLowerCase())}`)
+      } else if (res.status === 409 && data.error?.includes('unverified')) {
+        // Existing unverified account — redirect to verify with new OTP
+        toast(t('toast.unverifiedExists'), { icon: '⚠️' })
+        router.push(`/verify-email?email=${encodeURIComponent(form.email.trim().toLowerCase())}`)
+      } else if (!res.ok) {
         toast.error(data.error ?? t('toast.registrationFailed'))
       }
     } catch {

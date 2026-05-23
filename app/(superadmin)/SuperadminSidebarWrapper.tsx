@@ -8,14 +8,17 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, MapPin, Package, Users, Settings,
   LogOut, Menu, X, Key, ShieldCheck, ChevronRight,
+  UtensilsCrossed, Hotel,
 } from 'lucide-react'
 
 const NAV = [
-  { href: '/superadmin',           icon: <LayoutDashboard size={18} />, label: 'Dashboard'  },
-  { href: '/superadmin/places',    icon: <MapPin          size={18} />, label: 'Places'     },
-  { href: '/superadmin/packages',  icon: <Package         size={18} />, label: 'Packages'   },
-  { href: '/superadmin/users',     icon: <Users           size={18} />, label: 'Users'      },
-  { href: '/superadmin/settings',  icon: <Settings        size={18} />, label: 'Settings'   },
+  { href: '/superadmin',               icon: <LayoutDashboard  size={18} />, label: 'Dashboard'   },
+  { href: '/superadmin/places',        icon: <MapPin           size={18} />, label: 'Places'      },
+  { href: '/superadmin/packages',      icon: <Package          size={18} />, label: 'Packages'    },
+  { href: '/superadmin/restaurants',   icon: <UtensilsCrossed  size={18} />, label: 'Restaurants' },
+  { href: '/superadmin/hotels',        icon: <Hotel            size={18} />, label: 'Hotels'      },
+  { href: '/superadmin/users',         icon: <Users            size={18} />, label: 'Users'       },
+  { href: '/superadmin/settings',      icon: <Settings         size={18} />, label: 'Settings'    },
 ]
 
 export default function SuperadminSidebarWrapper() {
@@ -33,7 +36,7 @@ export default function SuperadminSidebarWrapper() {
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
           style={{ background: 'linear-gradient(135deg, #6366f1, #4338ca)' }}>
           <ShieldCheck size={18} className="text-white" />
         </div>
@@ -58,7 +61,7 @@ export default function SuperadminSidebarWrapper() {
                 color:      active ? '#a5b4fc' : 'rgba(255,255,255,0.55)',
                 borderLeft: active ? '3px solid #6366f1' : '3px solid transparent',
               }}>
-              <span className="flex-shrink-0"
+              <span className="shrink-0"
                 style={{ color: active ? '#818cf8' : 'rgba(255,255,255,0.45)' }}>
                 {item.icon}
               </span>
@@ -101,7 +104,7 @@ export default function SuperadminSidebarWrapper() {
   return (
     <>
       {/* ── Desktop sidebar ── */}
-      <div className="hidden lg:flex flex-col flex-shrink-0 transition-all duration-200"
+      <div className="hidden lg:flex flex-col shrink-0 transition-all duration-200"
         style={{ width: collapsed ? '64px' : '220px' }}>
         <div className="relative h-full">
           <SidebarContent />

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Link } from '@/i18n/navigation'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { motion } from 'framer-motion'
 import {
   Star, Clock, MapPin, Users, Check, X as XIcon,
@@ -55,19 +55,26 @@ const TAB_LABEL_KEYS = {
   Reviews:    'tabReviews',
 } as const
 
+type BLField = string | { en: string; hi: string }
+function bl(v: BLField, locale: string): string {
+  if (typeof v === 'string') return v
+  return locale === 'hi' ? (v.hi || v.en) : v.en
+}
+
 // ReviewItem matches ReviewSummary from fetchData.ts exactly
 export interface ReviewItem {
   _id:       string
   rating:    number
-  title:     string
-  comment:   string
+  title:     BLField
+  comment:   BLField
   createdAt: string
   customer:  { name: string }
-  package?:  { name: string; slug: string }
+  package?:  { name: BLField; slug: string }
 }
 
 export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: PackageData; reviews?: ReviewItem[] }) {
   const t                              = useTranslations('PackageDetail')
+  const locale                         = useLocale()
   const [activeTab,    setActiveTab]   = useState<typeof TAB_KEYS[number]>('Overview')
   const [selectedCar,  setSelectedCar] = useState(pkg.pricing[0]?.carType ?? '')
   const [expandedDay,  setExpandedDay] = useState<number | null>(1)
@@ -527,8 +534,8 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                           ))}
                         </div>
                       </div>
-                      <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm mb-1">{review.title}</p>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{review.comment}</p>
+                      <p className="font-semibold text-gray-800 dark:text-gray-100 text-sm mb-1">{bl(review.title, locale)}</p>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{bl(review.comment, locale)}</p>
                     </div>
                   ))}
                 </div>

@@ -6,6 +6,7 @@ import Review from '@/models/Review'
 import Booking from '@/models/Booking'
 import { recalcPackageRating } from '@/lib/reviewUtils'
 import { successResponse, errorResponse, paginatedResponse } from '@/lib/apiResponse'
+import { translateToHindi } from '@/lib/translate'
 
 // GET /api/reviews — public, approved only + optional packageId filter
 export async function GET(req: NextRequest) {
@@ -70,20 +71,25 @@ export async function POST(req: NextRequest) {
     // Verify this booking belongs to this customer and is completed
     const booking = await Booking.findById(bookingId)
     if (!booking) return errorResponse('Booking not found.', 404)
-    if (booking.customer.toString() !== user.id) return errorResponse('Forbidden.', 403)
+    if (booking.customer?.toString() !== user.id) return errorResponse('Forbidden.', 403)
     if (booking.status !== 'completed') return errorResponse('You can only review completed trips.', 400)
 
     // Check for duplicate review
     const existing = await Review.findOne({ booking: bookingId })
     if (existing) return errorResponse('You have already reviewed this booking.', 409)
 
+    const [titleHi, commentHi] = await Promise.all([
+      translateToHindi(title.trim()),
+      translateToHindi(comment.trim()),
+    ])
+
     const review = await Review.create({
       customer:   user.id,
       booking:    bookingId,
       package:    packageId ?? booking.package,
       rating,
-      title:      title.trim(),
-      comment:    comment.trim(),
+      title:      { en: title.trim(),   hi: titleHi   },
+      comment:    { en: comment.trim(), hi: commentHi },
       isApproved: false, // admin must approve
     })
 

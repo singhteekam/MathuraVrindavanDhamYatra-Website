@@ -5,14 +5,20 @@ export interface IDriverDoc extends Document {
   name: string
   phone: string
   email: string
+  gender?: 'male' | 'female' | 'other'
   avatar?: string
   licenseNumber: string
+  aadharNumber?: string
+  aadharFront?: string   // Cloudinary URL — front side
+  aadharBack?: string    // Cloudinary URL — back side
+  panNumber?: string
+  panCard?: string       // Cloudinary URL
   vehicle: {
-    type: string       // swift | eeco | ertiga | innova | crysta
+    type: string         // swift | eeco | ertiga | innova | crysta
     name: string
-    number: string     // UP-85 AB 1234
+    number: string       // UP85 AB 1234
     color: string
-    image?: string
+    image?: string       // Cloudinary URL
   }
   isAvailable: boolean
   isVerified: boolean
@@ -30,8 +36,14 @@ const DriverSchema = new Schema<IDriverDoc>(
     name:          { type: String, required: true, trim: true },
     phone:         { type: String, required: true, trim: true },
     email:         { type: String, required: true, lowercase: true, trim: true },
+    gender:        { type: String, enum: ['male', 'female', 'other'] },
     avatar:        { type: String },
     licenseNumber: { type: String, required: true, unique: true },
+    aadharNumber:  { type: String },
+    aadharFront:   { type: String },
+    aadharBack:    { type: String },
+    panNumber:     { type: String },
+    panCard:       { type: String },
     vehicle: {
       type:   { type: String, required: true },
       name:   { type: String, required: true },

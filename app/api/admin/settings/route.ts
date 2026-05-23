@@ -2,25 +2,12 @@ import { NextRequest }    from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions }     from '@/lib/auth'
 import { connectDB }       from '@/lib/db'
-import mongoose            from 'mongoose'
+import Settings            from '@/models/Settings'
 import { successResponse, errorResponse } from '@/lib/apiResponse'
-
-// ─── Inline schema for site settings ────────────────────────────────────────
-// Stored as a single "singleton" document in the settings collection.
-const SettingsSchema = new mongoose.Schema({
-  key:           { type: String, default: 'site', unique: true },
-  siteInfo:      { type: mongoose.Schema.Types.Mixed, default: {} },
-  emailConfig:   { type: mongoose.Schema.Types.Mixed, default: {} },
-  bookingConfig: { type: mongoose.Schema.Types.Mixed, default: {} },
-}, { timestamps: true })
 
 interface SettingsDoc {
   siteInfo?: unknown
   emailConfig?: unknown
-}
-
-function getSettingsModel() {
-  return mongoose.models.Settings ?? mongoose.model('Settings', SettingsSchema)
 }
 
 // GET /api/admin/settings — load current settings
@@ -31,7 +18,6 @@ export async function GET(_req: NextRequest) {
     if (user?.role !== 'admin' && user?.role !== 'superadmin') return errorResponse('Forbidden.', 403)
 
     await connectDB()
-    const Settings = getSettingsModel()
     const settings = await Settings.findOne({ key: 'site' }).lean()
     return successResponse(settings ?? {})
   } catch (err) {
@@ -51,7 +37,6 @@ export async function POST(req: NextRequest) {
     const { siteInfo, emailConfig, bookingConfig } = body
 
     await connectDB()
-    const Settings = getSettingsModel()
     const existingSettings = await Settings.findOne({ key: 'site' }).lean() as SettingsDoc | null
     const isSuperAdmin = user.role === 'superadmin'
 

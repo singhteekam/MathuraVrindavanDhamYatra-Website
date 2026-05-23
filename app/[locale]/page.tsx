@@ -93,7 +93,7 @@ export default async function HomePage({
       <HowItWorks />
       <PopularPlaces    places={popularPlaces} />
       <WhyChooseUs />
-      <Testimonials />
+      <Testimonials reviews={reviews} />
       <CTASection />
       <Footer locale={locale} />
       <WhatsAppButton />
