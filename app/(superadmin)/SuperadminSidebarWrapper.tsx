@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, MapPin, Package, Users, Settings,
   LogOut, Menu, X, Key, ShieldCheck, ChevronRight,
-  UtensilsCrossed, Hotel,
+  UtensilsCrossed, Hotel, UserCircle,
 } from 'lucide-react'
 
 const NAV = [
@@ -18,6 +18,7 @@ const NAV = [
   { href: '/superadmin/restaurants',   icon: <UtensilsCrossed  size={18} />, label: 'Restaurants' },
   { href: '/superadmin/hotels',        icon: <Hotel            size={18} />, label: 'Hotels'      },
   { href: '/superadmin/users',         icon: <Users            size={18} />, label: 'Users'       },
+  { href: '/superadmin/owner',         icon: <UserCircle       size={18} />, label: 'Owner'       },
   { href: '/superadmin/settings',      icon: <Settings         size={18} />, label: 'Settings'    },
 ]
 

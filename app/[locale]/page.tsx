@@ -11,7 +11,9 @@ import {
   getFeaturedPackages,
   getFeaturedPlaces,
   getApprovedReviews,
+  getOwnerProfile,
 } from '@/lib/fetchData'
+import OwnerSection  from '@/components/home/OwnerSection'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import WhatsAppButton from '@/components/layout/WhatsAppButton'
@@ -77,22 +79,24 @@ export default async function HomePage({
 }) {
   const { locale } = await params
   // All three queries run in parallel, each independently cached
-  const [featuredPackages, popularPlaces, reviews] = await Promise.all([
+  const [featuredPackages, popularPlaces, reviews, ownerProfile] = await Promise.all([
     getFeaturedPackages(locale),
     getFeaturedPlaces(locale),
     getApprovedReviews(6),
+    getOwnerProfile(locale),
   ])
 
   return (
     <>
       <Navbar />
-      <BookingNotice />
+      {/* <BookingNotice /> */}
       <HeroBanner />
       <StatsBar />
       <FeaturedPackages packages={featuredPackages} />
       <HowItWorks />
       <PopularPlaces    places={popularPlaces} />
       <WhyChooseUs />
+      {ownerProfile?.isVisible && <OwnerSection owner={ownerProfile} />}
       <Testimonials reviews={reviews} />
       <CTASection />
       <Footer locale={locale} />

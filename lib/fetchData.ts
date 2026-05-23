@@ -418,6 +418,63 @@ export const getApprovedReviews = unstable_cache(
   { revalidate: 600, tags: ['reviews'] },
 )
 
+// ─── Owner Profile ────────────────────────────────────────────────────────────
+
+export interface OwnerProfileData {
+  _id:          string
+  name:         string
+  title:        string
+  bio:          string
+  photo:        string
+  phone:        string
+  email:        string
+  whatsapp:     string
+  experience:   number
+  achievements: string[]
+  socialLinks: {
+    instagram: string
+    facebook:  string
+    youtube:   string
+    twitter:   string
+  }
+  isVisible: boolean
+}
+
+/** Owner profile for homepage — cached 30 min, busted on superadmin save */
+export const getOwnerProfile = unstable_cache(
+  async (locale: string = 'en'): Promise<OwnerProfileData | null> => {
+    await connectDB()
+    const OwnerModel = (await import('@/models/OwnerProfile')).default
+    const doc = await OwnerModel.findOne({}).lean()
+    if (!doc) return null
+    const raw = ser<Record<string, unknown>>(doc as Record<string, unknown>)
+    const o   = raw as unknown as {
+      _id: string; photo: string; phone: string; email: string
+      whatsapp: string; experience: number; isVisible: boolean
+      name: { en: string; hi: string }; title: { en: string; hi: string }
+      bio:  { en: string; hi: string }
+      achievements: { en: string; hi: string }[]
+      socialLinks: { instagram: string; facebook: string; youtube: string; twitter: string }
+    }
+    return {
+      _id:          o._id,
+      name:         L(o.name,  locale),
+      title:        L(o.title, locale),
+      bio:          L(o.bio,   locale),
+      photo:        o.photo,
+      phone:        o.phone,
+      email:        o.email,
+      whatsapp:     o.whatsapp,
+      experience:   o.experience,
+      achievements: (o.achievements ?? []).map((a) => L(a, locale)),
+      socialLinks:  o.socialLinks ?? { instagram: '', facebook: '', youtube: '', twitter: '' },
+      isVisible:    o.isVisible,
+    }
+  },
+  ['owner-profile'],
+  { revalidate: 1800, tags: ['owner'] },
+)
+
 /** Approved reviews for a specific package — cached 10 min */
 export const getPackageReviews = unstable_cache(
   async (packageId: string): Promise<ReviewSummary[]> => {
