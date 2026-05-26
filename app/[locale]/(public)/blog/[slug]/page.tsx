@@ -74,11 +74,11 @@ function renderBlock(block: ContentBlock, t: (key: string) => string, index: num
       return (
         <div key={index}
           className="flex gap-3 rounded-xl p-4 mb-4"
-          style={{ background: '#fff8ed', border: '1px solid #ffd599' }}>
+          style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
           <Lightbulb size={16} className="shrink-0 mt-0.5" style={{ color: '#ff7d0f' }} />
           <div>
             <p className="text-xs font-bold mb-1" style={{ color: '#ff7d0f' }}>{t('tipLabel')}</p>
-            <p className="text-sm text-gray-700 leading-relaxed">{block.text}</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{block.text}</p>
           </div>
         </div>
       )
@@ -86,11 +86,11 @@ function renderBlock(block: ContentBlock, t: (key: string) => string, index: num
       return (
         <div key={index}
           className="flex gap-3 rounded-xl p-4 mb-4"
-          style={{ background: '#eff6ff', border: '1px solid #bfdbfe' }}>
+          style={{ background: 'var(--surface-blue)', border: '1px solid var(--surface-blue-border)' }}>
           <Info size={16} className="shrink-0 mt-0.5 text-blue-500" />
           <div>
-            <p className="text-xs font-bold text-blue-600 mb-1">{t('infoLabel')}</p>
-            <p className="text-sm text-gray-700 leading-relaxed">{block.text}</p>
+            <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">{t('infoLabel')}</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{block.text}</p>
           </div>
         </div>
       )
@@ -209,12 +209,12 @@ export default async function BlogPostPage({ params }: Props) {
 
             {/* CTA */}
             <div className="rounded-2xl p-5 text-center"
-              style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}>
+              style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
               <p className="text-2xl mb-2">🙏</p>
-              <p className="text-sm font-bold text-gray-900 mb-1" style={{ fontFamily: 'var(--font-serif)' }}>
+              <p className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-1" style={{ fontFamily: 'var(--font-serif)' }}>
                 {locale === 'hi' ? 'यात्रा प्लान करें' : 'Plan Your Trip'}
               </p>
-              <p className="text-xs text-gray-500 mb-3">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
                 {locale === 'hi' ? 'विशेषज्ञ गाइड के साथ' : 'With an expert local guide'}
               </p>
               <Link href="/booking"

@@ -191,7 +191,7 @@ export default function NotFoundPage() {
             ].map((link) => (
               <Link key={link.href} href={link.href}
                 className="text-xs font-semibold px-3 py-2 rounded-full transition-all hover:scale-105"
-                style={{ background: '#fff8ed', color: '#c74a06', border: '1px solid #ffdba8' }}>
+                style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
                 {link.label}
               </Link>
             ))}

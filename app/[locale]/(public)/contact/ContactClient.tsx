@@ -260,7 +260,7 @@ export default function ContactClient() {
                       <motion.div
                         initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
                         transition={{ duration: 0.2 }}
-                        className="px-4 pb-4" style={{ borderTop: '1px solid #f3f4f6' }}>
+                        className="px-4 pb-4" style={{ borderTop: '1px solid var(--border-muted)' }}>
                         <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed pt-3">{faq.a}</p>
                       </motion.div>
                     )}

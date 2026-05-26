@@ -389,7 +389,7 @@ export default function NewPlacePage() {
                   className="input-field text-sm py-2 flex-1" />
                 <button type="button" onClick={addTag}
                   className="flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-semibold"
-                  style={{ background: '#fff8ed', color: '#ff7d0f', border: '1px solid #ffdba8' }}>
+                  style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
                   <Plus size={14} /> Add
                 </button>
               </div>
@@ -413,7 +413,7 @@ export default function NewPlacePage() {
                   {form.tags.map((tag) => (
                     <span key={tag}
                       className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium"
-                      style={{ background: '#fff8ed', color: '#c74a06', border: '1px solid #ffdba8' }}>
+                      style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
                       {tag}
                       <button type="button" onClick={() => removeTag(tag)}
                         className="text-gray-400 hover:text-red-500 transition-colors">

@@ -122,11 +122,11 @@ export default function DriverDashboard() {
           <p className="text-saffron-500 font-semibold text-sm mb-1">
             Jai Shri Krishna 🙏
           </p>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             Welcome, {profile?.name ?? session?.user?.name ?? 'Driver'}
           </h1>
           {profile && (
-            <p className="text-gray-500 text-sm mt-0.5">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-0.5">
               {profile.vehicle.name} · {profile.vehicle.number}
             </p>
           )}
@@ -193,7 +193,7 @@ export default function DriverDashboard() {
               style={{ background: stat.bg, color: stat.color }}>
               {stat.icon}
             </div>
-            <p className="text-xl font-bold text-gray-900">
+            <p className="text-xl font-bold text-gray-900 dark:text-gray-100">
               {stat.isString ? stat.value : stat.value}
             </p>
             <p className="text-sm text-gray-500 mt-0.5">{stat.label}</p>
@@ -204,7 +204,7 @@ export default function DriverDashboard() {
       {/* Assigned trips */}
       <div className="card rounded-2xl p-5">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="font-bold text-gray-900 text-lg">Your Assigned Trips</h2>
+          <h2 className="font-bold text-gray-900 dark:text-gray-100 text-lg">Your Assigned Trips</h2>
           <Link href="/driver/trips"
             className="text-xs font-semibold"
             style={{ color: '#ff7d0f' }}>
@@ -242,7 +242,7 @@ export default function DriverDashboard() {
                           {st.label}
                         </span>
                       </div>
-                      <p className="font-bold text-gray-900">{trip.customer.name}</p>
+                      <p className="font-bold text-gray-900 dark:text-gray-100">{trip.customer.name}</p>
                     </div>
                     <p className="font-bold text-saffron-600 flex-shrink-0">
                       {formatCurrency(trip.totalAmount)}
@@ -271,7 +271,7 @@ export default function DriverDashboard() {
                       <button
                         onClick={() => updateTripStatus(trip.bookingId, 'ongoing')}
                         className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-colors"
-                        style={{ background: '#fff8ed', color: '#ff7d0f', border: '1px solid #ffdba8' }}
+                        style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1px solid var(--surface-saffron-border)' }}
                       >
                         <RefreshCw size={12} /> Start Trip
                       </button>

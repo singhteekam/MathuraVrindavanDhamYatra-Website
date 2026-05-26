@@ -112,7 +112,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                   {pkg.nights > 0 && ` / ${pkg.nights} ${pkg.nights > 1 ? t('nights') : t('night')}`}
                 </span>
                 {pkg.isPopular && (
-                  <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>
+                  <span className="badge" style={{ background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }}>
                     {t('popular')}
                   </span>
                 )}

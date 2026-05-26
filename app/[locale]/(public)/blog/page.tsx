@@ -62,7 +62,7 @@ export default async function BlogPage({ params }: Props) {
                 <div className="p-5 flex flex-col flex-1">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-xs px-2.5 py-1 rounded-full font-semibold"
-                      style={{ background: '#eef2ff', color: '#4338ca' }}>
+                      style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                       {post.category}
                     </span>
                     <span className="text-xs text-gray-400">{post.readTime}</span>
@@ -70,7 +70,7 @@ export default async function BlogPage({ params }: Props) {
                   <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-2 leading-snug">{post.title}</h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4 flex-1">{post.excerpt}</p>
                   <div className="flex items-center justify-between pt-4"
-                    style={{ borderTop: '1px solid #f3f4f6' }}>
+                    style={{ borderTop: '1px solid var(--border-muted)' }}>
                     <span className="text-xs text-gray-400 flex items-center gap-1">
                       <Clock size={10} />{post.date}
                     </span>
@@ -98,13 +98,13 @@ export default async function BlogPage({ params }: Props) {
                 className="card card-hover rounded-2xl p-5 flex items-start gap-5"
               >
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 text-3xl"
-                  style={{ background: '#fff8ed' }}>
+                  style={{ background: 'var(--surface-saffron)' }}>
                   {post.emoji}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
                     <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold"
-                      style={{ background: '#f3f4f6', color: '#6b7280' }}>
+                      style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
                       <Tag size={9} className="inline mr-1" />{post.category}
                     </span>
                     <span className="text-xs text-gray-400">{post.readTime} · {post.date}</span>
@@ -124,13 +124,13 @@ export default async function BlogPage({ params }: Props) {
 
         {/* Newsletter CTA */}
         <div className="rounded-3xl p-8 text-center"
-          style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}>
+          style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
           <p className="text-3xl mb-3">📬</p>
-          <h3 className="text-xl font-bold text-gray-900 mb-2"
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2"
             style={{ fontFamily: 'var(--font-serif)' }}>
             {t('ctaTitle')}
           </h3>
-          <p className="text-gray-500 text-sm mb-5 max-w-md mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-5 max-w-md mx-auto">
             {t('ctaDescription')}
           </p>
           <Link href="/contact" className="btn-primary inline-flex">

@@ -40,8 +40,8 @@ export default function DriverEarningsPage() {
   return (
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Earnings</h1>
-        <p className="text-gray-500 text-sm mt-1">Summary of completed trips and earnings</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">My Earnings</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Summary of completed trips and earnings</p>
       </div>
 
       {/* Stats */}
@@ -60,7 +60,7 @@ export default function DriverEarningsPage() {
               style={{ background: stat.bg, color: stat.color }}>
               {stat.icon}
             </div>
-            <p className="text-xl font-bold text-gray-900">{stat.value}</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{stat.value}</p>
             <p className="text-sm text-gray-500 mt-0.5">{stat.label}</p>
           </motion.div>
         ))}
@@ -69,7 +69,7 @@ export default function DriverEarningsPage() {
       {/* Trip history table */}
       <div className="card rounded-2xl overflow-hidden">
         <div className="p-5 border-b border-gray-100">
-          <h2 className="font-bold text-gray-900">Trip History</h2>
+          <h2 className="font-bold text-gray-900 dark:text-gray-100">Trip History</h2>
         </div>
 
         {loading ? (

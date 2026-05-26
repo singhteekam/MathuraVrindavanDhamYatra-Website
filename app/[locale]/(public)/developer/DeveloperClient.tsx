@@ -33,10 +33,10 @@ const PROJECT_TECH = [
 ]
 
 const SOCIAL_LINKS = [
-  { label: 'Website',  icon: <Globe        size={18} />, href: DEVELOPER.website,           color: '#ff7d0f', bg: '#fff8ed' },
-  { label: 'GitHub',   icon: <GithubIcon   size={18} />, href: DEVELOPER.github,            color: '#111827', bg: '#f9fafb' },
-  { label: 'LinkedIn', icon: <LinkedinIcon size={18} />, href: DEVELOPER.linkedin,          color: '#0a66c2', bg: '#eff8ff' },
-  { label: 'Email',    icon: <Mail         size={18} />, href: `mailto:${DEVELOPER.email}`, color: '#16a34a', bg: '#f0fdf4' },
+  { label: 'Website',  icon: <Globe        size={18} />, href: DEVELOPER.website,           color: 'var(--text-on-saffron)', bg: 'var(--surface-saffron)' },
+  { label: 'GitHub',   icon: <GithubIcon   size={18} />, href: DEVELOPER.github,            color: 'var(--text-secondary)',  bg: 'var(--bg-surface-muted)'  },
+  { label: 'LinkedIn', icon: <LinkedinIcon size={18} />, href: DEVELOPER.linkedin,          color: '#0a66c2',                bg: 'var(--surface-blue)'      },
+  { label: 'Email',    icon: <Mail         size={18} />, href: `mailto:${DEVELOPER.email}`, color: 'var(--text-on-green)',   bg: 'var(--surface-green)'     },
 ]
 
 export default function DeveloperClient() {
@@ -108,7 +108,7 @@ export default function DeveloperClient() {
           <div className="flex flex-wrap gap-2">
             {PROJECT_TECH.map((tech) => (
               <span key={tech} className="text-xs px-2.5 py-1 rounded-full font-medium"
-                style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                 {tech}
               </span>
             ))}

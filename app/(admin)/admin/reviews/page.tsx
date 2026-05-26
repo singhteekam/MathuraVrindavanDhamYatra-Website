@@ -316,7 +316,7 @@ export default function AdminReviewsPage() {
                       <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400">
                         {review.package && (
                           <span className="px-2.5 py-1 rounded-full"
-                            style={{ background: '#fff8ed', color: '#c74a06' }}>
+                            style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)' }}>
                             ðŸ“¦ {str(review.package.name)}
                           </span>
                         )}
@@ -352,7 +352,7 @@ export default function AdminReviewsPage() {
                       <button type="button"
                         onClick={() => setEditingReview(review)}
                         className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap"
-                        style={{ background: '#fff8ed', color: '#c74a06', border: '1px solid #fddcaa' }}>
+                        style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
                         <Edit2 size={13} /> Edit
                       </button>
 

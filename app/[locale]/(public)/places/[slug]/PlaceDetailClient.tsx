@@ -209,7 +209,7 @@ export default function PlaceDetailClient({ place, related }: Props) {
                   <MapPin size={10} /> {place.city}
                 </span>
                 {place.isFeatured && (
-                  <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>
+                  <span className="badge" style={{ background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }}>
                     {t('mustVisit')}
                   </span>
                 )}

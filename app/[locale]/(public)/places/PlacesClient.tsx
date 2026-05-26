@@ -159,7 +159,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
               onClick={() => setType(tp.value)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0"
               style={type === tp.value
-                ? { background: '#fff8ed', color: '#c74a06', border: '1.5px solid #ff7d0f' }
+                ? { background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1.5px solid #ff7d0f' }
                 : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
               }
             >

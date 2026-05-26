@@ -70,8 +70,8 @@ export default function DriverProfilePage() {
   return (
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto max-w-2xl">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-        <p className="text-gray-500 text-sm mt-1">View and update your driver information</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">My Profile</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">View and update your driver information</p>
       </div>
 
       {/* Profile card */}
@@ -89,7 +89,7 @@ export default function DriverProfilePage() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="font-bold text-gray-900 text-lg">{profile.name}</h2>
+              <h2 className="font-bold text-gray-900 dark:text-gray-100 text-lg">{profile.name}</h2>
               {profile.isVerified && (
                 <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                   style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
@@ -97,7 +97,7 @@ export default function DriverProfilePage() {
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-500">Driver since account creation</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Driver since account creation</p>
           </div>
         </div>
 

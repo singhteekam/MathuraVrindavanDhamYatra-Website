@@ -374,6 +374,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.6;
     transition: background-color 0.2s ease, color 0.2s ease;
+    /* Clip any decorative/animated element that briefly overflows horizontally
+       (framer-motion x: transforms, decorative rings, etc.)
+       clip doesn't create a scroll container so position:sticky still works */
+    overflow-x: clip;
   }
 
   ::-webkit-scrollbar       { width: 6px; }

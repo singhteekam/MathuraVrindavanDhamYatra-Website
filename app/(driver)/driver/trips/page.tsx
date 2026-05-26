@@ -77,8 +77,8 @@ export default function DriverTripsPage() {
   return (
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Trips</h1>
-        <p className="text-gray-500 text-sm mt-1">All your assigned and completed trips</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">My Trips</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">All your assigned and completed trips</p>
       </div>
 
       {/* Status tabs */}
@@ -88,7 +88,7 @@ export default function DriverTripsPage() {
             className="px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0"
             style={activeTab === tab.value
               ? { background: '#ff7d0f', color: '#fff' }
-              : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
+              : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
             }>
             {tab.label}
           </button>
@@ -125,7 +125,7 @@ export default function DriverTripsPage() {
                         {st.label}
                       </span>
                     </div>
-                    <h3 className="font-bold text-gray-900">{trip.customer.name}</h3>
+                    <h3 className="font-bold text-gray-900 dark:text-gray-100">{trip.customer.name}</h3>
                     {trip.package && (
                       <p className="text-xs text-gray-400 mt-0.5">{trip.package.name}</p>
                     )}
@@ -152,7 +152,7 @@ export default function DriverTripsPage() {
                             {d.value}
                           </a>
                         ) : (
-                          <p className="font-medium text-gray-700 truncate">{d.value}</p>
+                          <p className="font-medium text-gray-700 dark:text-gray-300 truncate">{d.value}</p>
                         )}
                       </div>
                     </div>
@@ -164,7 +164,7 @@ export default function DriverTripsPage() {
                   {trip.status === 'driver_assigned' && (
                     <button onClick={() => updateStatus(trip.bookingId, 'ongoing')}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
-                      style={{ background: '#fff8ed', color: '#ff7d0f', border: '1px solid #ffdba8' }}>
+                      style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
                       <RefreshCw size={12} /> Start Trip
                     </button>
                   )}

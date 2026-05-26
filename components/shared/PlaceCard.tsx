@@ -112,7 +112,7 @@ export default function PlaceCard({
             )}
             {entryFee && (
               <span className="font-medium"
-                style={{ color: entryFee === 'Free' ? '#16a34a' : '#6b7280' }}>
+                style={{ color: entryFee === 'Free' ? '#16a34a' : 'var(--text-muted)' }}>
                 {entryFee === 'Free' ? t('free') : entryFee}
               </span>
             )}
