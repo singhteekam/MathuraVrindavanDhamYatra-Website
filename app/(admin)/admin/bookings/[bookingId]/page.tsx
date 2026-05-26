@@ -244,7 +244,7 @@ export default function AdminBookingDetailPage() {
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           className="card rounded-2xl p-5 mb-6"
         >
-          <h3 className="font-bold text-gray-900 text-sm mb-4">Trip Progress</h3>
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-4">Trip Progress</h3>
           <div className="flex items-center">
             {STATUS_STEPS.map((step, i) => (
               <div key={step} className="flex items-center flex-1 min-w-0">
@@ -253,7 +253,7 @@ export default function AdminBookingDetailPage() {
                     className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all"
                     style={i <= currentStepIndex
                       ? { background: '#ff7d0f', color: '#fff' }
-                      : { background: '#f3f4f6', color: '#9ca3af' }
+                      : { background: 'var(--bg-surface-muted)', color: '#9ca3af' }
                     }
                   >
                     {i < currentStepIndex ? <CheckCircle size={14} /> : i + 1}
@@ -265,7 +265,7 @@ export default function AdminBookingDetailPage() {
                 </div>
                 {i < STATUS_STEPS.length - 1 && (
                   <div className="flex-1 h-0.5 mx-1 mb-4"
-                    style={{ background: i < currentStepIndex ? '#ff7d0f' : '#f3f4f6' }} />
+                    style={{ background: i < currentStepIndex ? '#ff7d0f' : 'var(--bg-surface-muted)' }} />
                 )}
               </div>
             ))}
@@ -275,7 +275,7 @@ export default function AdminBookingDetailPage() {
 
       {isCancelled && (
         <div className="flex items-center gap-2 p-4 rounded-2xl mb-6"
-          style={{ background: '#fff1f2', border: '1px solid #fecdd3' }}>
+          style={{ background: 'var(--surface-red)', border: '1px solid var(--surface-red-border)' }}>
           <XCircle size={18} className="text-red-500 shrink-0" />
           <div>
             <p className="font-semibold text-red-700 text-sm">This booking was cancelled</p>
@@ -291,15 +291,15 @@ export default function AdminBookingDetailPage() {
 
           {/* Trip Details */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <Car size={16} className="text-saffron-500" />Trip Details
             </h3>
 
             {booking.package && (
               <div className="p-3 rounded-xl mb-4"
-                style={{ background: '#fff8ed', border: '1px solid #ffdba8' }}>
+                style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
                 <p className="text-xs text-saffron-600 font-semibold">Package</p>
-                <p className="text-sm font-bold text-gray-900">{bl(booking.package?.name)}</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-gray-100">{bl(booking.package?.name)}</p>
               </div>
             )}
 
@@ -347,7 +347,7 @@ export default function AdminBookingDetailPage() {
                 <div className="flex flex-wrap gap-2">
                   {booking.addons.map((a) => (
                     <span key={a} className="text-xs px-2.5 py-1 rounded-full font-medium"
-                      style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                      style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                       {a}
                     </span>
                   ))}
@@ -358,30 +358,30 @@ export default function AdminBookingDetailPage() {
 
           {/* Customer Details */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <User size={16} className="text-saffron-500" />Customer Details
             </h3>
 
             {/* Registered customer badge */}
             {booking.customer && (
               <div className="flex items-center gap-3 p-3 rounded-xl mb-4"
-                style={{ background: '#f9fafb', border: '1px solid #f3f4f6' }}>
+                style={{ background: 'var(--bg-surface-muted)', border: '1px solid var(--border-muted)' }}>
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shrink-0"
                   style={{ background: 'linear-gradient(135deg, #ff7d0f, #c74a06)' }}>
                   {booking.customer.name?.charAt(0)?.toUpperCase() ?? 'U'}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-gray-900 text-sm">{booking.customer.name ?? '—'}</p>
-                  <p className="text-xs text-gray-500">{booking.customer.email ?? '—'}</p>
-                  <p className="text-xs text-gray-500">{booking.customer.phone ?? '—'}</p>
+                  <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">{booking.customer.name ?? '—'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{booking.customer.email ?? '—'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{booking.customer.phone ?? '—'}</p>
                 </div>
                 <div className="flex gap-2">
                   <a href={`tel:${booking.customer.phone}`}
-                    className="p-2 rounded-lg" style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                    className="p-2 rounded-lg" style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                     <Phone size={13} />
                   </a>
                   <a href={`mailto:${booking.customer.email}`}
-                    className="p-2 rounded-lg" style={{ background: '#eff6ff', color: '#2563eb' }}>
+                    className="p-2 rounded-lg" style={{ background: 'var(--surface-blue)', color: '#2563eb' }}>
                     <Mail size={13} />
                   </a>
                 </div>
@@ -412,13 +412,13 @@ export default function AdminBookingDetailPage() {
                 href={`https://wa.me/${(booking.customer?.phone || booking.customerPhone || '').replace(/\D/g, '')}?text=Namaste! Regarding your booking ${booking.bookingId} — `}
                 target="_blank" rel="noopener noreferrer"
                 className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold"
-                style={{ background: '#dcfce7', color: '#16a34a' }}>
+                style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                 WhatsApp Customer
               </a>
               <a
                 href={`tel:${booking.customer?.phone || booking.customerPhone || ''}`}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold"
-                style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                 <Phone size={12} />Call Customer
               </a>
             </div>
@@ -426,7 +426,7 @@ export default function AdminBookingDetailPage() {
 
           {/* Special Requests */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
               <Star size={15} className="text-saffron-500" />Special Requests
             </h3>
             <textarea rows={3} className="input-field resize-none text-sm"
@@ -438,7 +438,7 @@ export default function AdminBookingDetailPage() {
           {/* Admin Notes + Cancel Reason */}
           <div className="card rounded-2xl p-5 space-y-4">
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">Admin Notes</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Admin Notes</h3>
               <textarea rows={3} className="input-field resize-none text-sm"
                 placeholder="Internal notes (visible to customer in portal)..."
                 value={fields.adminNotes}
@@ -446,7 +446,7 @@ export default function AdminBookingDetailPage() {
             </div>
             {(isCancelled || fields.status === 'cancelled') && (
               <div>
-                <h3 className="font-bold text-gray-900 mb-2">Cancel Reason</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Cancel Reason</h3>
                 <input type="text" className="input-field text-sm"
                   placeholder="Reason for cancellation..."
                   value={fields.cancelReason}
@@ -457,7 +457,7 @@ export default function AdminBookingDetailPage() {
 
           {/* Booking Meta */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
               <Info size={15} className="text-saffron-500" />Booking Info
             </h3>
             <div className="grid sm:grid-cols-2 gap-2">
@@ -477,7 +477,7 @@ export default function AdminBookingDetailPage() {
 
           {/* Payment */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <IndianRupee size={15} className="text-saffron-500" />Payment Details
             </h3>
             <div className="space-y-3">
@@ -513,16 +513,16 @@ export default function AdminBookingDetailPage() {
             </div>
             {balance > 0 && (
               <div className="mt-3 p-3 rounded-xl flex justify-between text-sm"
-                style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
-                <span className="text-amber-700 font-medium">Balance Due</span>
-                <span className="font-bold text-amber-700">{formatCurrency(balance)}</span>
+                style={{ background: 'var(--surface-amber)', border: '1px solid var(--surface-amber-border)' }}>
+                <span className="text-amber-700 dark:text-amber-300 font-medium">Balance Due</span>
+                <span className="font-bold text-amber-700 dark:text-amber-300">{formatCurrency(balance)}</span>
               </div>
             )}
           </div>
 
           {/* Trip Status */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
               <Clock size={15} className="text-saffron-500" />Trip Status
             </h3>
             <select className="input-field text-sm" value={fields.status}
@@ -538,18 +538,18 @@ export default function AdminBookingDetailPage() {
 
           {/* Assign Driver */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
               <MapPin size={15} className="text-saffron-500" />Assign Driver
             </h3>
             {booking.driver && (
               <div className="flex items-center gap-3 p-3 rounded-xl mb-3"
-                style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
-                <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center font-bold text-green-700 text-sm shrink-0">
+                style={{ background: 'var(--surface-green)', border: '1px solid var(--surface-green-border)' }}>
+                <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center font-bold text-green-700 dark:text-green-400 text-sm shrink-0">
                   {booking.driver.name?.charAt(0) ?? 'D'}
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-gray-800">{booking.driver.name ?? '—'}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs font-bold text-gray-800 dark:text-gray-200">{booking.driver.name ?? '—'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     {booking.driver.vehicle?.name ?? ''} · {booking.driver.vehicle?.number ?? ''}
                   </p>
                   <a href={`tel:${booking.driver.phone}`}
@@ -595,7 +595,7 @@ export default function AdminBookingDetailPage() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</label>
+      <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{label}</label>
       {children}
     </div>
   )
@@ -603,9 +603,9 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function InfoRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="flex flex-col gap-0.5 p-3 rounded-xl" style={{ background: '#f9fafb' }}>
-      <span className="text-xs text-gray-400">{label}</span>
-      <span className={`text-sm font-semibold text-gray-800 break-all ${mono ? 'font-mono text-xs' : ''}`}>
+    <div className="flex flex-col gap-0.5 p-3 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
+      <span className="text-xs text-gray-400 dark:text-gray-500">{label}</span>
+      <span className={`text-sm font-semibold text-gray-800 dark:text-gray-200 break-all ${mono ? 'font-mono text-xs' : ''}`}>
         {value || '—'}
       </span>
     </div>

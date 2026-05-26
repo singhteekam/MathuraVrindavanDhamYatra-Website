@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function DriverLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex">
       <DriverSidebarWrapper />
       <div className="flex-1 flex flex-col min-w-0">
         {children}

@@ -333,15 +333,15 @@ export default function PackagesClient({ packages }: { packages: Package[] }) {
           viewport={{ once: true }}
           className="mt-16 rounded-3xl p-8 md:p-12 text-center"
           style={{
-            background: 'linear-gradient(135deg, #fff8ed, #ffefd4)',
-            border: '1px solid #ffdba8',
+            background: 'var(--surface-saffron)',
+            border: '1px solid var(--surface-saffron-border)',
           }}
         >
           <p className="text-4xl mb-4">✨</p>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
             {t('customTitle')}
           </h3>
-          <p className="text-gray-500 mb-6 max-w-md mx-auto text-sm">
+          <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto text-sm">
             {t('customDescription')}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">

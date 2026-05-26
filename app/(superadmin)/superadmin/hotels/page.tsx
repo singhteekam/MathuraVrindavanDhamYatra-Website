@@ -169,13 +169,13 @@ export default function SuperadminHotelsPage() {
                 {!h.isActive && (
                   <div className="absolute top-2 right-2">
                     <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                      style={{ background: '#fee2e2', color: '#991b1b' }}>Hidden</span>
+                      style={{ background: 'var(--surface-red)', color: 'var(--text-on-red)' }}>Hidden</span>
                   </div>
                 )}
                 {h.isFeatured && h.isActive && (
                   <div className="absolute top-2 right-2">
                     <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                      style={{ background: '#fef3c7', color: '#92400e' }}>⭐ Featured</span>
+                      style={{ background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }}>⭐ Featured</span>
                   </div>
                 )}
               </div>
@@ -201,8 +201,8 @@ export default function SuperadminHotelsPage() {
                   <button type="button" onClick={() => toggleField(h, 'isActive')}
                     className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg flex-1 justify-center font-medium transition-all"
                     style={h.isActive
-                      ? { background: '#f0fdf4', color: '#16a34a' }
-                      : { background: '#f3f4f6', color: '#6b7280' }
+                      ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                      : { background: 'var(--bg-surface-muted)', color: '#6b7280' }
                     }
                     title={h.isActive ? 'Hide' : 'Publish'}>
                     {h.isActive ? <><ToggleRight size={13} />Active</> : <><ToggleLeft size={13} />Hidden</>}
@@ -210,21 +210,21 @@ export default function SuperadminHotelsPage() {
                   <button type="button" onClick={() => toggleField(h, 'isFeatured')}
                     className="p-1.5 rounded-lg transition-all"
                     style={h.isFeatured
-                      ? { background: '#fef3c7', color: '#92400e' }
-                      : { background: '#f3f4f6', color: '#9ca3af' }
+                      ? { background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }
+                      : { background: 'var(--bg-surface-muted)', color: '#9ca3af' }
                     }
                     title={h.isFeatured ? 'Remove featured' : 'Mark featured'}>
                     <Star size={13} fill={h.isFeatured ? 'currentColor' : 'none'} />
                   </button>
                   <Link href={`/superadmin/hotels/${h._id}/edit`}
                     className="p-1.5 rounded-lg transition-all"
-                    style={{ background: '#eef2ff', color: '#4338ca' }}
+                    style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}
                     title="Edit">
                     <Edit size={13} />
                   </Link>
                   <button type="button" onClick={() => handleDelete(h)}
                     className="p-1.5 rounded-lg transition-all"
-                    style={{ background: '#fef2f2', color: '#ef4444' }}
+                    style={{ background: 'var(--surface-red)', color: 'var(--text-on-red)' }}
                     title="Delete">
                     <Trash2 size={13} />
                   </button>

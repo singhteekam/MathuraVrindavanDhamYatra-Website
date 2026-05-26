@@ -133,8 +133,8 @@ export default function ImageManager({
           onClick={() => !uploading && fileInputRef.current?.click()}
           className="border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all mb-4"
           style={{
-            borderColor:     dragOver ? '#ff7d0f' : '#e5e7eb',
-            background:      dragOver ? '#fff8ed' : '#fafafa',
+            borderColor:     dragOver ? '#ff7d0f' : 'var(--border-default)',
+            background:      dragOver ? 'var(--surface-saffron)' : 'var(--bg-surface-muted)',
           }}>
           <input
             ref={fileInputRef}
@@ -199,7 +199,7 @@ export default function ImageManager({
                 {i === 0 && (
                   <div className="absolute top-1.5 left-1.5 z-10">
                     <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                      style={{ background: '#22c55e', color: '#fff' }}>
+                      style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                       <Star size={9} className="inline mr-0.5" />Thumbnail
                     </span>
                   </div>
@@ -246,7 +246,7 @@ export default function ImageManager({
       {/* No Cloudinary warning */}
       {images.length === 0 && (
         <div className="flex items-start gap-2 p-3 rounded-xl"
-          style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
+          style={{ background: 'var(--surface-amber)', border: '1px solid var(--surface-amber-border)' }}>
           <AlertCircle size={14} className="text-amber-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-amber-700 leading-relaxed">
             Upload requires Cloudinary configured in Vercel env vars.

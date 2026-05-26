@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -69,7 +69,7 @@ export default function AdminEnquiriesPage() {
             className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
             style={filter === tab.value
               ? { background: '#ff7d0f', color: '#fff' }
-              : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+              : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
             }
           >
             {tab.label}
@@ -112,7 +112,7 @@ export default function AdminEnquiriesPage() {
                         <p className="font-bold text-gray-900 text-sm">{enq.name}</p>
                         {!enq.isRead && (
                           <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                            style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                            style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                             New
                           </span>
                         )}
@@ -131,13 +131,13 @@ export default function AdminEnquiriesPage() {
                   <div className="flex flex-wrap gap-3 text-xs text-gray-500">
                     {enq.tourDate && (
                       <span className="flex items-center gap-1 px-2.5 py-1.5 rounded-full"
-                        style={{ background: '#eef2ff', color: '#4338ca' }}>
+                        style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
                         <Calendar size={10} /> {formatDate(enq.tourDate)}
                       </span>
                     )}
                     {enq.passengers && (
                       <span className="flex items-center gap-1 px-2.5 py-1.5 rounded-full"
-                        style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                        style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                         <Users size={10} /> {enq.passengers} people
                       </span>
                     )}
@@ -150,24 +150,24 @@ export default function AdminEnquiriesPage() {
                 {/* Right: Actions */}
                 <div className="flex sm:flex-col gap-2 flex-shrink-0">
                   <a
-                    href={`https://wa.me/${enq.phone.replace(/\D/g, '')}?text=Namaste ${enq.name}! Thank you for enquiring with Mathura Vrindavan Dham Yatra. 🙏`}
+                    href={`https://wa.me/${enq.phone.replace(/\D/g, '')}?text=Namaste ${enq.name}! Thank you for enquiring with Mathura Vrindavan Dham Yatra. ðŸ™`}
                     target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl transition-colors whitespace-nowrap"
-                    style={{ background: '#dcfce7', color: '#16a34a' }}
+                    style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
                   >
                     WhatsApp
                   </a>
                   <a
                     href={`tel:${enq.phone}`}
                     className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl transition-colors"
-                    style={{ background: '#fff8ed', color: '#ff7d0f' }}
+                    style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}
                   >
                     <Phone size={12} /> Call
                   </a>
                   {!enq.isRead && (
                     <button
                       className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl transition-colors whitespace-nowrap"
-                      style={{ background: '#f3f4f6', color: '#6b7280' }}
+                      style={{ background: 'var(--bg-surface-muted)', color: '#6b7280' }}
                       onClick={() => {
                         // TODO: PATCH /api/contact/:id to mark as read
                         toast.success('Marked as read.')

@@ -26,7 +26,7 @@ function FaqItemRow({ faq }: { faq: FaqItem }) {
             initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }}
             className="overflow-hidden">
-            <div className="px-5 pb-5 pt-3 bg-gray-50 dark:bg-gray-900" style={{ borderTop: '1px solid #f3f4f6' }}>
+            <div className="px-5 pb-5 pt-3 bg-gray-50 dark:bg-gray-900" style={{ borderTop: '1px solid var(--border-muted)' }}>
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{faq.a}</p>
             </div>
           </motion.div>
@@ -79,7 +79,7 @@ export default function FaqClient() {
             className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
             style={activeCategory === 'all'
               ? { background: '#4338ca', color: '#fff', boxShadow: '0 4px 15px rgba(67,56,202,0.3)' }
-              : { background: 'transparent', color: '#6b7280', border: '1px solid #e5e7eb' }}>
+              : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }}>
             {t('allCategories')}
           </button>
           {categories.map((cat) => (
@@ -87,7 +87,7 @@ export default function FaqClient() {
               className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
               style={activeCategory === cat
                 ? { background: '#4338ca', color: '#fff', boxShadow: '0 4px 15px rgba(67,56,202,0.3)' }
-                : { background: 'transparent', color: '#6b7280', border: '1px solid #e5e7eb' }}>
+                : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }}>
               {cat}
             </button>
           ))}
@@ -119,19 +119,19 @@ export default function FaqClient() {
         <motion.div
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="mt-16 max-w-2xl mx-auto rounded-3xl p-8 text-center"
-          style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}>
+          style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
           <p className="text-3xl mb-3">💬</p>
-          <h3 className="font-bold text-gray-900 text-xl mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-xl mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
             {t('stillHaveQuestions')}
           </h3>
-          <p className="text-gray-500 text-sm mb-6">{t('ctaDesc')}</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">{t('ctaDesc')}</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <a href={`tel:${siteConfig.phone}`} className="btn-primary">
               <Phone size={16} /> {t('callUs')}
             </a>
             <a href={`https://wa.me/${siteConfig.whatsapp}`} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm"
-              style={{ background: '#dcfce7', color: '#16a34a' }}>
+              style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
               <MessageCircle size={16} /> {t('whatsApp')}
             </a>
             <Link href="/contact" className="btn-secondary">{t('contactForm')}</Link>

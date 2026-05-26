@@ -47,9 +47,9 @@ export default function DriverEarningsPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {[
-          { label: 'Total Earnings',      value: formatCurrency(totalEarnings), icon: <IndianRupee  size={20} />, color: '#16a34a', bg: '#f0fdf4' },
-          { label: 'This Month',          value: formatCurrency(monthEarnings), icon: <TrendingUp   size={20} />, color: '#ff7d0f', bg: '#fff8ed' },
-          { label: 'Completed Trips',     value: String(trips.length),          icon: <CalendarCheck size={20}/>, color: '#4338ca', bg: '#eef2ff' },
+          { label: 'Total Earnings',      value: formatCurrency(totalEarnings), icon: <IndianRupee  size={20} />, color: '#16a34a', bg: 'var(--surface-green)' },
+          { label: 'This Month',          value: formatCurrency(monthEarnings), icon: <TrendingUp   size={20} />, color: '#ff7d0f', bg: 'var(--surface-saffron)' },
+          { label: 'Completed Trips',     value: String(trips.length),          icon: <CalendarCheck size={20}/>, color: '#4338ca', bg: 'var(--surface-krishna)' },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -85,7 +85,7 @@ export default function DriverEarningsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ background: '#f9fafb', borderBottom: '1px solid #f3f4f6' }}>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
                   {['Booking ID', 'Date', 'Customer', 'Package/Car', 'Amount'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
@@ -117,7 +117,7 @@ export default function DriverEarningsPage() {
                 ))}
               </tbody>
               <tfoot>
-                <tr style={{ background: '#f9fafb', borderTop: '2px solid #f3f4f6' }}>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderTop: '2px solid #f3f4f6' }}>
                   <td colSpan={4} className="px-4 py-3 font-bold text-gray-800 text-sm">Total</td>
                   <td className="px-4 py-3 font-bold text-green-600 text-base">
                     {formatCurrency(totalEarnings)}

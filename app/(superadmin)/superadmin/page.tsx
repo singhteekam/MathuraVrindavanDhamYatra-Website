@@ -92,14 +92,14 @@ export default function SuperadminDashboard() {
   const s = stats
 
   const STAT_CARDS = [
-    { label: 'Sacred Places',    value: s?.totalPlaces    ?? 0, icon: <MapPin    size={20} />, color: '#ff7d0f', bg: '#fff8ed', href: '/superadmin/places'   },
-    { label: 'Tour Packages',    value: s?.totalPackages  ?? 0, icon: <Package   size={20} />, color: '#4338ca', bg: '#eef2ff', href: '/superadmin/packages' },
-    { label: 'Total Customers',  value: s?.users?.totalCustomers ?? 0, icon: <Users size={20} />, color: '#16a34a', bg: '#f0fdf4', href: '/superadmin/users' },
-    { label: 'Total Bookings',   value: s?.bookings?.total ?? 0, icon: <BookOpen size={20} />, color: '#0ea5e9', bg: '#f0f9ff', href: '/admin/bookings' },
-    { label: 'Published Reviews',value: s?.totalReviews   ?? 0, icon: <Star      size={20} />, color: '#f59e0b', bg: '#fffbeb', href: '/admin/reviews'  },
-    { label: 'Pending Reviews',  value: s?.pendingReviews ?? 0, icon: <Clock     size={20} />, color: '#dc2626', bg: '#fff1f2', href: '/admin/reviews'  },
-    { label: 'This Month Revenue', value: formatCurrency(s?.revenue?.thisMonth ?? 0), icon: <DollarSign size={20} />, color: '#16a34a', bg: '#f0fdf4', href: '/admin/analytics' },
-    { label: 'Unread Enquiries', value: s?.enquiries?.unread ?? 0, icon: <MessageSquare size={20} />, color: '#7c3aed', bg: '#f5f3ff', href: '/admin/enquiries' },
+    { label: 'Sacred Places',    value: s?.totalPlaces    ?? 0, icon: <MapPin    size={20} />, color: '#ff7d0f', bg: 'var(--surface-saffron)', href: '/superadmin/places'   },
+    { label: 'Tour Packages',    value: s?.totalPackages  ?? 0, icon: <Package   size={20} />, color: '#4338ca', bg: 'var(--surface-krishna)', href: '/superadmin/packages' },
+    { label: 'Total Customers',  value: s?.users?.totalCustomers ?? 0, icon: <Users size={20} />, color: '#16a34a', bg: 'var(--surface-green)', href: '/superadmin/users' },
+    { label: 'Total Bookings',   value: s?.bookings?.total ?? 0, icon: <BookOpen size={20} />, color: '#0ea5e9', bg: 'var(--surface-blue)', href: '/admin/bookings' },
+    { label: 'Published Reviews',value: s?.totalReviews   ?? 0, icon: <Star      size={20} />, color: '#f59e0b', bg: 'var(--surface-amber)', href: '/admin/reviews'  },
+    { label: 'Pending Reviews',  value: s?.pendingReviews ?? 0, icon: <Clock     size={20} />, color: '#dc2626', bg: 'var(--surface-red)', href: '/admin/reviews'  },
+    { label: 'This Month Revenue', value: formatCurrency(s?.revenue?.thisMonth ?? 0), icon: <DollarSign size={20} />, color: '#16a34a', bg: 'var(--surface-green)', href: '/admin/analytics' },
+    { label: 'Unread Enquiries', value: s?.enquiries?.unread ?? 0, icon: <MessageSquare size={20} />, color: '#7c3aed', bg: 'var(--surface-krishna)', href: '/admin/enquiries' },
   ]
 
   return (
@@ -125,7 +125,7 @@ export default function SuperadminDashboard() {
       {/* Error state */}
       {error && (
         <div className="flex items-center gap-3 p-4 rounded-2xl mb-6"
-          style={{ background: '#fff1f2', border: '1px solid #fecdd3' }}>
+          style={{ background: 'var(--surface-red)', border: '1px solid var(--surface-red-border)' }}>
           <XCircle size={18} className="text-red-500 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold text-red-700">Failed to load stats</p>
@@ -164,10 +164,10 @@ export default function SuperadminDashboard() {
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { label: 'Pending',   value: s.bookings.pending,   icon: <Clock size={15} />,         color: '#d97706', bg: '#fffbeb' },
-              { label: 'Completed', value: s.bookings.completed, icon: <CheckCircle size={15} />,   color: '#16a34a', bg: '#f0fdf4' },
-              { label: 'Cancelled', value: s.bookings.cancelled, icon: <XCircle size={15} />,       color: '#dc2626', bg: '#fff1f2' },
-              { label: 'This Month',value: s.bookings.thisMonth, icon: <ArrowRight size={15} />,    color: '#4338ca', bg: '#eef2ff' },
+              { label: 'Pending',   value: s.bookings.pending,   icon: <Clock size={15} />,         color: '#d97706', bg: 'var(--surface-amber)' },
+              { label: 'Completed', value: s.bookings.completed, icon: <CheckCircle size={15} />,   color: '#16a34a', bg: 'var(--surface-green)' },
+              { label: 'Cancelled', value: s.bookings.cancelled, icon: <XCircle size={15} />,       color: '#dc2626', bg: 'var(--surface-red)' },
+              { label: 'This Month',value: s.bookings.thisMonth, icon: <ArrowRight size={15} />,    color: '#4338ca', bg: 'var(--surface-krishna)' },
             ].map((item) => (
               <div key={item.label} className="rounded-xl p-3 text-center"
                 style={{ background: item.bg }}>
@@ -220,13 +220,13 @@ export default function SuperadminDashboard() {
             <div className="flex gap-2">
               <Link href={action.href}
                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl"
-                style={{ background: '#eef2ff', color: '#4338ca' }}>
+                style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
                 View All <ArrowRight size={12} />
               </Link>
               {action.newHref && (
                 <Link href={action.newHref}
                   className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl"
-                  style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                  style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                   + Add New
                 </Link>
               )}
@@ -239,7 +239,7 @@ export default function SuperadminDashboard() {
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
         className="mt-6 p-4 rounded-2xl flex items-center gap-3"
-        style={{ background: '#f9fafb', border: '1px solid #f3f4f6' }}>
+        style={{ background: 'var(--bg-surface-muted)', border: '1px solid #f3f4f6' }}>
         <Settings size={16} className="text-gray-400 flex-shrink-0" />
         <p className="text-sm text-gray-500 flex-1">
           For bookings, drivers, customers, and reviews — use the{' '}

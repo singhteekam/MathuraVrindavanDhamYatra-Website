@@ -233,12 +233,12 @@ export default function AboutClient() {
               </div>
             </div>
             <div className="rounded-3xl p-8 text-center"
-              style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}>
+              style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
               <p className="text-6xl mb-5">🙏</p>
-              <h3 className="font-bold text-gray-900 text-2xl mb-3" style={{ fontFamily: 'var(--font-serif)' }}>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 text-2xl mb-3" style={{ fontFamily: 'var(--font-serif)' }}>
                 {t('jaiShriKrishna')}
               </h3>
-              <p className="text-gray-600 leading-relaxed mb-6 text-base">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 text-base">
                 &ldquo;{t('quote')}&rdquo;
               </p>
               <p className="font-bold text-saffron-700">— {t('quoteAuthor')}</p>

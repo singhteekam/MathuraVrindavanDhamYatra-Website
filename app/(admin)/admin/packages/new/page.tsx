@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -146,7 +146,7 @@ export default function NewPackagePage() {
                   label="Package Name"
                   required
                   enPlaceholder="Same Day Mathura Vrindavan Tour"
-                  hiPlaceholder="मथुरा वृन्दावन दर्शन"
+                  hiPlaceholder="à¤®à¤¥à¥à¤°à¤¾ à¤µà¥ƒà¤¨à¥à¤¦à¤¾à¤µà¤¨ à¤¦à¤°à¥à¤¶à¤¨"
                 />
 
                 <div>
@@ -166,7 +166,7 @@ export default function NewPackagePage() {
                   type="textarea"
                   rows={2}
                   enPlaceholder="Brief description shown on listing pages..."
-                  hiPlaceholder="संक्षिप्त विवरण..."
+                  hiPlaceholder="à¤¸à¤‚à¤•à¥à¤·à¤¿à¤ªà¥à¤¤ à¤µà¤¿à¤µà¤°à¤£..."
                 />
 
                 <div className="grid grid-cols-3 gap-4">
@@ -185,7 +185,7 @@ export default function NewPackagePage() {
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Base Price (₹)</label>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Base Price (â‚¹)</label>
                     <input type="number" min={0}
                       value={form.basePrice}
                       onChange={(e) => setForm({ ...form, basePrice: Number(e.target.value) })}
@@ -216,10 +216,10 @@ export default function NewPackagePage() {
               <div className="space-y-3">
                 {form.pricing.map((p, i) => (
                   <div key={p.carType} className="flex items-center gap-4 p-3 rounded-xl"
-                    style={{ background: '#f9fafb' }}>
+                    style={{ background: 'var(--bg-surface-muted)' }}>
                     <p className="text-sm font-semibold text-gray-800 flex-1">{p.carName}</p>
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-500 text-sm">₹</span>
+                      <span className="text-gray-500 text-sm">â‚¹</span>
                       <input type="number" min={0} placeholder="0"
                         value={p.price || ''}
                         onChange={(e) => setForm({ ...form, pricing: updatePricingItem(form.pricing, i, Number(e.target.value)) })}

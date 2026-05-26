@@ -324,7 +324,7 @@ export default function EditPlacePage() {
                 className="input-field text-sm py-2 flex-1" />
               <button type="button" onClick={addTag}
                 className="px-4 py-2 rounded-xl text-sm font-semibold"
-                style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                 <Plus size={14} />
               </button>
             </div>
@@ -332,7 +332,7 @@ export default function EditPlacePage() {
               {form.tags.map((tag) => (
                 <span key={tag}
                   className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium"
-                  style={{ background: '#f3f4f6', color: '#374151' }}>
+                  style={{ background: 'var(--bg-surface-muted)', color: '#374151' }}>
                   {tag}
                   <button type="button" onClick={() => removeTag(tag)}
                     className="text-gray-400 hover:text-red-500 transition-colors">

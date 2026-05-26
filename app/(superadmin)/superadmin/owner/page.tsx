@@ -71,7 +71,7 @@ function BLInput({
             {onTranslate && (
               <button type="button" onClick={onTranslate} disabled={translating}
                 className="flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded transition-colors"
-                style={{ background: translating ? '#f3f4f6' : '#ede9fe', color: translating ? '#9ca3af' : '#5b21b6' }}>
+                style={{ background: translating ? 'var(--bg-surface-muted)' : 'var(--surface-krishna)', color: translating ? 'var(--text-faint)' : '#5b21b6' }}>
                 {translating
                   ? <Loader2 size={9} className="animate-spin" />
                   : <Languages size={9} />
@@ -101,7 +101,7 @@ function Toggle({ checked, onChange, label, desc }: {
   checked: boolean; onChange: () => void; label: string; desc: string
 }) {
   return (
-    <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: '#f9fafb' }}>
+    <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
       <div>
         <p className="text-sm font-semibold text-gray-800">{label}</p>
         <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
@@ -374,7 +374,7 @@ export default function SuperadminOwnerPage() {
         <div className="flex items-center gap-2">
           <button type="button" onClick={translateAll} disabled={translating.all}
             className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
-            style={{ background: translating.all ? '#f3f4f6' : '#ede9fe', color: translating.all ? '#9ca3af' : '#5b21b6' }}>
+            style={{ background: translating.all ? 'var(--bg-surface-muted)' : 'var(--surface-krishna)', color: translating.all ? 'var(--text-muted)' : 'var(--text-on-krishna)' }}>
             {translating.all
               ? <><Loader2 size={14} className="animate-spin" />Translating…</>
               : <><Languages size={14} />Translate All</>
@@ -386,7 +386,7 @@ export default function SuperadminOwnerPage() {
 
       {error && (
         <div className="flex items-center gap-2 p-4 rounded-xl mb-5"
-          style={{ background: '#fff1f2', border: '1px solid #fecdd3' }}>
+          style={{ background: 'var(--surface-red)', border: '1px solid var(--surface-red-border)' }}>
           <AlertCircle size={16} className="text-red-500 shrink-0" />
           <p className="text-sm text-red-700">{error}</p>
         </div>
@@ -412,7 +412,7 @@ export default function SuperadminOwnerPage() {
             {/* Preview */}
             <div className="relative shrink-0">
               <div className="w-24 h-24 rounded-full overflow-hidden ring-2 ring-orange-200"
-                style={{ background: '#f9fafb' }}>
+                style={{ background: 'var(--bg-surface-muted)' }}>
                 {previewPhoto ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={previewPhoto} alt="owner" className="w-full h-full object-cover" />
@@ -502,7 +502,7 @@ export default function SuperadminOwnerPage() {
         <Section title="Achievements & Highlights" description="Key milestones shown as bullet cards — supports English + Hindi">
           <div className="space-y-3">
             {form.achievements.map((ach, i) => (
-              <div key={i} className="relative p-4 rounded-xl" style={{ background: '#f9fafb', border: '1px solid #f3f4f6' }}>
+              <div key={i} className="relative p-4 rounded-xl" style={{ background: 'var(--bg-surface-muted)', border: '1px solid #f3f4f6' }}>
                 <button type="button" onClick={() => removeAchievement(i)}
                   className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-50"
                   style={{ color: '#ef4444' }}>

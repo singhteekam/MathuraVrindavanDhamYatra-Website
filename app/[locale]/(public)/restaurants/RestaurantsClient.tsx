@@ -103,7 +103,7 @@ export default function RestaurantsClient({ restaurants, locale }: Props) {
             href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('whatsAppGreeting'))}`}
             target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm"
-            style={{ background: '#22c55e', color: '#fff' }}>
+            style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
             {t('recommendCTA')}
           </motion.a>
         </div>
@@ -170,16 +170,16 @@ export default function RestaurantsClient({ restaurants, locale }: Props) {
               className="card card-hover rounded-2xl overflow-hidden flex flex-col">
               {/* Colour banner */}
               <div className="h-32 flex items-center justify-center relative"
-                style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)' }}>
+                style={{ background: 'var(--surface-saffron)' }}>
                 <span className="text-5xl">{r.emoji}</span>
                 {r.isPopular && (
                   <span className="absolute top-3 right-3 text-xs px-2.5 py-1 rounded-full font-semibold"
-                    style={{ background: '#fef3c7', color: '#92400e' }}>
+                    style={{ background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }}>
                     {t('popular')}
                   </span>
                 )}
                 <span className="absolute top-3 left-3 text-xs px-2.5 py-1 rounded-full font-semibold"
-                  style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                  style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                   {t('pureVeg')}
                 </span>
               </div>
@@ -206,14 +206,14 @@ export default function RestaurantsClient({ restaurants, locale }: Props) {
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {r.tags.map((tag: { en: string; hi: string }) => (
                     <span key={tag.en} className="text-xs px-2.5 py-1 rounded-full font-medium"
-                      style={{ background: '#f3f4f6', color: '#6b7280' }}>
+                      style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
                       {bl(tag, locale)}
                     </span>
                   ))}
                 </div>
 
                 <div className="flex items-center justify-between pt-4"
-                  style={{ borderTop: '1px solid #f3f4f6' }}>
+                  style={{ borderTop: '1px solid var(--border-muted)' }}>
                   <div className="space-y-0.5">
                     <p className="text-xs flex items-center gap-1 text-gray-500">
                       <IndianRupee size={10} />{bl(r.priceRange, locale)} {t('perPerson')}
@@ -226,7 +226,7 @@ export default function RestaurantsClient({ restaurants, locale }: Props) {
                     href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('directionsGreeting', { name: bl(r.name, locale), city: bl(r.city, locale) }))}`}
                     target="_blank" rel="noopener noreferrer"
                     className="text-xs font-semibold px-3 py-2 rounded-full transition-colors shrink-0"
-                    style={{ background: '#dcfce7', color: '#16a34a' }}>
+                    style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                     {t('directions')}
                   </a>
                 </div>
@@ -237,8 +237,8 @@ export default function RestaurantsClient({ restaurants, locale }: Props) {
 
         {/* Dining tips */}
         <div className="rounded-3xl p-8 md:p-10"
-          style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}>
-          <h3 className="text-2xl font-bold text-gray-900 mb-5" style={{ fontFamily: 'var(--font-serif)' }}>
+          style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-5" style={{ fontFamily: 'var(--font-serif)' }}>
             {t('tipsTitle')}
           </h3>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -255,7 +255,7 @@ export default function RestaurantsClient({ restaurants, locale }: Props) {
                   style={{ background: '#ff7d0f' }}>
                   {i + 1}
                 </span>
-                <p className="text-sm text-gray-700 leading-relaxed">{item.tip}</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{item.tip}</p>
               </div>
             ))}
           </div>

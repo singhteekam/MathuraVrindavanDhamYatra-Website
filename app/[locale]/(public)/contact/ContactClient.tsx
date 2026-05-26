@@ -67,10 +67,10 @@ export default function ContactClient() {
   }
 
   const CONTACT_ITEMS = [
-    { icon: <Phone size={22} />,       label: t('callLabel'),       value: siteConfig.phone,           sub: t('callSub'),       href: `tel:${siteConfig.phone}`,               color: '#ff7d0f', bg: '#fff8ed' },
-    { icon: <MessageCircle size={22}/>, label: t('whatsappLabel'),  value: t('whatsappValue'),          sub: t('whatsappSub'),   href: `https://wa.me/${siteConfig.whatsapp}`,  color: '#16a34a', bg: '#f0fdf4' },
-    { icon: <Mail size={22} />,         label: t('emailLabel'),     value: siteConfig.email,            sub: t('emailSub'),      href: `mailto:${siteConfig.email}`,            color: '#4338ca', bg: '#eef2ff' },
-    { icon: <MapPin size={22} />,       label: t('officeLabel'),    value: t('officeValue'),            sub: t('officeSub'),     href: 'https://maps.google.com/?q=Mathura,UP,India', color: '#db2777', bg: '#fdf2f8' },
+    { icon: <Phone size={22} />,       label: t('callLabel'),       value: siteConfig.phone,           sub: t('callSub'),       href: `tel:${siteConfig.phone}`,               color: '#ff7d0f', bg: 'var(--surface-saffron)' },
+    { icon: <MessageCircle size={22}/>, label: t('whatsappLabel'),  value: t('whatsappValue'),          sub: t('whatsappSub'),   href: `https://wa.me/${siteConfig.whatsapp}`,  color: '#16a34a', bg: 'var(--surface-green)'   },
+    { icon: <Mail size={22} />,         label: t('emailLabel'),     value: siteConfig.email,            sub: t('emailSub'),      href: `mailto:${siteConfig.email}`,            color: '#4338ca', bg: 'var(--surface-krishna)' },
+    { icon: <MapPin size={22} />,       label: t('officeLabel'),    value: t('officeValue'),            sub: t('officeSub'),     href: 'https://maps.google.com/?q=Mathura,UP,India', color: '#db2777', bg: 'var(--surface-red)'     },
   ]
 
   const BUSINESS_HOURS = [
@@ -234,8 +234,8 @@ export default function ContactClient() {
                 ))}
               </div>
               <div className="mt-4 p-3 rounded-xl"
-                style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
-                <p className="text-xs text-green-700 font-semibold">{t('whatsAppNote')}</p>
+                style={{ background: 'var(--surface-green)', border: '1px solid var(--surface-green-border)' }}>
+                <p className="text-xs font-semibold" style={{ color: 'var(--text-on-green)' }}>{t('whatsAppNote')}</p>
               </div>
             </div>
 
@@ -278,9 +278,9 @@ export default function ContactClient() {
               <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">{t('followUs')}</h3>
               <div className="flex gap-3">
                 {[
-                  { icon: <Facebook size={18} />,  href: siteConfig.social.facebook,  label: 'Facebook',  color: '#1877f2', bg: '#e7f0ff' },
-                  { icon: <Instagram size={18} />, href: siteConfig.social.instagram, label: 'Instagram', color: '#e1306c', bg: '#fff0f5' },
-                  { icon: <Youtube size={18} />,   href: siteConfig.social.youtube,   label: 'YouTube',   color: '#ff0000', bg: '#fff0f0' },
+                  { icon: <Facebook size={18} />,  href: siteConfig.social.facebook,  label: 'Facebook',  color: '#1877f2', bg: 'var(--surface-krishna)' },
+                  { icon: <Instagram size={18} />, href: siteConfig.social.instagram, label: 'Instagram', color: '#e1306c', bg: 'var(--surface-red)'     },
+                  { icon: <Youtube size={18} />,   href: siteConfig.social.youtube,   label: 'YouTube',   color: '#ff0000', bg: 'var(--surface-red)'     },
                 ].map((s) => (
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
                     className="flex-1 flex flex-col items-center gap-2 py-4 rounded-xl font-semibold text-xs transition-all hover:scale-105"

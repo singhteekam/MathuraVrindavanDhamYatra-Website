@@ -29,7 +29,7 @@ export default function FeaturedPackages({ packages }: Props) {
   const filtered = packages.filter(TABS[activeTab].filter)
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-950">
+    <section className="py-20 section-divine">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <SectionHeader
@@ -86,7 +86,7 @@ export default function FeaturedPackages({ packages }: Props) {
         <motion.div
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="text-center mt-12">
-          <p className="text-gray-500 mb-4">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">
             {t('customPrompt')}
           </p>
           <Link href="/contact" className="btn-secondary">

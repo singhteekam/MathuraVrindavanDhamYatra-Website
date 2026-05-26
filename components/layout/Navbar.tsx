@@ -122,7 +122,7 @@ function ProfileDropdown() {
               <p className="text-xs text-gray-400 dark:text-gray-500 truncate mt-0.5">{user?.email}</p>
               <span
                 className="inline-flex items-center gap-1.5 mt-2 text-xs px-2.5 py-1 rounded-full font-semibold"
-                style={{ background: '#fff8ed', color: '#ff7d0f' }}
+                style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)' }}
               >
                 {cfg.icon}{t(roleKey)}
               </span>
@@ -210,12 +210,12 @@ export default function Navbar() {
   return (
     <>
       {/* Top bar */}
-      <div className="hidden md:block bg-saffron-600 text-white text-xs py-2">
+      <div className="hidden md:block text-xs py-2 bg-saffron-600 dark:bg-gray-900 text-white dark:text-gray-300 border-b border-transparent dark:border-gray-800">
         <div className="container-custom flex justify-between items-center">
           <span className="flex items-center gap-1.5"><MapPin size={11} />{t('topBarLocation')}</span>
           <div className="flex items-center gap-6">
-            <a href={`tel:${siteConfig.phone}`}  className="flex items-center gap-1.5 hover:text-amber-200 transition-colors"><Phone size={11} />{siteConfig.phone}</a>
-            <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-1.5 hover:text-amber-200 transition-colors"><Mail  size={11} />{siteConfig.email}</a>
+            <a href={`tel:${siteConfig.phone}`}  className="flex items-center gap-1.5 hover:text-amber-200 dark:hover:text-saffron-400 transition-colors"><Phone size={11} />{siteConfig.phone}</a>
+            <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-1.5 hover:text-amber-200 dark:hover:text-saffron-400 transition-colors"><Mail  size={11} />{siteConfig.email}</a>
           </div>
         </div>
       </div>
@@ -240,7 +240,7 @@ export default function Navbar() {
                 <p className="text-saffron-500 text-xs font-semibold tracking-widest uppercase">Dham Yatra</p>
               </div> */}
 
-              <div className="relative w-48 h-18 md:w-48 md:h-24 flex-shrink-0 -ml-10">
+              <div className="relative w-24 h-12 sm:w-36 sm:h-14 md:w-48 md:h-20 shrink-0 md:-ml-10">
                 <Image
                   src="/logo/logo128x128.png"
                   alt="Mathura Vrindavan Dham Yatra Logo"
@@ -292,7 +292,7 @@ export default function Navbar() {
             </div>
 
             {/* Right CTAs */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <a href={`tel:${siteConfig.phone}`}
                 className="hidden md:flex items-center gap-2 bg-saffron-50 dark:bg-saffron-900/30 text-saffron-700 dark:text-saffron-400 px-4 py-2 rounded-full text-sm font-semibold hover:bg-saffron-100 dark:hover:bg-saffron-900/50 transition-colors">
                 <Phone size={14} />{t('callNow')}
@@ -321,12 +321,6 @@ export default function Navbar() {
                 </div>
               )}
 
-              {/* Show Book Now on mobile when not logged in */}
-              {!isLoggedIn && !isLoading && (
-                <Link href="/booking" className="btn-primary text-sm px-4 py-2 sm:hidden">
-                  {t('book')}
-                </Link>
-              )}
 
               <button onClick={() => setMobileOpen(!mobileOpen)}
                 className="lg:hidden p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
@@ -358,15 +352,15 @@ export default function Navbar() {
                   <span className="font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>MVTravel</span>
                 </div> */}
 
-                <div className="relative w-48 h-18 md:w-48 md:h-24 flex-shrink-0 -ml-10">
-                <Image
-                  src="/logo/logo128x128.png"
-                  alt="Mathura Vrindavan Dham Yatra Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
+                <div className="relative w-32 h-12 shrink-0">
+                  <Image
+                    src="/logo/logo128x128.png"
+                    alt="Mathura Vrindavan Dham Yatra Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
                 <button onClick={() => setMobileOpen(false)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                   <X size={20} className="text-gray-600 dark:text-gray-300" />
                 </button>

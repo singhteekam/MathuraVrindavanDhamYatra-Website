@@ -53,12 +53,12 @@ export default function CustomerPage() {
   const user = session?.user as { name?: string; email?: string; role?: string; isVerified?: boolean } | undefined
 
   const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-    pending:         { label: t('statusPending'),        color: '#d97706', bg: '#fffbeb', icon: <Clock       size={13} /> },
-    confirmed:       { label: t('statusConfirmed'),      color: '#2563eb', bg: '#eff6ff', icon: <CheckCircle  size={13} /> },
-    driver_assigned: { label: t('statusDriverAssigned'), color: '#7c3aed', bg: '#f5f3ff', icon: <Car          size={13} /> },
-    ongoing:         { label: t('statusOngoing'),        color: '#ff7d0f', bg: '#fff8ed', icon: <RefreshCw    size={13} /> },
-    completed:       { label: t('statusCompleted'),      color: '#16a34a', bg: '#f0fdf4', icon: <CheckCircle  size={13} /> },
-    cancelled:       { label: t('statusCancelled'),      color: '#dc2626', bg: '#fff1f2', icon: <XCircle      size={13} /> },
+    pending:         { label: t('statusPending'),        color: '#d97706', bg: 'var(--surface-amber)',   icon: <Clock       size={13} /> },
+    confirmed:       { label: t('statusConfirmed'),      color: '#2563eb', bg: 'var(--surface-blue)',    icon: <CheckCircle  size={13} /> },
+    driver_assigned: { label: t('statusDriverAssigned'), color: '#7c3aed', bg: 'var(--surface-krishna)', icon: <Car          size={13} /> },
+    ongoing:         { label: t('statusOngoing'),        color: '#ff7d0f', bg: 'var(--surface-saffron)', icon: <RefreshCw    size={13} /> },
+    completed:       { label: t('statusCompleted'),      color: '#16a34a', bg: 'var(--surface-green)',   icon: <CheckCircle  size={13} /> },
+    cancelled:       { label: t('statusCancelled'),      color: '#dc2626', bg: 'var(--surface-red)',     icon: <XCircle      size={13} /> },
   }
 
   const TAB_KEYS = [
@@ -176,10 +176,10 @@ export default function CustomerPage() {
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           {[
-            { label: t('statTotalBookings'),  value: bookings.length,            icon: <CalendarCheck size={18} />, color: '#ff7d0f', bg: '#fff8ed' },
-            { label: t('statUpcomingTrips'),  value: upcomingCount,              icon: <Clock         size={18} />, color: '#4338ca', bg: '#eef2ff' },
-            { label: t('statTripsCompleted'), value: completedCount,             icon: <CheckCircle   size={18} />, color: '#16a34a', bg: '#f0fdf4' },
-            { label: t('statTotalSpent'),     value: formatCurrency(totalSpent), icon: <IndianRupee   size={18} />, color: '#db2777', bg: '#fdf2f8', isString: true },
+            { label: t('statTotalBookings'),  value: bookings.length,            icon: <CalendarCheck size={18} />, color: '#ff7d0f', bg: 'var(--surface-saffron)' },
+            { label: t('statUpcomingTrips'),  value: upcomingCount,              icon: <Clock         size={18} />, color: '#4338ca', bg: 'var(--surface-krishna)'  },
+            { label: t('statTripsCompleted'), value: completedCount,             icon: <CheckCircle   size={18} />, color: '#16a34a', bg: 'var(--surface-green)'    },
+            { label: t('statTotalSpent'),     value: formatCurrency(totalSpent), icon: <IndianRupee   size={18} />, color: '#db2777', bg: 'var(--surface-red)',      isString: true },
           ].map((stat, i) => (
             <motion.div key={stat.label}
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
@@ -199,13 +199,13 @@ export default function CustomerPage() {
         {user && user.isVerified === false && (
           <div
             className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl mb-6"
-            style={{ background: '#fff8ed', border: '1px solid #fde68a' }}
+            style={{ background: 'var(--surface-amber)', border: '1px solid var(--surface-amber-border)' }}
           >
             <div className="flex items-start gap-3">
               <span className="text-2xl shrink-0">📧</span>
               <div>
-                <p className="font-semibold text-amber-800">{t('verifyEmailTitle')}</p>
-                <p className="text-sm text-amber-700">{t('verifyEmailDesc')}</p>
+                <p className="font-semibold text-amber-800 dark:text-amber-200">{t('verifyEmailTitle')}</p>
+                <p className="text-sm text-amber-700 dark:text-amber-300">{t('verifyEmailDesc')}</p>
               </div>
             </div>
             <Link
@@ -287,19 +287,19 @@ export default function CustomerPage() {
                         {/* Driver info if assigned */}
                         {booking.driver && (
                           <div className="flex items-center gap-3 p-3 rounded-xl mb-3"
-                            style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
-                            <div className="w-8 h-8 rounded-xl bg-green-100 flex items-center justify-center text-green-700 font-bold text-sm shrink-0">
+                            style={{ background: 'var(--surface-green)', border: '1px solid var(--surface-green-border)' }}>
+                            <div className="w-8 h-8 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-700 dark:text-green-400 font-bold text-sm shrink-0">
                               {booking.driver.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs font-semibold text-gray-800">{booking.driver.name}</p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">{booking.driver.name}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {booking.driver.vehicle.name} · {booking.driver.vehicle.number}
                               </p>
                             </div>
                             <a href={`tel:${booking.driver.phone}`}
                               className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
-                              style={{ background: '#dcfce7', color: '#16a34a' }}>
+                              style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                               <Phone size={11} />{t('driverCall')}
                             </a>
                           </div>
@@ -355,14 +355,14 @@ export default function CustomerPage() {
                         <Link
                           href={`/customer/booking/${booking.bookingId}`}
                           className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap"
-                          style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                          style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                           <ChevronRight size={12} />{t('viewDetails')}
                         </Link>
                         <a
                           href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('whatsappMsg', { bookingId: booking.bookingId }))}`}
                           target="_blank" rel="noopener noreferrer"
                           className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap"
-                          style={{ background: '#dcfce7', color: '#16a34a' }}>
+                          style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                           <MessageCircle size={12} />{t('whatsapp')}
                         </a>
                         {booking.status === 'completed' && (
@@ -370,14 +370,14 @@ export default function CustomerPage() {
                             ? (
                               <span
                                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap"
-                                style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                                style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                                 <Star size={12} fill="currentColor" />{t('reviewed')}
                               </span>
                             ) : (
                               <Link
                                 href={`/review?booking=${encodeURIComponent(booking._id)}&package=${encodeURIComponent(booking.package?._id ?? '')}&name=${encodeURIComponent(bl(booking.package?.name, locale) || booking.carName)}`}
                                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap"
-                                style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                                style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                                 <Star size={12} />{t('leaveReview')}
                               </Link>
                             )
@@ -386,7 +386,7 @@ export default function CustomerPage() {
                           <button
                             onClick={() => cancelBooking(booking.bookingId)}
                             className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl whitespace-nowrap"
-                            style={{ background: '#fff1f2', color: '#dc2626' }}>
+                            style={{ background: 'var(--surface-red)', color: 'var(--text-on-red)' }}>
                             <XCircle size={12} />{t('cancel')}
                           </button>
                         )}
@@ -431,12 +431,12 @@ export default function CustomerPage() {
             <div className="space-y-3">
               <a href={`https://wa.me/${siteConfig.whatsapp}`} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 p-3 rounded-xl text-sm font-semibold transition-colors"
-                style={{ background: '#dcfce7', color: '#16a34a' }}>
+                style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                 <MessageCircle size={16} />{t('whatsappUs')}
               </a>
               <a href={`tel:${siteConfig.phone}`}
                 className="flex items-center gap-3 p-3 rounded-xl text-sm font-semibold transition-colors"
-                style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                 <Phone size={16} />{t('callUs', { phone: siteConfig.phone })}
               </a>
             </div>

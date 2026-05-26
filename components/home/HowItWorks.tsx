@@ -6,10 +6,10 @@ import { useTranslations } from 'next-intl'
 import SectionHeader from '@/components/shared/SectionHeader'
 
 const stepStyles = [
-  { step: '01', emoji: '🗺️', titleKey: 'step1Title', descKey: 'step1Desc', color: '#fff8ed', accent: '#ff7d0f' },
-  { step: '02', emoji: '📋', titleKey: 'step2Title', descKey: 'step2Desc', color: '#eef2ff', accent: '#4338ca' },
-  { step: '03', emoji: '🚗', titleKey: 'step3Title', descKey: 'step3Desc', color: '#f0fdf4', accent: '#16a34a' },
-  { step: '04', emoji: '🙏', titleKey: 'step4Title', descKey: 'step4Desc', color: '#fefce8', accent: '#d97706' },
+  { step: '01', emoji: '🗺️', titleKey: 'step1Title', descKey: 'step1Desc', color: 'var(--surface-saffron)', accent: '#ff7d0f' },
+  { step: '02', emoji: '📋', titleKey: 'step2Title', descKey: 'step2Desc', color: 'var(--surface-krishna)', accent: '#4338ca' },
+  { step: '03', emoji: '🚗', titleKey: 'step3Title', descKey: 'step3Desc', color: 'var(--surface-green)',   accent: '#16a34a' },
+  { step: '04', emoji: '🙏', titleKey: 'step4Title', descKey: 'step4Desc', color: 'var(--surface-amber)',   accent: '#d97706' },
 ]
 
 export default function HowItWorks() {
@@ -17,7 +17,7 @@ export default function HowItWorks() {
   const steps = stepStyles.map((s) => ({ ...s, title: t(s.titleKey), description: t(s.descKey) }))
 
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-saffron-50/30 dark:from-gray-950 dark:to-gray-900">
+    <section className="py-20 section-alt">
       <div className="container-custom">
         <SectionHeader
           subtitle={t('subtitle')}
@@ -32,7 +32,7 @@ export default function HowItWorks() {
             className="absolute top-12 left-[12.5%] right-[12.5%] h-0.5 hidden lg:block"
             style={{
               background: 'linear-gradient(90deg, #ff7d0f, #4338ca, #16a34a, #d97706)',
-              opacity: 0.2,
+              opacity: 0.40,
             }}
           />
 
@@ -43,7 +43,7 @@ export default function HowItWorks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.12 }}
-              className="relative text-center"
+              className="relative text-center card card-accent p-6"
             >
               {/* Step number bubble */}
               <div className="relative inline-block mb-5">

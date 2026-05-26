@@ -40,12 +40,12 @@ const STATUS_TABS = [
 ]
 
 const STATUS_STYLE: Record<string, { color: string; bg: string }> = {
-  pending:         { color: '#d97706', bg: '#fffbeb' },
-  confirmed:       { color: '#2563eb', bg: '#eff6ff' },
-  driver_assigned: { color: '#7c3aed', bg: '#f5f3ff' },
-  ongoing:         { color: '#16a34a', bg: '#f0fdf4' },
-  completed:       { color: '#16a34a', bg: '#f0fdf4' },
-  cancelled:       { color: '#dc2626', bg: '#fff1f2' },
+  pending:         { color: '#d97706', bg: 'var(--surface-amber)'   },
+  confirmed:       { color: '#2563eb', bg: 'var(--surface-blue)'    },
+  driver_assigned: { color: '#7c3aed', bg: 'var(--surface-krishna)' },
+  ongoing:         { color: '#16a34a', bg: 'var(--surface-green)'   },
+  completed:       { color: '#16a34a', bg: 'var(--surface-green)'   },
+  cancelled:       { color: '#dc2626', bg: 'var(--surface-red)'     },
 }
 
 export default function AdminBookingsPage() {
@@ -127,7 +127,7 @@ export default function AdminBookingsPage() {
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0"
             style={statusTab === tab.value
               ? { background: '#ff7d0f', color: '#fff' }
-              : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+              : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
             }
           >
             {tab.icon}{tab.label}
@@ -167,7 +167,7 @@ export default function AdminBookingsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ background: '#f9fafb', borderBottom: '1px solid #f3f4f6' }}>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
                   {['Booking ID', 'Customer', 'Vehicle', 'Date', 'Amount', 'Status', 'Actions'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
@@ -184,7 +184,7 @@ export default function AdminBookingsPage() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: i * 0.03 }}
-                      className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                      className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     >
                       <td className="px-4 py-3">
                         <span className="font-mono text-xs font-semibold text-saffron-600">
@@ -192,19 +192,19 @@ export default function AdminBookingsPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="font-semibold text-gray-800 whitespace-nowrap">{b.customer.name}</p>
+                        <p className="font-semibold text-gray-800 dark:text-gray-200 whitespace-nowrap">{b.customer.name}</p>
                         <p className="text-xs text-gray-400">{b.customer.phone}</p>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="text-gray-700 whitespace-nowrap">{b.carName}</p>
+                        <p className="text-gray-700 dark:text-gray-300 whitespace-nowrap">{b.carName}</p>
                         {b.driver && (
                           <p className="text-xs text-gray-400">{b.driver.name}</p>
                         )}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-gray-600 text-xs">
+                      <td className="px-4 py-3 whitespace-nowrap text-gray-600 dark:text-gray-400 text-xs">
                         {formatDate(b.startDate)}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap font-semibold text-gray-800">
+                      <td className="px-4 py-3 whitespace-nowrap font-semibold text-gray-800 dark:text-gray-200">
                         {formatCurrency(b.totalAmount)}
                       </td>
                       <td className="px-4 py-3">
@@ -225,7 +225,7 @@ export default function AdminBookingsPage() {
                         <Link
                           href={`/admin/bookings/${b.bookingId}`}
                           className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors"
-                          style={{ background: '#fff8ed', color: '#ff7d0f' }}
+                          style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}
                         >
                           <Eye size={12} /> View
                         </Link>
@@ -240,7 +240,7 @@ export default function AdminBookingsPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-gray-800">
             <p className="text-xs text-gray-400">
               Page {page} of {totalPages}
             </p>

@@ -89,9 +89,9 @@ function LoginForm() {
   }
 
   const ROLE_BADGES = [
-    { role: t('roleCustomer'), desc: t('roleCustomerDesc'), emoji: '🙏', color: '#ff7d0f', bg: '#fff8ed' },
-    { role: t('roleDriver'),   desc: t('roleDriverDesc'),   emoji: '🚗', color: '#16a34a', bg: '#f0fdf4' },
-    { role: t('roleAdmin'),    desc: t('roleAdminDesc'),    emoji: '⚙️', color: '#4338ca', bg: '#eef2ff' },
+    { role: t('roleCustomer'), desc: t('roleCustomerDesc'), emoji: '🙏', color: '#ff7d0f', bg: 'var(--surface-saffron)' },
+    { role: t('roleDriver'),   desc: t('roleDriverDesc'),   emoji: '🚗', color: '#16a34a', bg: 'var(--surface-green)'   },
+    { role: t('roleAdmin'),    desc: t('roleAdminDesc'),    emoji: '⚙️', color: '#4338ca', bg: 'var(--surface-krishna)' },
   ]
 
   const TABS = [
@@ -183,9 +183,9 @@ function LoginForm() {
               {t('superadminSubtitle')}
             </p>
             <div className="flex items-start gap-2 p-3 rounded-xl mb-5"
-              style={{ background: '#ede9fe', border: '1px solid #c4b5fd' }}>
-              <Key size={13} className="text-indigo-600 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-indigo-700 leading-relaxed">
+              style={{ background: 'var(--surface-krishna)', border: '1px solid var(--surface-krishna-border)' }}>
+              <Key size={13} className="flex-shrink-0 mt-0.5" style={{ color: 'var(--text-on-krishna)' }} />
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-on-krishna)' }}>
                 {t('superadminInfo')}
               </p>
             </div>
@@ -195,7 +195,7 @@ function LoginForm() {
         {/* Success: email verified */}
         {verifiedParam === 'true' && (
           <div className="flex items-center gap-2 p-3 rounded-xl mb-4 text-sm"
-            style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}>
+            style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)', border: '1px solid var(--surface-green-border)' }}>
             <span className="text-lg flex-shrink-0">✅</span>
             {t('emailVerifiedSuccess')}
           </div>
@@ -204,21 +204,21 @@ function LoginForm() {
         {/* Error messages */}
         {reasonParam === 'inactivity' && (
           <div className="flex items-center gap-2 p-3 rounded-xl mb-4 text-sm"
-            style={{ background: '#fff8ed', color: '#c74a06', border: '1px solid #ffdba8' }}>
+            style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
             <span className="text-lg flex-shrink-0">⏱️</span>
             {t('inactivityNotice')}
           </div>
         )}
         {errorParam === 'unauthorized' && (
           <div className="flex items-center gap-2 p-3 rounded-xl mb-4 text-sm"
-            style={{ background: '#fff1f2', color: '#dc2626', border: '1px solid #fecdd3' }}>
+            style={{ background: 'var(--surface-red)', color: 'var(--text-on-red)', border: '1px solid var(--surface-red-border)' }}>
             <AlertCircle size={16} className="flex-shrink-0" />
             {t('unauthorizedError')}
           </div>
         )}
         {errorParam === 'account_disabled' && (
           <div className="flex items-center gap-2 p-3 rounded-xl mb-4 text-sm"
-            style={{ background: '#fff1f2', color: '#dc2626', border: '1px solid #fecdd3' }}>
+            style={{ background: 'var(--surface-red)', color: 'var(--text-on-red)', border: '1px solid var(--surface-red-border)' }}>
             <AlertCircle size={16} className="flex-shrink-0" />
             {t('accountDisabledError')}
           </div>

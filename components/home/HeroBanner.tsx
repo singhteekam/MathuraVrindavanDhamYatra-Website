@@ -23,10 +23,7 @@ export default function HeroBanner() {
       {/* Background gradient — replace with next/image once you have a real photo */}
       <div
         className="absolute inset-0 z-0"
-        style={{
-          background:
-            'linear-gradient(135deg, #1a0a00 0%, #3d1a00 30%, #1e1b4b 70%, #0f0a2e 100%)',
-        }}
+        style={{ background: 'var(--bg-hero)' }}
       />
 
       {/* Decorative circles */}
@@ -53,6 +50,9 @@ export default function HeroBanner() {
             'repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,125,15,0.3) 40px, rgba(255,125,15,0.3) 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,125,15,0.3) 40px, rgba(255,125,15,0.3) 41px)',
         }}
       />
+
+      {/* Dark scrim — improves white text contrast over the bright orange zone */}
+      <div className="absolute inset-0 z-0" style={{ background: 'rgba(0,0,0,0.28)' }} />
 
       <div className="container-custom relative z-10 py-20 lg:py-28">
         <div className="grid lg:grid-cols-2 gap-12 items-center">

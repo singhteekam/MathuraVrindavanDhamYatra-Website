@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -116,7 +116,7 @@ export default function AdminPackagesPage() {
         <div className="card rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #f3f4f6' }}>
+              <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
                 {['Package', 'Duration', 'Price', 'Bookings', 'Rating', 'Status', 'Actions'].map((h) => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                     {h}
@@ -136,7 +136,7 @@ export default function AdminPackagesPage() {
                   <td className="px-4 py-3">
                     <div>
                       <p className="font-semibold text-gray-800 text-sm">{str(pkg.name)}</p>
-                      <p className="text-xs text-gray-400">{pkg.cities.join(' · ')}</p>
+                      <p className="text-xs text-gray-400">{pkg.cities.join(' Â· ')}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -180,12 +180,12 @@ export default function AdminPackagesPage() {
                     <div className="flex gap-2">
                       <Link href={`/packages/${pkg.slug}`} target="_blank"
                         className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
-                        style={{ background: '#eef2ff', color: '#4338ca' }}>
+                        style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
                         <Eye size={11} /> View
                       </Link>
                       <Link href={`/admin/packages/${pkg.slug}/edit`}
                         className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
-                        style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                        style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                         Edit
                       </Link>
                     </div>

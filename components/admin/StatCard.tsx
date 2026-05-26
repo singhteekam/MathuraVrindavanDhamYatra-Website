@@ -37,10 +37,10 @@ export default function StatCard({
             className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full"
             style={
               growth > 0
-                ? { background: '#f0fdf4', color: '#16a34a' }
+                ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
                 : growth < 0
-                ? { background: '#fff1f2', color: '#e11d48' }
-                : { background: '#f3f4f6', color: '#6b7280' }
+                ? { background: 'var(--surface-red)',   color: 'var(--text-on-red)'   }
+                : { background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }
             }
           >
             {growth > 0 ? <TrendingUp size={11} /> : growth < 0 ? <TrendingDown size={11} /> : <Minus size={11} />}
@@ -48,9 +48,9 @@ export default function StatCard({
           </div>
         )}
       </div>
-      <p className="text-2xl font-bold text-gray-900 mb-0.5">{displayValue}</p>
-      <p className="text-sm font-medium text-gray-500">{label}</p>
-      {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-0.5">{displayValue}</p>
+      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
+      {sub && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{sub}</p>}
     </div>
   )
 }

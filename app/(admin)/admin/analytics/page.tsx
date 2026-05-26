@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,11 +26,11 @@ interface Stats {
 }
 
 const CAR_BREAKDOWN = [
-  { name: 'Swift Dzire',    type: 'swift',  emoji: '🚗', share: 35, color: '#ff7d0f' },
-  { name: 'Maruti Ertiga',  type: 'ertiga', emoji: '🚐', share: 28, color: '#4338ca' },
-  { name: 'Toyota Innova',  type: 'innova', emoji: '🚙', share: 22, color: '#16a34a' },
-  { name: 'Maruti Eeco',    type: 'eeco',   emoji: '🚌', share: 10, color: '#db2777' },
-  { name: 'Innova Crysta',  type: 'crysta', emoji: '🚘', share:  5, color: '#d97706' },
+  { name: 'Swift Dzire',    type: 'swift',  emoji: 'ðŸš—', share: 35, color: '#ff7d0f' },
+  { name: 'Maruti Ertiga',  type: 'ertiga', emoji: 'ðŸš', share: 28, color: '#4338ca' },
+  { name: 'Toyota Innova',  type: 'innova', emoji: 'ðŸš™', share: 22, color: '#16a34a' },
+  { name: 'Maruti Eeco',    type: 'eeco',   emoji: 'ðŸšŒ', share: 10, color: '#db2777' },
+  { name: 'Innova Crysta',  type: 'crysta', emoji: 'ðŸš˜', share:  5, color: '#d97706' },
 ]
 
 const TOP_PACKAGES = [
@@ -91,28 +91,28 @@ export default function AdminAnalyticsPage() {
             value:  formatCurrency(stats.revenue.total),
             sub:    `${formatCurrency(stats.revenue.thisMonth)} this month`,
             icon:   <IndianRupee size={20} />,
-            color:  '#16a34a', bg: '#f0fdf4',
+            color:  '#16a34a', bg: 'var(--surface-green)',
           },
           {
             label:  'Total Bookings',
             value:  stats.bookings.total,
             sub:    `${stats.bookings.thisMonth} this month`,
             icon:   <CalendarCheck size={20} />,
-            color:  '#ff7d0f', bg: '#fff8ed',
+            color:  '#ff7d0f', bg: 'var(--surface-saffron)',
           },
           {
             label:  'Completion Rate',
             value:  `${completionRate}%`,
             sub:    `${stats.bookings.completed} completed`,
             icon:   <TrendingUp size={20} />,
-            color:  '#4338ca', bg: '#eef2ff',
+            color:  '#4338ca', bg: 'var(--surface-krishna)',
           },
           {
             label:  'Total Customers',
             value:  stats.users.totalCustomers,
             sub:    `${stats.users.totalDrivers} drivers on platform`,
             icon:   <Users size={20} />,
-            color:  '#db2777', bg: '#fdf2f8',
+            color:  '#db2777', bg: 'var(--surface-red)',
           },
         ].map((kpi, i) => (
           <motion.div key={kpi.label}
@@ -169,12 +169,12 @@ export default function AdminAnalyticsPage() {
 
           {/* Rate summary */}
           <div className="grid grid-cols-2 gap-3 mt-6 pt-5"
-            style={{ borderTop: '1px solid #f3f4f6' }}>
-            <div className="text-center p-3 rounded-xl" style={{ background: '#f0fdf4' }}>
+            style={{ borderTop: '1px solid var(--border-muted)' }}>
+            <div className="text-center p-3 rounded-xl" style={{ background: 'var(--surface-green)' }}>
               <p className="text-2xl font-bold text-green-600">{completionRate}%</p>
               <p className="text-xs text-gray-500 mt-0.5">Completion Rate</p>
             </div>
-            <div className="text-center p-3 rounded-xl" style={{ background: '#fff1f2' }}>
+            <div className="text-center p-3 rounded-xl" style={{ background: 'var(--surface-red)' }}>
               <p className="text-2xl font-bold text-red-500">{cancellationRate}%</p>
               <p className="text-xs text-gray-500 mt-0.5">Cancellation Rate</p>
             </div>
@@ -224,7 +224,7 @@ export default function AdminAnalyticsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #f3f4f6' }}>
+              <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
                 {['Package', 'Est. Bookings', 'Est. Revenue', 'Popularity'].map((h) => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                     {h}
@@ -279,19 +279,19 @@ export default function AdminAnalyticsPage() {
             value: stats.bookings.completed > 0
               ? formatCurrency(Math.round(stats.revenue.total / stats.bookings.completed))
               : 'N/A',
-            color: '#f59e0b', bg: '#fffbeb',
+            color: '#f59e0b', bg: 'var(--surface-amber)',
           },
           {
             icon: <Car size={20} />,
             label: 'Available Drivers',
             value: `${stats.users.availableDrivers} / ${stats.users.totalDrivers}`,
-            color: '#16a34a', bg: '#f0fdf4',
+            color: '#16a34a', bg: 'var(--surface-green)',
           },
           {
             icon: <TrendingUp size={20} />,
             label: 'This Month Bookings',
             value: stats.bookings.thisMonth,
-            color: '#4338ca', bg: '#eef2ff',
+            color: '#4338ca', bg: 'var(--surface-krishna)',
           },
         ].map((item) => (
           <div key={item.label} className="card rounded-2xl p-5 flex items-center gap-4">

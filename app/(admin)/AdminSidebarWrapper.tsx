@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { cn }      from '@/lib/utils'
+import SimpleThemeSwitcher from '@/components/shared/SimpleThemeSwitcher'
 
 // Places and Settings are SUPERADMIN ONLY — removed from admin nav
 const NAV_ITEMS = [
@@ -83,8 +84,14 @@ export default function AdminSidebarWrapper() {
         </div>
       )}
 
-      {/* Sign out */}
-      <div className="p-3" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+      {/* Theme + Sign out */}
+      <div className="p-3 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        {(!collapsed || mobile) && (
+          <div className="px-1 pb-1">
+            <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1.5 px-1">Theme</p>
+            <SimpleThemeSwitcher />
+          </div>
+        )}
         <button type="button"
           onClick={() => signOut({ callbackUrl: '/' })}
           className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-all duration-200">

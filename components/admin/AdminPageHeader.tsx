@@ -28,13 +28,13 @@ export default function AdminPageHeader({ title, crumbs, action }: AdminPageHead
                     {c.label}
                   </Link>
                 ) : (
-                  <span className="text-gray-600">{c.label}</span>
+                  <span className="text-gray-500 dark:text-gray-400">{c.label}</span>
                 )}
               </span>
             ))}
           </nav>
         )}
-        <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{title}</h1>
       </div>
       {action && <div className="flex-shrink-0">{action}</div>}
     </div>

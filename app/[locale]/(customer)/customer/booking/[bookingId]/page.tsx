@@ -74,12 +74,12 @@ interface RzpOptions {
 declare global { interface Window { Razorpay: new (o: RzpOptions) => { open(): void } } }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  pending:         { label: 'Pending',         color: '#d97706', bg: '#fffbeb' },
-  confirmed:       { label: 'Confirmed',       color: '#2563eb', bg: '#eff6ff' },
-  driver_assigned: { label: 'Driver Assigned', color: '#7c3aed', bg: '#f5f3ff' },
-  ongoing:         { label: 'On The Way',      color: '#ff7d0f', bg: '#fff8ed' },
-  completed:       { label: 'Completed',       color: '#16a34a', bg: '#f0fdf4' },
-  cancelled:       { label: 'Cancelled',       color: '#dc2626', bg: '#fff1f2' },
+  pending:         { label: 'Pending',         color: '#d97706', bg: 'var(--surface-amber)'   },
+  confirmed:       { label: 'Confirmed',       color: '#2563eb', bg: 'var(--surface-blue)'    },
+  driver_assigned: { label: 'Driver Assigned', color: '#7c3aed', bg: 'var(--surface-krishna)' },
+  ongoing:         { label: 'On The Way',      color: '#ff7d0f', bg: 'var(--surface-saffron)' },
+  completed:       { label: 'Completed',       color: '#16a34a', bg: 'var(--surface-green)'   },
+  cancelled:       { label: 'Cancelled',       color: '#dc2626', bg: 'var(--surface-red)'     },
 }
 
 export default function BookingDetailPage() {
@@ -381,12 +381,12 @@ export default function BookingDetailPage() {
               {booking.totalAmount > 0 && (
                 <div className="mb-4 p-3 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
                   <div className="flex justify-between text-xs mb-2">
-                    <span className="text-gray-500 font-medium">Payment Progress</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-medium">Payment Progress</span>
                     <span className="font-bold" style={{ color: balance <= 0 ? '#16a34a' : '#ff7d0f' }}>
                       {Math.min(100, Math.round((paid / booking.totalAmount) * 100))}%
                     </span>
                   </div>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ background: '#e5e7eb' }}>
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
                     <div
                       className="h-full rounded-full transition-all duration-700"
                       style={{
@@ -420,7 +420,7 @@ export default function BookingDetailPage() {
                     onClick={handleSwitchToCash}
                     disabled={actionLoading}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-60"
-                    style={{ background: '#fff8ed', color: '#d97706', border: '1px solid #fde68a' }}
+                    style={{ background: 'var(--surface-amber)', color: 'var(--text-on-amber)', border: '1px solid var(--surface-amber-border)' }}
                   >
                     <IndianRupee size={14} />
                     {actionLoading ? '...' : t('switchToCash')}
@@ -490,8 +490,8 @@ export default function BookingDetailPage() {
                   {/* Vehicle */}
                   {booking.driver.vehicle.image && (
                     <img src={booking.driver.vehicle.image} alt="Vehicle"
-                      className="w-full h-32 object-contain rounded-xl border border-gray-100"
-                      style={{ background: '#f9fafb' }} />
+                      className="w-full h-32 object-contain rounded-xl border border-gray-100 dark:border-gray-700"
+                      style={{ background: 'var(--bg-surface-muted)' }} />
                   )}
                   <div className="p-3 rounded-xl space-y-1.5" style={{ background: 'var(--bg-surface-muted)' }}>
                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Vehicle</p>
@@ -509,7 +509,7 @@ export default function BookingDetailPage() {
                   {/* Call */}
                   <a href={`tel:${booking.driver.phone}`}
                     className="flex items-center justify-center gap-2 w-full p-3 rounded-xl text-sm font-semibold"
-                    style={{ background: '#dcfce7', color: '#16a34a' }}>
+                    style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                     <Phone size={13} />{booking.driver.phone}
                   </a>
                 </div>
@@ -532,7 +532,7 @@ export default function BookingDetailPage() {
                         <span
                           key={a}
                           className="text-xs px-2.5 py-1 rounded-full font-medium"
-                          style={{ background: '#fff8ed', color: '#ff7d0f' }}
+                          style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}
                         >
                           {a}
                         </span>
@@ -551,8 +551,8 @@ export default function BookingDetailPage() {
                 {booking.adminNotes && (
                   <div>
                     <p className="text-xs text-gray-400 mb-1.5">{t('labelAdminNotes')}</p>
-                    <p className="text-sm text-blue-700 p-3 rounded-xl leading-relaxed"
-                      style={{ background: '#eff6ff' }}>
+                    <p className="text-sm text-blue-700 dark:text-blue-300 p-3 rounded-xl leading-relaxed"
+                      style={{ background: 'var(--surface-blue)' }}>
                       {booking.adminNotes}
                     </p>
                   </div>
@@ -560,8 +560,8 @@ export default function BookingDetailPage() {
                 {booking.cancelReason && (
                   <div>
                     <p className="text-xs text-gray-400 mb-1.5">{t('labelCancelReason')}</p>
-                    <p className="text-sm text-red-600 p-3 rounded-xl leading-relaxed"
-                      style={{ background: '#fff1f2' }}>
+                    <p className="text-sm text-red-600 dark:text-red-400 p-3 rounded-xl leading-relaxed"
+                      style={{ background: 'var(--surface-red)' }}>
                       {booking.cancelReason}
                     </p>
                   </div>
@@ -593,7 +593,7 @@ export default function BookingDetailPage() {
               href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(`Namaste! I need help with booking ${booking.bookingId}. 🙏`)}`}
               target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2 w-full p-3 rounded-xl text-sm font-semibold"
-              style={{ background: '#dcfce7', color: '#16a34a' }}
+              style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
             >
               <MessageCircle size={14} />WhatsApp Support
             </a>
@@ -604,7 +604,7 @@ export default function BookingDetailPage() {
                 onClick={handleCancel}
                 disabled={actionLoading}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold disabled:opacity-60"
-                style={{ background: '#fff1f2', color: '#dc2626' }}
+                style={{ background: 'var(--surface-red)', color: 'var(--text-on-red)' }}
               >
                 <XCircle size={14} />{t('cancel')}
               </button>
@@ -637,7 +637,7 @@ function BookingStatusTimeline({ status }: { status: string }) {
 
   if (status === 'cancelled') {
     return (
-      <div className="flex items-center gap-3 p-3 rounded-xl" style={{ background: '#fff1f2' }}>
+      <div className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'var(--surface-red)' }}>
         <XCircle size={18} className="text-red-500 shrink-0" />
         <div>
           <p className="font-bold text-red-600 text-sm">Booking Cancelled</p>
@@ -658,7 +658,7 @@ function BookingStatusTimeline({ status }: { status: string }) {
         <div
           className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all"
           style={{
-            background: done ? '#ff7d0f' : '#f3f4f6',
+            background: done ? '#ff7d0f' : 'var(--bg-surface-muted)',
             color:      done ? '#fff'    : '#9ca3af',
             boxShadow:  active ? '0 0 0 4px rgba(255,125,15,0.2)' : 'none',
           }}>
@@ -673,7 +673,7 @@ function BookingStatusTimeline({ status }: { status: string }) {
     if (i < STEPS.length - 1) {
       elements.push(
         <div key={`c${i}`} className="flex-1 h-0.5 mt-3.5 mx-1"
-          style={{ background: i < currentIdx ? '#ff7d0f' : '#f3f4f6' }} />
+          style={{ background: i < currentIdx ? '#ff7d0f' : 'var(--bg-surface-muted)' }} />
       )
     }
   })

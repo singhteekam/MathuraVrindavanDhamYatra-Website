@@ -22,26 +22,17 @@ export default function WhyChooseUs() {
   return (
     <section
       className="py-20"
-      style={{
-        background: 'linear-gradient(135deg, #1a0a00 0%, #2d1500 50%, #1e1b4b 100%)',
-      }}
+      style={{ background: 'var(--bg-why-us)' }}
     >
       <div className="container-custom">
-        <SectionHeader
-          subtitle={t('subtitle')}
-          title={t('title')}
-          description={t('description')}
-          className="mb-14"
-        />
-
-        {/* Override section-title color for dark bg */}
-        <style>{`.why-us .section-title { color: #fff; } .why-us .section-subtitle { color: #ff9b37; }`}</style>
+        {/* Force text white — this section is always on a dark background */}
+        <style>{`.why-us .section-title { color: #fff !important; } .why-us .section-subtitle { color: #ff9b37 !important; } .why-us p { color: rgba(255,255,255,0.65) !important; }`}</style>
         <div className="why-us">
           <SectionHeader
             subtitle={t('subtitle')}
             title={t('title')}
             description={t('description')}
-            className="mb-14 hidden"
+            className="mb-14"
           />
         </div>
 

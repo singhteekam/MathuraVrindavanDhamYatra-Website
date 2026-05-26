@@ -70,10 +70,10 @@ export default async function Footer({ locale }: { locale: string }) {
   }))
 
   return (
-    <footer className="bg-gray-950 text-gray-300">
+    <footer className="text-gray-300" style={{ background: 'var(--bg-footer)' }}>
 
       {/* CTA band */}
-      <div className="bg-gradient-to-r from-saffron-700 to-saffron-500 py-10">
+      <div className="py-10" style={{ background: 'var(--bg-footer-cta)' }}>
         <div className="container-custom flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-white font-bold text-2xl" style={{ fontFamily: 'var(--font-serif)' }}>
@@ -153,7 +153,8 @@ export default async function Footer({ locale }: { locale: string }) {
                 { href: siteConfig.social.youtube,   Icon: Youtube,   hover: 'hover:bg-red-600'  },
               ].map(({ href, Icon, hover }) => (
                 <a key={href} href={href} target="_blank" rel="noopener noreferrer"
-                  className={cn('w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center transition-colors', hover)}>
+                  style={{ background: 'var(--bg-footer-surface)' }}
+                  className={cn('w-9 h-9 rounded-full flex items-center justify-center transition-colors', hover)}>
                   <Icon size={16} />
                 </a>
               ))}
@@ -183,7 +184,8 @@ export default async function Footer({ locale }: { locale: string }) {
                 <input
                   type="email"
                   placeholder={t('yourEmail')}
-                  className="flex-1 min-w-0 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-saffron-500 transition-colors"
+                  style={{ background: 'var(--bg-footer-surface)', border: '1px solid var(--bg-footer-border)' }}
+                  className="flex-1 min-w-0 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-saffron-500 transition-colors"
                 />
                 <button className="bg-saffron-500 hover:bg-saffron-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex-shrink-0">
                   {t('go')}
@@ -195,8 +197,8 @@ export default async function Footer({ locale }: { locale: string }) {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-gray-800 py-5">
-        <div className="container-custom flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-500">
+      <div className="py-5" style={{ borderTop: '1px solid var(--bg-footer-border)' }}>
+        <div className="container-custom flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-400">
           <div className="flex flex-wrap items-center gap-3">
             <p>© {new Date().getFullYear()} {siteConfig.name}. {t('copyright')}</p>
             <VisitorBadge />
@@ -205,8 +207,8 @@ export default async function Footer({ locale }: { locale: string }) {
           <div className="flex gap-4">
             <Link href="/privacy"   className="hover:text-gray-300 transition-colors">{t('privacy')}</Link>
             <Link href="/terms"     className="hover:text-gray-300 transition-colors">{t('terms')}</Link>
-            <span className="text-gray-600">·</span>
-            <Link href="/developer" className="hover:text-indigo-400 transition-colors text-gray-500">
+            <span className="text-gray-400">·</span>
+            <Link href="/developer" className="hover:text-indigo-400 transition-colors text-gray-400">
               {t('developer')}
             </Link>
             <a href="/sitemap.xml" className="hover:text-gray-300 transition-colors">{t('sitemap')}</a>

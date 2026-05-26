@@ -406,15 +406,15 @@ export default function PlaceDetailClient({ place, related }: Props) {
             <div
               className="rounded-2xl p-5 text-center"
               style={{
-                background: 'linear-gradient(135deg, #fff8ed, #ffefd4)',
-                border: '1px solid #ffdba8',
+                background: 'var(--surface-saffron)',
+                border: '1px solid var(--surface-saffron-border)',
               }}
             >
               <p className="text-3xl mb-3">🙏</p>
-              <h3 className="font-bold text-gray-900 mb-2 text-sm">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2 text-sm">
                 {t('wantToVisit', { city: place.city })}
               </h3>
-              <p className="text-gray-500 text-xs mb-4 leading-relaxed">
+              <p className="text-gray-500 dark:text-gray-400 text-xs mb-4 leading-relaxed">
                 {t('wantToVisitDesc')}
               </p>
               <Link href={`/packages?city=${place.city.toLowerCase()}`}

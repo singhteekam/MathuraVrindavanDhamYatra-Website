@@ -38,11 +38,11 @@ interface DriverProfile {
 }
 
 const STATUS_STYLE: Record<string, { label: string; color: string; bg: string }> = {
-  confirmed:       { label: 'Confirmed',  color: '#2563eb', bg: '#eff6ff' },
-  driver_assigned: { label: 'Assigned',   color: '#7c3aed', bg: '#f5f3ff' },
-  ongoing:         { label: 'Ongoing',    color: '#16a34a', bg: '#f0fdf4' },
-  completed:       { label: 'Completed',  color: '#16a34a', bg: '#f0fdf4' },
-  cancelled:       { label: 'Cancelled',  color: '#dc2626', bg: '#fff1f2' },
+  confirmed:       { label: 'Confirmed',  color: '#2563eb', bg: 'var(--surface-blue)' },
+  driver_assigned: { label: 'Assigned',   color: '#7c3aed', bg: 'var(--surface-krishna)' },
+  ongoing:         { label: 'Ongoing',    color: '#16a34a', bg: 'var(--surface-green)' },
+  completed:       { label: 'Completed',  color: '#16a34a', bg: 'var(--surface-green)' },
+  cancelled:       { label: 'Cancelled',  color: '#dc2626', bg: 'var(--surface-red)' },
 }
 
 export default function DriverDashboard() {
@@ -139,8 +139,8 @@ export default function DriverDashboard() {
             disabled={toggling}
             className="flex items-center gap-3 px-5 py-3 rounded-2xl transition-all duration-200"
             style={profile.isAvailable
-              ? { background: '#f0fdf4', border: '2px solid #16a34a' }
-              : { background: '#f9fafb', border: '2px solid #d1d5db' }
+              ? { background: 'var(--surface-green)', border: '2px solid var(--surface-green-border)' }
+              : { background: 'var(--bg-surface-muted)', border: '2px solid var(--border-default)' }
             }
           >
             {toggling ? (
@@ -167,20 +167,20 @@ export default function DriverDashboard() {
             label: 'Total Trips',
             value: profile?.totalTrips ?? 0,
             icon:  <CalendarCheck size={20} />,
-            color: '#ff7d0f', bg: '#fff8ed',
+            color: '#ff7d0f', bg: 'var(--surface-saffron)',
           },
           {
             label: 'Total Earnings',
             value: formatCurrency(profile?.earnings ?? 0),
             icon:  <IndianRupee size={20} />,
-            color: '#16a34a', bg: '#f0fdf4',
+            color: '#16a34a', bg: 'var(--surface-green)',
             isString: true,
           },
           {
             label: 'Your Rating',
             value: `${profile?.rating?.toFixed(1) ?? '5.0'} ⭐`,
             icon:  <Star size={20} />,
-            color: '#d97706', bg: '#fffbeb',
+            color: '#d97706', bg: 'var(--surface-amber)',
             isString: true,
           },
         ].map((stat, i) => (
@@ -229,7 +229,7 @@ export default function DriverDashboard() {
                   key={trip._id}
                   initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }}
                   className="rounded-2xl p-4 border border-gray-100"
-                  style={{ background: '#f9fafb' }}
+                  style={{ background: 'var(--bg-surface-muted)' }}
                 >
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div>
@@ -280,7 +280,7 @@ export default function DriverDashboard() {
                       <button
                         onClick={() => updateTripStatus(trip.bookingId, 'completed')}
                         className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-colors"
-                        style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}
+                        style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)', border: '1px solid var(--surface-green-border)' }}
                       >
                         <CheckCircle size={12} /> Mark Completed
                       </button>
@@ -289,7 +289,7 @@ export default function DriverDashboard() {
                       href={`https://wa.me/${trip.customer.phone.replace(/\D/g, '')}`}
                       target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
-                      style={{ background: '#dcfce7', color: '#16a34a' }}
+                      style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
                     >
                       WhatsApp
                     </a>

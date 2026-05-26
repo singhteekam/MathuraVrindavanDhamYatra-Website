@@ -487,7 +487,7 @@ export default function SuperadminEditPlacePage() {
               </div>
               <button type="button" onClick={addSection}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors"
-                style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                 <Plus size={13} /> Add Section
               </button>
             </div>
@@ -629,7 +629,7 @@ export default function SuperadminEditPlacePage() {
                     </div>
                     <button type="button" onClick={() => addItem(si)}
                       className="mt-2 flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg"
-                      style={{ color: '#5b21b6', background: '#f5f3ff' }}>
+                      style={{ color: '#5b21b6', background: 'var(--surface-krishna)' }}>
                       <Plus size={11} />
                       {section.type === 'distances' ? 'Add Row' : 'Add Item'}
                     </button>
@@ -663,7 +663,7 @@ export default function SuperadminEditPlacePage() {
                     className="input-field" />
                 </div>
               </div>
-              <div className="p-3 rounded-xl" style={{ background: '#f5f3ff' }}>
+              <div className="p-3 rounded-xl" style={{ background: 'var(--surface-krishna)' }}>
                 <p className="text-xs font-semibold text-indigo-600 mb-2">Quick-fill coordinates</p>
                 <div className="flex flex-wrap gap-2">
                   {[
@@ -676,7 +676,7 @@ export default function SuperadminEditPlacePage() {
                     <button key={c.label} type="button"
                       onClick={() => setForm({ ...form, location: { ...form.location, lat: c.lat, lng: c.lng } })}
                       className="px-3 py-1.5 rounded-lg text-xs font-medium"
-                      style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                      style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                       📍 {c.label}
                     </button>
                   ))}
@@ -723,7 +723,7 @@ export default function SuperadminEditPlacePage() {
                 className="input-field text-sm py-2" />
               <button type="button" onClick={addTag}
                 className="px-4 py-2 rounded-xl text-sm font-semibold"
-                style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                 <Plus size={14} />
               </button>
             </div>
@@ -731,7 +731,7 @@ export default function SuperadminEditPlacePage() {
               {form.tags.map((tag, i) => (
                 <span key={i}
                   className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium"
-                  style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                  style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                   {tag.en}{tag.hi ? ` / ${tag.hi}` : ''}
                   <button type="button" onClick={() => removeTag(i)}
                     className="text-indigo-300 hover:text-red-500 transition-colors">

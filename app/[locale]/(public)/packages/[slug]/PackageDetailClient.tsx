@@ -205,7 +205,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-semibold text-sm transition-colors mb-3"
-                style={{ background: '#dcfce7', color: '#16a34a' }}
+                style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
               >
                 <MessageCircle size={16} />
                 {t('whatsAppEnquiry')}

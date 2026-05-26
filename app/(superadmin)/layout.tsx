@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function SuperadminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
       <SuperadminSidebarWrapper />
       <main className="flex-1 overflow-hidden flex flex-col">
         {children}

@@ -92,7 +92,7 @@ export default function DriverProfilePage() {
               <h2 className="font-bold text-gray-900 text-lg">{profile.name}</h2>
               {profile.isVerified && (
                 <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                  style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                  style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                   ✓ Verified
                 </span>
               )}
@@ -109,7 +109,7 @@ export default function DriverProfilePage() {
             { icon: <Car   size={15} />, label: 'License', value: profile.licenseNumber      },
           ].map((row) => (
             <div key={row.label} className="flex items-center gap-3 p-3 rounded-xl"
-              style={{ background: '#f9fafb' }}>
+              style={{ background: 'var(--bg-surface-muted)' }}>
               <span className="text-gray-400 flex-shrink-0">{row.icon}</span>
               <div>
                 <p className="text-xs text-gray-400">{row.label}</p>
@@ -126,7 +126,7 @@ export default function DriverProfilePage() {
             { label: 'Rating',       value: `${profile.rating.toFixed(1)} ⭐` },
           ].map((s) => (
             <div key={s.label} className="p-3 rounded-xl text-center"
-              style={{ background: '#fff8ed' }}>
+              style={{ background: 'var(--surface-saffron)' }}>
               <p className="font-bold text-saffron-600 text-lg">{s.value}</p>
               <p className="text-xs text-gray-500">{s.label}</p>
             </div>

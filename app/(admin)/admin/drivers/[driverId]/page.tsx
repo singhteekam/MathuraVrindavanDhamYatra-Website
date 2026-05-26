@@ -293,7 +293,7 @@ export default function DriverDetailPage() {
             </h3>
 
             {/* Aadhaar */}
-            <div className="p-4 rounded-xl mb-4" style={{ background: '#f9fafb' }}>
+            <div className="p-4 rounded-xl mb-4" style={{ background: 'var(--bg-surface-muted)' }}>
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Aadhaar Card</p>
               <FormField label="Aadhaar Number">
                 <input type="text" className="input-field text-sm" value={fields.aadharNumber}
@@ -321,7 +321,7 @@ export default function DriverDetailPage() {
             </div>
 
             {/* PAN Card */}
-            <div className="p-4 rounded-xl" style={{ background: '#f9fafb' }}>
+            <div className="p-4 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">PAN Card
                 <span className="ml-1 font-normal text-gray-400">(optional)</span>
               </p>
@@ -513,7 +513,7 @@ function Toggle({ label, description, checked, onChange, activeColor }: {
   onChange: (v: boolean) => void; activeColor: string
 }) {
   return (
-    <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: '#f9fafb' }}>
+    <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
       <div>
         <p className="text-sm font-semibold text-gray-800">{label}</p>
         <p className="text-xs text-gray-400">{description}</p>

@@ -454,7 +454,7 @@ export default function SuperadminNewPlacePage() {
                 </div>
                 <button type="button" onClick={addSection}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
-                  style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                  style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                   <Plus size={13} /> Add Section
                 </button>
               </div>
@@ -594,7 +594,7 @@ export default function SuperadminNewPlacePage() {
                       </div>
                       <button type="button" onClick={() => addItem(si)}
                         className="mt-2 flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg"
-                        style={{ color: '#5b21b6', background: '#f5f3ff' }}>
+                        style={{ color: '#5b21b6', background: 'var(--surface-krishna)' }}>
                         <Plus size={11} />
                         {section.type === 'distances' ? 'Add Row' : 'Add Item'}
                       </button>
@@ -633,7 +633,7 @@ export default function SuperadminNewPlacePage() {
                       className="input-field" />
                   </div>
                 </div>
-                <div className="p-3 rounded-xl" style={{ background: '#f9fafb' }}>
+                <div className="p-3 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
                   <p className="text-xs font-semibold text-gray-500 mb-2">Quick-fill coordinates</p>
                   <div className="flex flex-wrap gap-2">
                     {[
@@ -646,7 +646,7 @@ export default function SuperadminNewPlacePage() {
                       <button key={c.label} type="button"
                         onClick={() => setForm({ ...form, location: { ...form.location, lat: c.lat, lng: c.lng } })}
                         className="px-3 py-1.5 rounded-lg text-xs font-medium"
-                        style={{ background: '#fff', border: '1px solid #e5e7eb', color: '#374151' }}>
+                        style={{ background: '#fff', border: '1px solid var(--border-default)', color: '#374151' }}>
                         📍 {c.label}
                       </button>
                     ))}
@@ -681,7 +681,7 @@ export default function SuperadminNewPlacePage() {
                   className="input-field text-sm py-2" />
                 <button type="button" onClick={addTag}
                   className="flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-semibold"
-                  style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                  style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                   <Plus size={14} /> Add
                 </button>
               </div>
@@ -689,7 +689,7 @@ export default function SuperadminNewPlacePage() {
                 {form.tags.map((tag, i) => (
                   <span key={i}
                     className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium"
-                    style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                    style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                     {tag.en}{tag.hi ? ` / ${tag.hi}` : ''}
                     <button type="button" onClick={() => removeTag(i)}
                       className="text-indigo-300 hover:text-red-500 transition-colors">
@@ -722,7 +722,7 @@ export default function SuperadminNewPlacePage() {
             </motion.div>
 
             <div className="rounded-2xl p-4 text-xs leading-relaxed"
-              style={{ background: '#eef2ff', border: '1px solid #c7d2fe', color: '#3730a3' }}>
+              style={{ background: 'var(--surface-krishna)', border: '1px solid var(--surface-krishna-border)', color: 'var(--text-on-krishna)' }}>
               <p className="font-semibold mb-2">💡 Tips</p>
               <ul className="space-y-1.5 list-none">
                 <li>• Slug is auto-generated from English name</li>

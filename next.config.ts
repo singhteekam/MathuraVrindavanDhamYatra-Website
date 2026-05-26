@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
-  allowedDevOrigins: ['192.168.1.38'],
+  allowedDevOrigins: ['192.168.1.38', '192.168.1.55'],
   serverExternalPackages: ['mongoose'],
 }
 

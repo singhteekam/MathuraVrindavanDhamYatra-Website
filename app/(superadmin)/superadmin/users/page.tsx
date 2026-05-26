@@ -24,10 +24,10 @@ interface UserRow {
 
 const ROLES = ['All', 'customer', 'driver', 'admin', 'superadmin']
 const ROLE_COLORS: Record<string, { bg: string; color: string }> = {
-  superadmin: { bg: '#ede9fe', color: '#5b21b6' },
-  admin:      { bg: '#eef2ff', color: '#4338ca' },
-  driver:     { bg: '#f0fdf4', color: '#16a34a' },
-  customer:   { bg: '#fff8ed', color: '#c74a06' },
+  superadmin: { bg: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' },
+  admin:      { bg: 'var(--surface-krishna)', color: '#4338ca' },
+  driver:     { bg: 'var(--surface-green)', color: '#16a34a' },
+  customer:   { bg: 'var(--surface-saffron)', color: '#c74a06' },
 }
 
 export default function SuperadminUsersPage() {
@@ -159,7 +159,7 @@ export default function SuperadminUsersPage() {
               className="px-3 py-2 rounded-full text-xs font-semibold transition-all capitalize"
               style={roleFilter === r
                 ? { background: '#4338ca', color: '#fff' }
-                : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
               }>
               {r}
             </button>
@@ -177,7 +177,7 @@ export default function SuperadminUsersPage() {
           <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ background: '#f9fafb', borderBottom: '1px solid #f3f4f6' }}>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
                   {['User', 'Contact', 'Role', 'Status', 'Joined', 'Actions'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
@@ -225,8 +225,8 @@ export default function SuperadminUsersPage() {
                       <td className="px-4 py-3">
                         <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                           style={u.isActive
-                            ? { background: '#f0fdf4', color: '#16a34a' }
-                            : { background: '#fff1f2', color: '#dc2626' }
+                            ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                            : { background: 'var(--surface-red)', color: 'var(--text-on-red)' }
                           }>
                           {u.isActive ? '● Active' : '● Inactive'}
                         </span>
@@ -238,8 +238,8 @@ export default function SuperadminUsersPage() {
                         <button type="button" onClick={() => toggleActive(u)}
                           className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
                           style={u.isActive
-                            ? { background: '#fff1f2', color: '#dc2626' }
-                            : { background: '#f0fdf4', color: '#16a34a' }
+                            ? { background: 'var(--surface-red)', color: 'var(--text-on-red)' }
+                            : { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
                           }>
                           {u.isActive ? <><XCircle size={12} />Deactivate</> : <><CheckCircle size={12} />Activate</>}
                         </button>
@@ -289,8 +289,8 @@ export default function SuperadminUsersPage() {
                     <button type="button" onClick={() => toggleActive(u)}
                       className="text-xs font-semibold px-3 py-1.5 rounded-lg"
                       style={u.isActive
-                        ? { background: '#fff1f2', color: '#dc2626' }
-                        : { background: '#f0fdf4', color: '#16a34a' }
+                        ? { background: 'var(--surface-red)', color: 'var(--text-on-red)' }
+                        : { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
                       }>
                       {u.isActive ? 'Deactivate' : 'Activate'}
                     </button>
@@ -310,7 +310,7 @@ export default function SuperadminUsersPage() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex items-center justify-between px-4 py-3"
-              style={{ borderTop: '1px solid #f3f4f6' }}>
+              style={{ borderTop: '1px solid var(--border-muted)' }}>
               <p className="text-xs text-gray-400">Page {page} of {totalPages} · {total} total</p>
               <div className="flex gap-2">
                 <button type="button"

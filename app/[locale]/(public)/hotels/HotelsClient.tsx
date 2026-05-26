@@ -106,7 +106,7 @@ export default function HotelsClient({ hotels, locale }: Props) {
               href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('whatsAppGreeting'))}`}
               target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm"
-              style={{ background: '#22c55e', color: '#fff' }}
+              style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
             >
               {t('whatsAppHelp')}
             </a>
@@ -164,7 +164,7 @@ export default function HotelsClient({ hotels, locale }: Props) {
             >
               {/* Image placeholder */}
               <div className="relative h-44"
-                style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)' }}>
+                style={{ background: 'var(--surface-saffron)' }}>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-5xl">🏨</span>
                 </div>
@@ -173,14 +173,14 @@ export default function HotelsClient({ hotels, locale }: Props) {
                     <MapPin size={9} />{bl(hotel.city, locale)}
                   </span>
                   {hotel.isVegOnly && (
-                    <span className="badge" style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                    <span className="badge" style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                       {t('pureVeg')}
                     </span>
                   )}
                 </div>
                 {hotel.isFeatured && (
                   <div className="absolute top-3 right-3">
-                    <span className="badge" style={{ background: '#fef3c7', color: '#92400e' }}>
+                    <span className="badge" style={{ background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }}>
                       {t('recommended')}
                     </span>
                   </div>
@@ -206,7 +206,7 @@ export default function HotelsClient({ hotels, locale }: Props) {
                   {hotel.amenities.map((am: { en: string; hi: string }) => (
                     <span key={am.en}
                       className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium"
-                      style={{ background: '#f3f4f6', color: '#6b7280' }}>
+                      style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
                       {AMENITY_ICONS[am.en] ?? null}{bl(am, locale)}
                     </span>
                   ))}
@@ -214,7 +214,7 @@ export default function HotelsClient({ hotels, locale }: Props) {
 
                 {/* Price + CTA */}
                 <div className="flex items-center justify-between pt-4"
-                  style={{ borderTop: '1px solid #f3f4f6' }}>
+                  style={{ borderTop: '1px solid var(--border-muted)' }}>
                   <div>
                     <p className="text-xs text-gray-400">{t('priceRange')}</p>
                     <p className="text-sm font-bold" style={{ color: '#ff7d0f' }}>
@@ -225,7 +225,7 @@ export default function HotelsClient({ hotels, locale }: Props) {
                     href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(t('enquireGreeting', { hotel: bl(hotel.name, locale), city: bl(hotel.city, locale) }))}`}
                     target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-colors shrink-0"
-                    style={{ background: '#dcfce7', color: '#16a34a' }}
+                    style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
                   >
                     <Phone size={11} /> {t('enquire')}
                   </a>
@@ -239,13 +239,13 @@ export default function HotelsClient({ hotels, locale }: Props) {
         <motion.div
           initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="mt-16 rounded-3xl p-8 md:p-10 text-center"
-          style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}
+          style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}
         >
           <p className="text-4xl mb-4">🏨</p>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2" style={{ fontFamily: 'var(--font-serif)' }}>
             {t('ctaTitle')}
           </h3>
-          <p className="text-gray-500 mb-6 max-w-md mx-auto text-sm">
+          <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto text-sm">
             {t('ctaDescription')}
           </p>
           <a

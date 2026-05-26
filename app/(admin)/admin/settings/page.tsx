@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,7 +9,7 @@ import {
 import Link  from 'next/link'
 import toast from 'react-hot-toast'
 
-// ── Toggle component ─────────────────────────────────────────────────────────
+// â”€â”€ Toggle component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Toggle({
   checked, onChange, label, desc,
 }: {
@@ -17,7 +17,7 @@ function Toggle({
 }) {
   return (
     <div className="flex items-center justify-between p-4 rounded-xl"
-      style={{ background: '#f9fafb' }}>
+      style={{ background: 'var(--bg-surface-muted)' }}>
       <div>
         <p className="text-sm font-semibold text-gray-800">{label}</p>
         <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
@@ -34,7 +34,7 @@ function Toggle({
   )
 }
 
-// ── Locked field — read-only, only superadmin can edit ───────────────────────
+// â”€â”€ Locked field â€” read-only, only superadmin can edit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function LockedField({ label, value }: { label: string; value: string }) {
   return (
     <div>
@@ -66,7 +66,7 @@ export default function AdminSettingsPage() {
     phone:    '+91 8534890870',
     email:    'info@mathuravrindavandhamyatra.com',
     whatsapp: '918534890870',
-    address:  'Mathura, Uttar Pradesh — 281001',
+    address:  'Mathura, Uttar Pradesh â€” 281001',
     tagline:  'Divine Journey. Trusted Hands.',
   })
 
@@ -97,7 +97,7 @@ export default function AdminSettingsPage() {
   async function handleSave() {
     setSaving(true); setError('')
     try {
-      // Admin only saves bookingConfig — siteInfo and emailConfig are NOT included
+      // Admin only saves bookingConfig â€” siteInfo and emailConfig are NOT included
       // so superadmin-set values are preserved
       const res = await fetch('/api/admin/settings', {
         method:  'POST',
@@ -168,7 +168,7 @@ export default function AdminSettingsPage() {
       {/* Error */}
       {error && (
         <div className="flex items-center gap-2 p-4 rounded-xl mb-5"
-          style={{ background: '#fff1f2', border: '1px solid #fecdd3' }}>
+          style={{ background: 'var(--surface-red)', border: '1px solid var(--surface-red-border)' }}>
           <AlertCircle size={16} className="text-red-500 flex-shrink-0" />
           <p className="text-sm text-red-700">{error}</p>
         </div>
@@ -176,19 +176,19 @@ export default function AdminSettingsPage() {
 
       <div className="max-w-2xl space-y-5">
 
-        {/* ── Site Information — READ ONLY for admin ── */}
+        {/* â”€â”€ Site Information â€” READ ONLY for admin â”€â”€ */}
         <div className="card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-5 pb-4"
             style={{ borderBottom: '1px solid #f3f4f6' }}>
             <div>
               <h3 className="font-bold text-gray-900">Site Information</h3>
               <p className="text-xs text-gray-400 mt-0.5">
-                Business details — only Superadmin can edit these
+                Business details â€” only Superadmin can edit these
               </p>
             </div>
             <Link href="/superadmin/settings"
               className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
-              style={{ background: '#ede9fe', color: '#5b21b6' }}>
+              style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
               <ShieldCheck size={12} />Edit in Superadmin
             </Link>
           </div>
@@ -207,12 +207,12 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
-        {/* ── Booking Configuration — EDITABLE by admin ── */}
+        {/* â”€â”€ Booking Configuration â€” EDITABLE by admin â”€â”€ */}
         <div className="card rounded-2xl p-6">
           <div className="mb-5 pb-4" style={{ borderBottom: '1px solid #f3f4f6' }}>
             <h3 className="font-bold text-gray-900">Booking Configuration</h3>
             <p className="text-xs text-gray-400 mt-0.5">
-              Control how bookings behave — you can edit these
+              Control how bookings behave â€” you can edit these
             </p>
           </div>
 
@@ -220,13 +220,13 @@ export default function AdminSettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
-                  Advance Payment (₹)
+                  Advance Payment (â‚¹)
                 </label>
                 <input type="number" min={0} step={50}
                   value={bookingConfig.advanceAmount}
                   onChange={(e) => setBookingConfig({ ...bookingConfig, advanceAmount: Number(e.target.value) })}
                   className="input-field" />
-                <p className="text-xs text-gray-400 mt-1">Fixed ₹ amount customers pay online to confirm</p>
+                <p className="text-xs text-gray-400 mt-1">Fixed â‚¹ amount customers pay online to confirm</p>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
@@ -263,24 +263,24 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
-        {/* ── SMTP — READ ONLY for admin ── */}
+        {/* â”€â”€ SMTP â€” READ ONLY for admin â”€â”€ */}
         <div className="card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4 pb-4"
             style={{ borderBottom: '1px solid #f3f4f6' }}>
             <div>
               <h3 className="font-bold text-gray-900">Email Configuration</h3>
-              <p className="text-xs text-gray-400 mt-0.5">SMTP settings — only Superadmin can change these</p>
+              <p className="text-xs text-gray-400 mt-0.5">SMTP settings â€” only Superadmin can change these</p>
             </div>
             <Link href="/superadmin/settings"
               className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
-              style={{ background: '#ede9fe', color: '#5b21b6' }}>
+              style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
               <ShieldCheck size={12} />Edit in Superadmin
             </Link>
           </div>
 
           {/* Show locked SMTP info */}
           <div className="flex items-start gap-3 p-4 rounded-xl"
-            style={{ background: '#f9fafb', border: '1px solid #f3f4f6' }}>
+            style={{ background: 'var(--bg-surface-muted)', border: '1px solid #f3f4f6' }}>
             <Lock size={16} className="text-gray-300 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-semibold text-gray-700">SMTP credentials are secured</p>

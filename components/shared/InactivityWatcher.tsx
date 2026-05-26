@@ -178,7 +178,7 @@ export default function InactivityWatcher() {
 
             {/* Countdown ring */}
             <div className="flex items-center justify-center gap-2 mb-6 px-5 py-3 rounded-2xl"
-              style={{ background: '#fff8ed', border: '1px solid #ffdba8' }}>
+              style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
               <Clock size={16} style={{ color: '#ff7d0f' }} />
               <p className="text-lg font-bold" style={{ color: '#ff7d0f' }}>
                 {formatCountdown(countdown)}
@@ -204,7 +204,7 @@ export default function InactivityWatcher() {
             </div>
 
             {/* Progress bar */}
-            <div className="mt-5 h-1 rounded-full overflow-hidden" style={{ background: '#f3f4f6' }}>
+            <div className="mt-5 h-1 rounded-full overflow-hidden" style={{ background: 'var(--bg-surface-muted)' }}>
               <motion.div
                 className="h-full rounded-full"
                 style={{ background: '#ff7d0f' }}

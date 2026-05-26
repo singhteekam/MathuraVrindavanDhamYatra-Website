@@ -27,7 +27,7 @@ function PlaceTile({ place, index }: { place: PlaceSummary; index: number }) {
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: index * 0.07 }}>
       <Link href={`/places/${place.slug}`}
-        className="block card card-hover rounded-2xl overflow-hidden group h-full">
+        className="block card card-hover card-accent rounded-2xl overflow-hidden group h-full">
 
         {/* Image / fallback */}
         <div className="relative h-36 overflow-hidden"
@@ -77,13 +77,13 @@ function PlaceTile({ place, index }: { place: PlaceSummary; index: number }) {
 
         {/* Text */}
         <div className="p-4">
-          <h3 className="font-bold text-gray-900 text-sm mb-1 group-hover:text-saffron-600 transition-colors leading-tight">
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-1 group-hover:text-saffron-600 dark:group-hover:text-saffron-400 transition-colors leading-tight">
             {place.name}
           </h3>
-          <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-2">
+          <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-3 line-clamp-2">
             {place.shortDescription}
           </p>
-          <div className="flex items-center gap-3 text-xs text-gray-400">
+          <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-300">
             {place.timeRequired && (
               <span className="flex items-center gap-1">
                 <Clock size={10} />{place.timeRequired}
@@ -91,7 +91,7 @@ function PlaceTile({ place, index }: { place: PlaceSummary; index: number }) {
             )}
             {place.entryFee && (
               <span className="flex items-center gap-1"
-                style={{ color: place.entryFee === 'Free' ? '#16a34a' : '#6b7280' }}>
+                style={{ color: place.entryFee === 'Free' ? '#16a34a' : 'var(--text-muted)' }}>
                 <Ticket size={10} />
                 {place.entryFee === 'Free' ? `✓ ${t('free')}` : place.entryFee}
               </span>
@@ -117,7 +117,7 @@ export default function PopularPlaces({ places }: Props) {
   ]
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
+    <section className="py-20 section-alt">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <SectionHeader

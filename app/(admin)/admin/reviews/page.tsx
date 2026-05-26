@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -93,7 +93,7 @@ export default function AdminReviewsPage() {
         body:    JSON.stringify({ isApproved: !review.isApproved }),
       })
       if (res.ok) {
-        toast.success(review.isApproved ? 'Review unpublished.' : 'Review published! ⭐')
+        toast.success(review.isApproved ? 'Review unpublished.' : 'Review published! â­')
         setReviews((prev) =>
           prev.map((r) => r._id === review._id ? { ...r, isApproved: !r.isApproved } : r),
         )
@@ -172,9 +172,9 @@ export default function AdminReviewsPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'Total Reviews', value: reviews.length,  icon: <MessageSquare size={18} />, color: '#374151', bg: '#f9fafb' },
-          { label: 'Pending',       value: pendingCount,    icon: <Clock         size={18} />, color: '#d97706', bg: '#fffbeb' },
-          { label: 'Published',     value: approvedCount,   icon: <ThumbsUp      size={18} />, color: '#16a34a', bg: '#f0fdf4' },
+          { label: 'Total Reviews', value: reviews.length,  icon: <MessageSquare size={18} />, color: '#374151', bg: 'var(--bg-surface-muted)' },
+          { label: 'Pending',       value: pendingCount,    icon: <Clock         size={18} />, color: '#d97706', bg: 'var(--surface-amber)' },
+          { label: 'Published',     value: approvedCount,   icon: <ThumbsUp      size={18} />, color: '#16a34a', bg: 'var(--surface-green)' },
         ].map((s) => (
           <div key={s.label} className="card rounded-2xl p-4 flex items-center gap-3"
             style={{ background: s.bg }}>
@@ -201,7 +201,7 @@ export default function AdminReviewsPage() {
               className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
               style={filter === tab.value
                 ? { background: '#ff7d0f', color: '#fff' }
-                : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+                : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
               }>
               {tab.label}
             </button>
@@ -217,8 +217,8 @@ export default function AdminReviewsPage() {
                 onClick={() => setRatingFilter(ratingFilter === star ? null : star)}
                 className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all"
                 style={ratingFilter === star
-                  ? { background: '#fef3c7', color: '#92400e', border: '1.5px solid #f59e0b' }
-                  : { background: '#fff', color: '#9ca3af', border: '1px solid #e5e7eb' }
+                  ? { background: 'var(--surface-amber)', color: 'var(--text-on-amber)', border: '1.5px solid var(--surface-amber-border)' }
+                  : { background: '#fff', color: '#9ca3af', border: '1px solid var(--border-default)' }
                 }>
                 <Star size={11} fill={ratingFilter === star ? '#f59e0b' : 'none'}
                   stroke={ratingFilter === star ? '#f59e0b' : 'currentColor'} />
@@ -272,7 +272,7 @@ export default function AdminReviewsPage() {
                 <div className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
 
-                    {/* Left — review content */}
+                    {/* Left â€” review content */}
                     <div className="flex-1 min-w-0">
                       {/* Customer + rating row */}
                       <div className="flex flex-wrap items-center gap-3 mb-3">
@@ -287,14 +287,14 @@ export default function AdminReviewsPage() {
                         <StarDisplay count={review.rating} />
                         <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold flex-shrink-0"
                           style={review.isApproved
-                            ? { background: '#f0fdf4', color: '#16a34a' }
-                            : { background: '#fffbeb', color: '#d97706' }
+                            ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                            : { background: 'var(--surface-amber)', color: '#d97706' }
                           }>
-                          {review.isApproved ? '✓ Published' : '⏳ Pending'}
+                          {review.isApproved ? 'âœ“ Published' : 'â³ Pending'}
                         </span>
                       </div>
 
-                      {/* Review text — EN */}
+                      {/* Review text â€” EN */}
                       <p className="font-semibold text-gray-800 text-sm mb-0.5">{str(review.title)}</p>
                       <p className="text-sm text-gray-600 leading-relaxed mb-1">{str(review.comment)}</p>
 
@@ -317,7 +317,7 @@ export default function AdminReviewsPage() {
                         {review.package && (
                           <span className="px-2.5 py-1 rounded-full"
                             style={{ background: '#fff8ed', color: '#c74a06' }}>
-                            📦 {str(review.package.name)}
+                            ðŸ“¦ {str(review.package.name)}
                           </span>
                         )}
                         <span>
@@ -328,7 +328,7 @@ export default function AdminReviewsPage() {
                       </div>
                     </div>
 
-                    {/* Right — action buttons */}
+                    {/* Right â€” action buttons */}
                     <div className="flex sm:flex-col gap-2 flex-shrink-0">
                       {/* Approve / Unpublish */}
                       <button type="button"
@@ -336,8 +336,8 @@ export default function AdminReviewsPage() {
                         disabled={actionId === review._id}
                         className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap disabled:opacity-60"
                         style={review.isApproved
-                          ? { background: '#fff1f2', color: '#dc2626' }
-                          : { background: '#f0fdf4', color: '#16a34a' }
+                          ? { background: 'var(--surface-red)', color: 'var(--text-on-red)' }
+                          : { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
                         }>
                         {actionId === review._id ? (
                           <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -362,8 +362,8 @@ export default function AdminReviewsPage() {
                         disabled={translatingId === review._id}
                         className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap disabled:opacity-60"
                         style={hasHindi(review.title)
-                          ? { background: '#f0f9ff', color: '#0369a1', border: '1px solid #bae6fd' }
-                          : { background: '#eef2ff', color: '#4338ca', border: '1px solid #c7d2fe' }
+                          ? { background: 'var(--surface-blue)', color: '#0369a1', border: '1px solid var(--surface-blue-border)' }
+                          : { background: 'var(--surface-krishna)', color: '#4338ca', border: '1px solid var(--surface-krishna-border)' }
                         }
                         title={hasHindi(review.title) ? 'Re-translate to Hindi' : 'Translate to Hindi'}>
                         {translatingId === review._id ? (
@@ -378,7 +378,7 @@ export default function AdminReviewsPage() {
                         onClick={() => deleteReview(review._id, review.customer.name)}
                         disabled={deletingId === review._id}
                         className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap disabled:opacity-60"
-                        style={{ background: '#f9fafb', color: '#6b7280', border: '1px solid #e5e7eb' }}>
+                        style={{ background: 'var(--bg-surface-muted)', color: '#6b7280', border: '1px solid var(--border-default)' }}>
                         {deletingId === review._id ? (
                           <span className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                         ) : (

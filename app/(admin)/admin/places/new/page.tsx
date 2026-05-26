@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,13 +14,13 @@ import BilingualInput,       { type BLValue } from '@/components/admin/Bilingual
 
 const CITIES = ['Mathura', 'Vrindavan', 'Gokul', 'Govardhan', 'Barsana', 'Nandgaon', 'Agra']
 const TYPES  = [
-  { value: 'temple',      label: '🛕 Temple'      },
-  { value: 'ghat',        label: '🌊 Ghat'        },
-  { value: 'sacred-site', label: '🙏 Sacred Site'  },
-  { value: 'hill',        label: '⛰️ Hill'         },
-  { value: 'garden',      label: '🌺 Garden'      },
-  { value: 'museum',      label: '🏛️ Museum'      },
-  { value: 'village',     label: '🏡 Village'     },
+  { value: 'temple',      label: 'ðŸ›• Temple'      },
+  { value: 'ghat',        label: 'ðŸŒŠ Ghat'        },
+  { value: 'sacred-site', label: 'ðŸ™ Sacred Site'  },
+  { value: 'hill',        label: 'â›°ï¸ Hill'         },
+  { value: 'garden',      label: 'ðŸŒº Garden'      },
+  { value: 'museum',      label: 'ðŸ›ï¸ Museum'      },
+  { value: 'village',     label: 'ðŸ¡ Village'     },
 ]
 
 interface PlaceForm {
@@ -129,7 +129,7 @@ export default function NewPlacePage() {
       const data = await res.json()
 
       if (res.ok) {
-        toast.success(`"${form.name.en}" created successfully! 🙏`)
+        toast.success(`"${form.name.en}" created successfully! ðŸ™`)
         router.push('/admin/places')
       } else {
         toast.error(data.error ?? 'Failed to create place.')
@@ -191,7 +191,7 @@ export default function NewPlacePage() {
                   label="Place Name"
                   required
                   enPlaceholder="e.g. Krishna Janmabhoomi Temple"
-                  hiPlaceholder="e.g. श्री कृष्ण जन्मभूमि मंदिर"
+                  hiPlaceholder="e.g. à¤¶à¥à¤°à¥€ à¤•à¥ƒà¤·à¥à¤£ à¤œà¤¨à¥à¤®à¤­à¥‚à¤®à¤¿ à¤®à¤‚à¤¦à¤¿à¤°"
                 />
 
                 <div>
@@ -235,7 +235,7 @@ export default function NewPlacePage() {
                   type="textarea"
                   rows={2}
                   enPlaceholder="Brief description shown on listing cards and SEO..."
-                  hiPlaceholder="संक्षिप्त विवरण..."
+                  hiPlaceholder="à¤¸à¤‚à¤•à¥à¤·à¤¿à¤ªà¥à¤¤ à¤µà¤¿à¤µà¤°à¤£..."
                 />
 
                 <BilingualInput
@@ -245,7 +245,7 @@ export default function NewPlacePage() {
                   type="textarea"
                   rows={4}
                   enPlaceholder="Detailed history, significance, and visitor information..."
-                  hiPlaceholder="विस्तृत जानकारी..."
+                  hiPlaceholder="à¤µà¤¿à¤¸à¥à¤¤à¥ƒà¤¤ à¤œà¤¾à¤¨à¤•à¤¾à¤°à¥€..."
                 />
 
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -253,15 +253,15 @@ export default function NewPlacePage() {
                     value={form.entryFee}
                     onChange={(val) => setForm({ ...form, entryFee: val })}
                     label="Entry Fee"
-                    enPlaceholder="Free / ₹50 / ₹100"
-                    hiPlaceholder="मुफ़्त / ₹50"
+                    enPlaceholder="Free / â‚¹50 / â‚¹100"
+                    hiPlaceholder="à¤®à¥à¤«à¤¼à¥à¤¤ / â‚¹50"
                   />
                   <BilingualInput
                     value={form.timeRequired}
                     onChange={(val) => setForm({ ...form, timeRequired: val })}
                     label="Time Required"
                     enPlaceholder="30-60 minutes / 2-3 hours"
-                    hiPlaceholder="30-60 मिनट"
+                    hiPlaceholder="30-60 à¤®à¤¿à¤¨à¤Ÿ"
                   />
                 </div>
               </div>
@@ -277,22 +277,22 @@ export default function NewPlacePage() {
                   value={form.timings.morning}
                   onChange={(val) => setForm({ ...form, timings: { ...form.timings, morning: val } })}
                   label="Morning Session"
-                  enPlaceholder="5:00 AM – 12:00 PM"
-                  hiPlaceholder="सुबह 5:00 – दोपहर 12:00"
+                  enPlaceholder="5:00 AM â€“ 12:00 PM"
+                  hiPlaceholder="à¤¸à¥à¤¬à¤¹ 5:00 â€“ à¤¦à¥‹à¤ªà¤¹à¤° 12:00"
                 />
                 <BilingualInput
                   value={form.timings.evening}
                   onChange={(val) => setForm({ ...form, timings: { ...form.timings, evening: val } })}
                   label="Evening Session"
-                  enPlaceholder="4:00 PM – 9:00 PM"
-                  hiPlaceholder="शाम 4:00 – रात 9:00"
+                  enPlaceholder="4:00 PM â€“ 9:00 PM"
+                  hiPlaceholder="à¤¶à¤¾à¤® 4:00 â€“ à¤°à¤¾à¤¤ 9:00"
                 />
                 <BilingualInput
                   value={form.timings.note}
                   onChange={(val) => setForm({ ...form, timings: { ...form.timings, note: val } })}
                   label="Special Note"
                   enPlaceholder="e.g. Closed on Holi, Extended hours on Janmashtami..."
-                  hiPlaceholder="e.g. होली पर बंद..."
+                  hiPlaceholder="e.g. à¤¹à¥‹à¤²à¥€ à¤ªà¤° à¤¬à¤‚à¤¦..."
                 />
               </div>
             </motion.div>
@@ -309,7 +309,7 @@ export default function NewPlacePage() {
                 <div>
                   <Label>Address *</Label>
                   <input type="text"
-                    placeholder="e.g. Near Mathura Junction, Mathura, UP — 281001"
+                    placeholder="e.g. Near Mathura Junction, Mathura, UP â€” 281001"
                     value={form.location.address}
                     onChange={(e) => setForm({ ...form, location: { ...form.location, address: e.target.value } })}
                     className="input-field" required />
@@ -337,7 +337,7 @@ export default function NewPlacePage() {
                     onChange={(e) => setForm({ ...form, location: { ...form.location, distanceFromMathura: e.target.value } })}
                     className="input-field" />
                 </div>
-                <div className="p-3 rounded-xl" style={{ background: '#f9fafb' }}>
+                <div className="p-3 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
                   <p className="text-xs font-semibold text-gray-500 mb-2">Quick-fill coordinates</p>
                   <div className="flex flex-wrap gap-2">
                     {[
@@ -350,8 +350,8 @@ export default function NewPlacePage() {
                       <button key={city.label} type="button"
                         onClick={() => setForm({ ...form, location: { ...form.location, lat: city.lat, lng: city.lng } })}
                         className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-                        style={{ background: '#fff', border: '1px solid #e5e7eb', color: '#374151' }}>
-                        📍 {city.label}
+                        style={{ background: '#fff', border: '1px solid var(--border-default)', color: '#374151' }}>
+                        ðŸ“ {city.label}
                       </button>
                     ))}
                   </div>
@@ -402,7 +402,7 @@ export default function NewPlacePage() {
                       <button key={tag} type="button"
                         onClick={() => setForm((prev) => ({ ...prev, tags: [...prev.tags, tag] }))}
                         className="px-2.5 py-1 rounded-full text-xs transition-colors"
-                        style={{ background: '#f3f4f6', color: '#6b7280' }}>
+                        style={{ background: 'var(--bg-surface-muted)', color: '#6b7280' }}>
                         + {tag}
                       </button>
                     ))}
@@ -457,12 +457,12 @@ export default function NewPlacePage() {
                 <div className="h-24 flex items-center justify-center"
                   style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)' }}>
                   <span className="text-4xl">
-                    {TYPES.find((t) => t.value === form.type)?.label.split(' ')[0] ?? '📍'}
+                    {TYPES.find((t) => t.value === form.type)?.label.split(' ')[0] ?? 'ðŸ“'}
                   </span>
                 </div>
                 <div className="p-3">
                   <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: '#ff7d0f' }}>
-                    {form.city || 'City'} · {form.type.replace('-', ' ')}
+                    {form.city || 'City'} Â· {form.type.replace('-', ' ')}
                   </p>
                   <p className="font-bold text-gray-900 text-sm leading-tight mb-1">
                     {form.name.en || 'Place Name'}
@@ -472,10 +472,10 @@ export default function NewPlacePage() {
                   </p>
                   {(form.entryFee.en || form.timeRequired.en) && (
                     <div className="flex gap-3 mt-2 text-xs text-gray-400">
-                      {form.timeRequired.en && <span>⏱ {form.timeRequired.en}</span>}
+                      {form.timeRequired.en && <span>â± {form.timeRequired.en}</span>}
                       {form.entryFee.en && (
                         <span style={{ color: form.entryFee.en === 'Free' ? '#16a34a' : '#6b7280' }}>
-                          🎫 {form.entryFee.en}
+                          ðŸŽ« {form.entryFee.en}
                         </span>
                       )}
                     </div>
@@ -485,13 +485,13 @@ export default function NewPlacePage() {
             </motion.div>
 
             <div className="rounded-2xl p-4 text-xs leading-relaxed"
-              style={{ background: '#fffbeb', border: '1px solid #fde68a', color: '#92400e' }}>
-              <p className="font-semibold mb-2">💡 Tips</p>
+              style={{ background: 'var(--surface-amber)', border: '1px solid var(--surface-amber-border)', color: '#92400e' }}>
+              <p className="font-semibold mb-2">ðŸ’¡ Tips</p>
               <ul className="space-y-1.5 list-none">
-                <li>• Slug is auto-generated from English name</li>
-                <li>• Use EN→HI button to auto-translate fields</li>
-                <li>• Hindi is optional — English is always shown as fallback</li>
-                <li>• Featured places appear on the homepage</li>
+                <li>â€¢ Slug is auto-generated from English name</li>
+                <li>â€¢ Use ENâ†’HI button to auto-translate fields</li>
+                <li>â€¢ Hindi is optional â€” English is always shown as fallback</li>
+                <li>â€¢ Featured places appear on the homepage</li>
               </ul>
             </div>
 

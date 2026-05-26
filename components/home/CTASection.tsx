@@ -28,7 +28,7 @@ export default function CTASection() {
   }
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
+    <section className="py-20 section-divine">
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
@@ -56,7 +56,7 @@ export default function CTASection() {
                   value: siteConfig.phone,
                   href: `tel:${siteConfig.phone}`,
                   color: '#ff7d0f',
-                  bg: '#fff8ed',
+                  bg: 'var(--surface-saffron)',
                 },
                 {
                   icon: <MessageCircle size={20} />,
@@ -64,7 +64,7 @@ export default function CTASection() {
                   value: t('whatsAppValue'),
                   href: `https://wa.me/${siteConfig.whatsapp}`,
                   color: '#16a34a',
-                  bg: '#f0fdf4',
+                  bg: 'var(--surface-green)',
                 },
                 {
                   icon: <MapPin size={20} />,
@@ -72,7 +72,7 @@ export default function CTASection() {
                   value: siteConfig.address,
                   href: '#',
                   color: '#4338ca',
-                  bg: '#eef2ff',
+                  bg: 'var(--surface-krishna)',
                 },
               ].map((item) => (
                 <a
@@ -90,8 +90,8 @@ export default function CTASection() {
                     {item.icon}
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-medium">{item.label}</p>
-                    <p className="font-semibold text-gray-800 text-sm">{item.value}</p>
+                    <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>{item.label}</p>
+                    <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{item.value}</p>
                   </div>
                 </a>
               ))}
@@ -108,9 +108,9 @@ export default function CTASection() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-200"
                 style={{
-                  background: '#dcfce7',
-                  color: '#16a34a',
-                  border: '1px solid #bbf7d0',
+                  background: 'var(--surface-green)',
+                  color: 'var(--text-on-green)',
+                  border: '1px solid var(--surface-green-border)',
                 }}
               >
                 <MessageCircle size={16} />
@@ -129,25 +129,25 @@ export default function CTASection() {
             <div
               className="rounded-3xl p-7 sm:p-9"
               style={{
-                background: 'linear-gradient(135deg, #fff8ed, #fffbeb)',
-                border: '1px solid #ffefd4',
+                background: 'var(--surface-saffron)',
+                border: '1px solid var(--surface-saffron-border)',
                 boxShadow: '0 8px 40px rgba(255,125,15,0.1)',
               }}
             >
               <h3
-                className="text-xl font-bold text-gray-900 mb-1"
+                className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1"
                 style={{ fontFamily: 'var(--font-serif)' }}
               >
                 {t('formTitle')}
               </h3>
-              <p className="text-sm text-gray-500 mb-6">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                 {t('formSubtitle')}
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
                       {t('yourName')} *
                     </label>
                     <input
@@ -155,12 +155,12 @@ export default function CTASection() {
                       placeholder={t('yourNamePlaceholder')}
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="input-field bg-white"
+                      className="input-field"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
                       {t('phoneWhatsApp')} *
                     </label>
                     <input
@@ -168,27 +168,27 @@ export default function CTASection() {
                       placeholder={t('phonePlaceholder')}
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="input-field bg-white"
+                      className="input-field"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
                     {t('plannedDate')}
                   </label>
                   <input
                     type="date"
                     value={form.date}
                     onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    className="input-field bg-white"
+                    className="input-field"
                     min={new Date().toISOString().split('T')[0]}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
                     {t('messageLabel')}
                   </label>
                   <textarea
@@ -196,7 +196,7 @@ export default function CTASection() {
                     placeholder={t('messagePlaceholder')}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className="input-field bg-white resize-none"
+                    className="input-field resize-none"
                   />
                 </div>
 

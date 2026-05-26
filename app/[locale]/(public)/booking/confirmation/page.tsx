@@ -97,9 +97,9 @@ function ConfirmationContent() {
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
           className="rounded-2xl p-6 mb-5 text-center"
-          style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)', border: '1px solid #ffdba8' }}
+          style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}
         >
-          <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">{t('yourBookingId')}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mb-2">{t('yourBookingId')}</p>
           <div className="flex items-center justify-center gap-3">
             <p className="text-2xl font-bold" style={{ color: '#ff7d0f', fontFamily: 'var(--font-serif)' }}>
               {bookingId || t('processing')}
@@ -107,13 +107,13 @@ function ConfirmationContent() {
             {bookingId && (
               <button onClick={copyBookingId}
                 className="p-2 rounded-lg transition-colors"
-                style={{ background: '#fff', border: '1px solid #ffdba8' }}
+                style={{ background: 'var(--bg-surface)', border: '1px solid var(--surface-saffron-border)' }}
                 title={t('copyBookingId')}>
                 {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} className="text-gray-400" />}
               </button>
             )}
           </div>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
             {t('saveIdNote')}
           </p>
         </motion.div>
@@ -263,7 +263,7 @@ function ConfirmationContent() {
             href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(whatsappMsg)}`}
             target="_blank" rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full py-4 rounded-full font-semibold text-sm"
-            style={{ background: '#22c55e', color: '#fff' }}>
+            style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
             <MessageCircle size={18} />{t('confirmViaWhatsApp')}
           </a>
 

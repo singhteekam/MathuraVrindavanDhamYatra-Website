@@ -142,7 +142,7 @@ export default function PlacesClient({ places }: { places: PlaceSummary[] }) {
                 className="text-xs px-1.5 py-0.5 rounded-full font-bold"
                 style={city === c.slug
                   ? { background: 'rgba(255,255,255,0.25)', color: '#fff' }
-                  : { background: '#f3f4f6', color: '#9ca3af' }
+                  : { background: 'var(--bg-surface-muted)', color: 'var(--text-faint)' }
                 }
               >
                 {cityCount(c.slug)}

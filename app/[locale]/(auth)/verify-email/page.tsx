@@ -134,7 +134,7 @@ function VerifyEmailForm() {
 
         <div className="flex items-center gap-3 mb-5">
           <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-            style={{ background: '#fff8ed' }}>
+            style={{ background: 'var(--surface-saffron)' }}>
             <MailCheck size={20} style={{ color: '#ff7d0f' }} />
           </div>
           <div>
@@ -145,7 +145,7 @@ function VerifyEmailForm() {
 
         {email && (
           <div className="flex items-center gap-2 p-3 rounded-xl mb-5 text-sm"
-            style={{ background: '#fff8ed', border: '1px solid #ffdba8' }}>
+            style={{ background: 'var(--surface-saffron)', border: '1px solid var(--surface-saffron-border)' }}>
             <span>📧</span>
             <span className="text-gray-600 dark:text-gray-300">{t('sentTo')}</span>
             <span className="font-semibold text-saffron-700 dark:text-saffron-400 truncate">{email}</span>
@@ -170,7 +170,7 @@ function VerifyEmailForm() {
               className="w-11 h-14 text-center text-xl font-bold border-2 rounded-xl outline-none transition-all"
               style={{
                 borderColor: d ? '#ff7d0f' : 'var(--border-default)',
-                background:  d ? '#fff8ed' : 'var(--bg-surface)',
+                background:  d ? 'var(--surface-saffron)' : 'var(--bg-surface)',
                 color:       'var(--text-primary)',
               }}
               aria-label={`OTP digit ${i + 1}`}

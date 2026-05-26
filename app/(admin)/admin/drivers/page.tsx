@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -222,9 +222,9 @@ export default function AdminDriversPage() {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'Total',     value: drivers.length,                                      color: '#374151', bg: '#f9fafb' },
-          { label: 'Available', value: drivers.filter((d) => d.isAvailable).length,          color: '#16a34a', bg: '#f0fdf4' },
-          { label: 'Verified',  value: drivers.filter((d) => d.isVerified).length,           color: '#4338ca', bg: '#eef2ff' },
+          { label: 'Total',     value: drivers.length,                                      color: 'var(--text-secondary)', bg: 'var(--bg-surface-muted)' },
+          { label: 'Available', value: drivers.filter((d) => d.isAvailable).length,          color: '#16a34a', bg: 'var(--surface-green)' },
+          { label: 'Verified',  value: drivers.filter((d) => d.isVerified).length,           color: '#4338ca', bg: 'var(--surface-krishna)' },
         ].map((s) => (
           <div key={s.label} className="card rounded-xl p-4 text-center"
             style={{ background: s.bg }}>
@@ -281,22 +281,22 @@ export default function AdminDriversPage() {
                 <div className="flex flex-col gap-1 items-end">
                   <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                     style={driver.isVerified
-                      ? { background: '#f0fdf4', color: '#16a34a' }
-                      : { background: '#fff1f2', color: '#dc2626' }}>
-                    {driver.isVerified ? '✓ Verified' : '✗ Unverified'}
+                      ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                      : { background: 'var(--surface-red)', color: 'var(--text-on-red)' }}>
+                    {driver.isVerified ? 'âœ“ Verified' : 'âœ— Unverified'}
                   </span>
                   <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                     style={driver.isAvailable
-                      ? { background: '#f0fdf4', color: '#16a34a' }
-                      : { background: '#f3f4f6', color: '#6b7280' }}>
-                    {driver.isAvailable ? '● Available' : '○ On Trip'}
+                      ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                      : { background: 'var(--bg-surface-muted)', color: '#6b7280' }}>
+                    {driver.isAvailable ? 'â— Available' : 'â—‹ On Trip'}
                   </span>
                 </div>
               </div>
 
               {/* Vehicle info */}
               <div className="p-3 rounded-xl mb-4"
-                style={{ background: '#f9fafb' }}>
+                style={{ background: 'var(--bg-surface-muted)' }}>
                 <div className="flex items-center gap-2 mb-1">
                   <Car size={13} className="text-gray-400" />
                   <span className="text-sm font-semibold text-gray-700">{driver.vehicle.name}</span>
@@ -326,25 +326,25 @@ export default function AdminDriversPage() {
                   onClick={() => toggleAvailability(driver._id, driver.isAvailable)}
                   className="flex-1 py-2 rounded-xl text-xs font-semibold transition-colors"
                   style={driver.isAvailable
-                    ? { background: '#fff1f2', color: '#dc2626' }
-                    : { background: '#f0fdf4', color: '#16a34a' }}>
+                    ? { background: 'var(--surface-red)', color: 'var(--text-on-red)' }
+                    : { background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                   {driver.isAvailable ? 'Unavailable' : 'Available'}
                 </button>
                 <button
                   onClick={() => toggleVerified(driver._id, driver.isVerified)}
                   className="flex-1 py-2 rounded-xl text-xs font-semibold transition-colors"
-                  style={{ background: '#fff8ed', color: '#ff7d0f' }}>
+                  style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
                   {driver.isVerified ? 'Unverify' : 'Verify'}
                 </button>
                 <button
                   onClick={() => openViewDriver(driver._id)}
                   className="p-2 rounded-xl flex items-center justify-center"
-                  style={{ background: '#eff6ff', color: '#2563eb' }}>
+                  style={{ background: 'var(--surface-blue)', color: '#2563eb' }}>
                   <Eye size={14} />
                 </button>
                 <Link href={`/admin/drivers/${driver._id}`}
                   className="p-2 rounded-xl flex items-center justify-center"
-                  style={{ background: '#f3f4f6', color: '#374151' }}>
+                  style={{ background: 'var(--bg-surface-muted)', color: '#374151' }}>
                   <Pencil size={14} />
                 </Link>
               </div>
@@ -410,21 +410,21 @@ export default function AdminDriversPage() {
                   )}
                   <div className="flex-1 min-w-0">
                     <h2 className="text-xl font-bold text-gray-900 truncate">{viewDriver.name}</h2>
-                    <p className="text-sm text-gray-500 mb-2">{viewDriver.gender ? viewDriver.gender.charAt(0).toUpperCase() + viewDriver.gender.slice(1) : '—'}</p>
+                    <p className="text-sm text-gray-500 mb-2">{viewDriver.gender ? viewDriver.gender.charAt(0).toUpperCase() + viewDriver.gender.slice(1) : 'â€”'}</p>
                     <div className="flex flex-wrap gap-2">
                       <span className="text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1"
                         style={viewDriver.isVerified
-                          ? { background: '#f0fdf4', color: '#16a34a' }
-                          : { background: '#fff1f2', color: '#dc2626' }}>
+                          ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                          : { background: 'var(--surface-red)', color: 'var(--text-on-red)' }}>
                         {viewDriver.isVerified
                           ? <><CheckCircle2 size={11} />Verified</>
                           : <><XCircle size={11} />Unverified</>}
                       </span>
                       <span className="text-xs px-2.5 py-1 rounded-full font-semibold"
                         style={viewDriver.isAvailable
-                          ? { background: '#f0fdf4', color: '#16a34a' }
-                          : { background: '#f3f4f6', color: '#6b7280' }}>
-                        {viewDriver.isAvailable ? '● Available' : '○ On Trip'}
+                          ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                          : { background: 'var(--bg-surface-muted)', color: '#6b7280' }}>
+                        {viewDriver.isAvailable ? 'â— Available' : 'â—‹ On Trip'}
                       </span>
                     </div>
                   </div>
@@ -433,9 +433,9 @@ export default function AdminDriversPage() {
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Total Trips', value: viewDriver.totalTrips,                     icon: <Car size={14} />,         color: '#4338ca', bg: '#eef2ff' },
-                    { label: 'Rating',      value: `${viewDriver.rating.toFixed(1)} ★`,       icon: <Star size={14} />,        color: '#d97706', bg: '#fffbeb' },
-                    { label: 'Earnings',    value: `₹${(viewDriver.earnings ?? 0).toLocaleString('en-IN')}`, icon: <IndianRupee size={14} />, color: '#16a34a', bg: '#f0fdf4' },
+                    { label: 'Total Trips', value: viewDriver.totalTrips,                     icon: <Car size={14} />,         color: '#4338ca', bg: 'var(--surface-krishna)' },
+                    { label: 'Rating',      value: `${viewDriver.rating.toFixed(1)} â˜…`,       icon: <Star size={14} />,        color: '#d97706', bg: 'var(--surface-amber)' },
+                    { label: 'Earnings',    value: `â‚¹${(viewDriver.earnings ?? 0).toLocaleString('en-IN')}`, icon: <IndianRupee size={14} />, color: '#16a34a', bg: 'var(--surface-green)' },
                   ].map(s => (
                     <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: s.bg }}>
                       <div className="flex justify-center mb-1" style={{ color: s.color }}>{s.icon}</div>
@@ -446,7 +446,7 @@ export default function AdminDriversPage() {
                 </div>
 
                 {/* Personal Info */}
-                <div className="rounded-xl p-4 space-y-3" style={{ background: '#f9fafb' }}>
+                <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--bg-surface-muted)' }}>
                   <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Personal Information</p>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {[
@@ -458,7 +458,7 @@ export default function AdminDriversPage() {
                         <div className="mt-0.5 text-saffron-500 shrink-0">{row.icon}</div>
                         <div>
                           <p className="text-xs text-gray-400">{row.label}</p>
-                          <p className="text-sm font-semibold text-gray-800 font-mono break-all">{row.value || '—'}</p>
+                          <p className="text-sm font-semibold text-gray-800 font-mono break-all">{row.value || 'â€”'}</p>
                         </div>
                       </div>
                     ))}
@@ -489,7 +489,7 @@ export default function AdminDriversPage() {
                       ].map(r => (
                         <div key={r.label}>
                           <p className="text-xs text-gray-400">{r.label}</p>
-                          <p className="font-semibold text-gray-800 font-mono">{r.value || '—'}</p>
+                          <p className="font-semibold text-gray-800 font-mono">{r.value || 'â€”'}</p>
                         </div>
                       ))}
                     </div>
@@ -497,7 +497,7 @@ export default function AdminDriversPage() {
                 </div>
 
                 {/* KYC */}
-                <div className="rounded-xl p-4 space-y-4" style={{ background: '#f9fafb' }}>
+                <div className="rounded-xl p-4 space-y-4" style={{ background: 'var(--bg-surface-muted)' }}>
                   <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">KYC Documents</p>
 
                   {/* Aadhaar */}
@@ -677,7 +677,7 @@ export default function AdminDriversPage() {
               </div>
 
               {/* KYC Documents */}
-              <div className="p-4 rounded-xl space-y-4" style={{ background: '#f9fafb' }}>
+              <div className="p-4 rounded-xl space-y-4" style={{ background: 'var(--bg-surface-muted)' }}>
                 <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">KYC Documents</p>
 
                 {/* Aadhaar */}
@@ -734,7 +734,7 @@ export default function AdminDriversPage() {
               </div>
 
               {/* Vehicle */}
-              <div className="p-4 rounded-xl space-y-3" style={{ background: '#f9fafb' }}>
+              <div className="p-4 rounded-xl space-y-3" style={{ background: 'var(--bg-surface-muted)' }}>
                 <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Vehicle Details</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>

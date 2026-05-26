@@ -10,6 +10,7 @@ import {
   LogOut, Menu, X, Key, ShieldCheck, ChevronRight,
   UtensilsCrossed, Hotel, UserCircle,
 } from 'lucide-react'
+import SimpleThemeSwitcher from '@/components/shared/SimpleThemeSwitcher'
 
 const NAV = [
   { href: '/superadmin',               icon: <LayoutDashboard  size={18} />, label: 'Dashboard'   },
@@ -88,9 +89,15 @@ export default function SuperadminSidebarWrapper() {
         </div>
       )}
 
-      {/* Sign out */}
-      <div className="px-3 py-3"
+      {/* Theme + Sign out */}
+      <div className="px-3 py-3 space-y-2"
         style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        {(!collapsed || mobile) && (
+          <div className="px-1 pb-1">
+            <p className="text-[10px] text-indigo-400/60 uppercase tracking-wider mb-1.5 px-1">Theme</p>
+            <SimpleThemeSwitcher />
+          </div>
+        )}
         <button type="button"
           onClick={() => signOut({ callbackUrl: '/login' })}
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full transition-all duration-150 hover:bg-white/10"

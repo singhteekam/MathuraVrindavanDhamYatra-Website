@@ -229,8 +229,8 @@ export default async function PrivacyPage({ params }: Props) {
 
         {/* Bottom note */}
         <div className="mt-8 p-5 rounded-2xl text-center"
-          style={{ background: '#ede9fe', border: '1px solid #c4b5fd' }}>
-          <p className="text-sm text-gray-700 mb-3">{t('questionsNote')}</p>
+          style={{ background: 'var(--surface-krishna)', border: '1px solid var(--surface-krishna-border)' }}>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{t('questionsNote')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/contact" className="btn-primary text-sm py-2.5 px-5"
               style={{ background: 'linear-gradient(135deg, #4338ca, #1e1b4b)' }}>

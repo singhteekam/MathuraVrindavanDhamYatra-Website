@@ -32,11 +32,11 @@ const STATUS_TABS = [
 ]
 
 const STATUS_STYLE: Record<string, { label: string; color: string; bg: string }> = {
-  confirmed:       { label: 'Confirmed',  color: '#2563eb', bg: '#eff6ff' },
-  driver_assigned: { label: 'Assigned',   color: '#7c3aed', bg: '#f5f3ff' },
-  ongoing:         { label: 'Ongoing',    color: '#ff7d0f', bg: '#fff8ed' },
-  completed:       { label: 'Completed',  color: '#16a34a', bg: '#f0fdf4' },
-  cancelled:       { label: 'Cancelled',  color: '#dc2626', bg: '#fff1f2' },
+  confirmed:       { label: 'Confirmed',  color: '#2563eb', bg: 'var(--surface-blue)' },
+  driver_assigned: { label: 'Assigned',   color: '#7c3aed', bg: 'var(--surface-krishna)' },
+  ongoing:         { label: 'Ongoing',    color: '#ff7d0f', bg: 'var(--surface-saffron)' },
+  completed:       { label: 'Completed',  color: '#16a34a', bg: 'var(--surface-green)' },
+  cancelled:       { label: 'Cancelled',  color: '#dc2626', bg: 'var(--surface-red)' },
 }
 
 export default function DriverTripsPage() {
@@ -88,7 +88,7 @@ export default function DriverTripsPage() {
             className="px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 flex-shrink-0"
             style={activeTab === tab.value
               ? { background: '#ff7d0f', color: '#fff' }
-              : { background: '#fff', color: '#6b7280', border: '1px solid #e5e7eb' }
+              : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
             }>
             {tab.label}
           </button>
@@ -171,14 +171,14 @@ export default function DriverTripsPage() {
                   {trip.status === 'ongoing' && (
                     <button onClick={() => updateStatus(trip.bookingId, 'completed')}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
-                      style={{ background: '#f0fdf4', color: '#16a34a', border: '1px solid #bbf7d0' }}>
+                      style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)', border: '1px solid var(--surface-green-border)' }}>
                       <CheckCircle size={12} /> Mark Completed
                     </button>
                   )}
                   <a href={`https://wa.me/${trip.customer.phone.replace(/\D/g, '')}`}
                     target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
-                    style={{ background: '#dcfce7', color: '#16a34a' }}>
+                    style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                     WhatsApp Customer
                   </a>
                 </div>

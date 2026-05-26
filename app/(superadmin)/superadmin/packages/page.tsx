@@ -119,7 +119,7 @@ export default function SuperadminPackagesPage() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ background: '#f9fafb', borderBottom: '1px solid #f3f4f6' }}>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
                   {['Package', 'Duration', 'Price', 'Rating', 'Active', 'Featured', 'Popular', 'Actions'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
@@ -136,7 +136,7 @@ export default function SuperadminPackagesPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-                          style={{ background: '#ede9fe' }}>
+                          style={{ background: 'var(--surface-krishna)' }}>
                           <Package size={14} style={{ color: '#6366f1' }} />
                         </div>
                         <span className="font-semibold text-gray-800 text-sm max-w-[200px] truncate">
@@ -173,14 +173,14 @@ export default function SuperadminPackagesPage() {
                       <div className="flex gap-2">
                         <Link href={`/packages/${pkg.slug}`} target="_blank"
                           className="p-1.5 rounded-lg transition-colors"
-                          style={{ background: '#f0fdf4', color: '#16a34a' }}
+                          style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
                           title="View on site">
                           <Eye size={14} />
                         </Link>
                         {/* Edit goes to /superadmin route — NOT /admin */}
                         <Link href={`/superadmin/packages/${pkg.slug}/edit`}
                           className="p-1.5 rounded-lg transition-colors"
-                          style={{ background: '#ede9fe', color: '#5b21b6' }}
+                          style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}
                           title="Edit package">
                           <Edit size={14} />
                         </Link>
@@ -208,11 +208,11 @@ export default function SuperadminPackagesPage() {
                   </div>
                   <div className="flex gap-2 flex-shrink-0">
                     <Link href={`/packages/${pkg.slug}`} target="_blank"
-                      className="p-1.5 rounded-lg" style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                      className="p-1.5 rounded-lg" style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                       <Eye size={14} />
                     </Link>
                     <Link href={`/superadmin/packages/${pkg.slug}/edit`}
-                      className="p-1.5 rounded-lg" style={{ background: '#ede9fe', color: '#5b21b6' }}>
+                      className="p-1.5 rounded-lg" style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                       <Edit size={14} />
                     </Link>
                   </div>

@@ -230,7 +230,7 @@ export default function EditPackagePage() {
             <div className="space-y-3">
               {form.pricing.map((p, i) => (
                 <div key={p.carType} className="flex items-center gap-4 p-3 rounded-xl"
-                  style={{ background: '#f9fafb' }}>
+                  style={{ background: 'var(--bg-surface-muted)' }}>
                   <p className="text-sm font-semibold text-gray-800 flex-1">{p.carName}</p>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500 text-sm">₹</span>

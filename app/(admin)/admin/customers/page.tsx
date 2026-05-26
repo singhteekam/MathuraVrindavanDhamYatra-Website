@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 export const dynamic = 'force-dynamic'
 
@@ -66,9 +66,9 @@ export default function AdminCustomersPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         {[
-          { label: 'Total Customers', value: total,                                     color: '#ff7d0f', bg: '#fff8ed' },
-          { label: 'Active',          value: customers.filter((c) => c.isActive).length, color: '#16a34a', bg: '#f0fdf4' },
-          { label: 'Showing',         value: customers.length,                           color: '#4338ca', bg: '#eef2ff' },
+          { label: 'Total Customers', value: total,                                     color: '#ff7d0f', bg: 'var(--surface-saffron)' },
+          { label: 'Active',          value: customers.filter((c) => c.isActive).length, color: '#16a34a', bg: 'var(--surface-green)' },
+          { label: 'Showing',         value: customers.length,                           color: '#4338ca', bg: 'var(--surface-krishna)' },
         ].map((s) => (
           <div key={s.label} className="card rounded-2xl p-4 text-center" style={{ background: s.bg }}>
             <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</p>
@@ -102,7 +102,7 @@ export default function AdminCustomersPage() {
               <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr style={{ background: '#f9fafb', borderBottom: '1px solid #f3f4f6' }}>
+                    <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
                       {['Customer', 'Contact', 'Bookings', 'Joined', 'Status'].map((h) => (
                         <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{h}</th>
                       ))}
@@ -142,8 +142,8 @@ export default function AdminCustomersPage() {
                         <td className="px-4 py-3">
                           <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                             style={c.isActive
-                              ? { background: '#f0fdf4', color: '#16a34a' }
-                              : { background: '#fff1f2', color: '#dc2626' }
+                              ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                              : { background: 'var(--surface-red)', color: 'var(--text-on-red)' }
                             }>
                             {c.isActive ? 'Active' : 'Inactive'}
                           </span>
@@ -170,7 +170,7 @@ export default function AdminCustomersPage() {
                         <p className="text-xs text-gray-400">{formatDate(c.createdAt)}</p>
                       </div>
                       <span className="text-xs px-2 py-0.5 rounded-full font-semibold flex-shrink-0"
-                        style={c.isActive ? { background: '#f0fdf4', color: '#16a34a' } : { background: '#fff1f2', color: '#dc2626' }}>
+                        style={c.isActive ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' } : { background: 'var(--surface-red)', color: 'var(--text-on-red)' }}>
                         {c.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
@@ -188,7 +188,7 @@ export default function AdminCustomersPage() {
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-400">Page {page} of {totalPages} · {total} total</p>
+                  <p className="text-xs text-gray-400">Page {page} of {totalPages} Â· {total} total</p>
                   <div className="flex gap-2">
                     <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
                       className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-40 transition-colors">

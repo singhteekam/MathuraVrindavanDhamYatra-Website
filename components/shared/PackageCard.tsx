@@ -43,7 +43,7 @@ export default function PackageCard({
   const gradient = getPackageGradient()
 
   return (
-    <div className="card card-hover group overflow-hidden flex flex-col h-full rounded-2xl">
+    <div className="card card-hover card-accent group overflow-hidden flex flex-col h-full rounded-2xl">
 
       {/* ── Image / Fallback ── */}
       <div className="relative overflow-hidden h-52" style={{ background: gradient }}>
@@ -139,9 +139,9 @@ export default function PackageCard({
           </div>
           <Link href={`/packages/${slug}`}
             className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full transition-all duration-200"
-            style={{ background: '#fff8ed', color: '#f06205', border: '1px solid #ffdba8' }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#ff7d0f'; e.currentTarget.style.color = '#fff' }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = '#fff8ed'; e.currentTarget.style.color = '#f06205' }}>
+            style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)', border: '1px solid var(--surface-saffron-border)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#ff7d0f'; e.currentTarget.style.color = '#fff'; e.currentTarget.style.border = '1px solid #ff7d0f' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--surface-saffron)'; e.currentTarget.style.color = 'var(--text-on-saffron)'; e.currentTarget.style.border = '1px solid var(--surface-saffron-border)' }}>
             {t('viewDetails')} <ArrowRight size={14} />
           </Link>
         </div>

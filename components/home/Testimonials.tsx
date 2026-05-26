@@ -120,7 +120,7 @@ export default function Testimonials({ reviews: propReviews }: Props) {
       : STATIC_TESTIMONIALS
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-950">
+    <section className="py-20 section-alt">
       <div className="container-custom">
         <SectionHeader
           subtitle={t('subtitle')}
@@ -137,12 +137,12 @@ export default function Testimonials({ reviews: propReviews }: Props) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="card p-6 flex flex-col gap-4 relative"
+              className="card card-accent p-6 flex flex-col gap-4 relative"
             >
               {/* Quote icon */}
               <Quote
-                size={32}
-                className="absolute top-5 right-5 opacity-10"
+                size={36}
+                className="absolute top-5 right-5 opacity-[0.18]"
                 style={{ color: '#ff7d0f' }}
               />
 
@@ -163,7 +163,8 @@ export default function Testimonials({ reviews: propReviews }: Props) {
 
               {/* Reviewer */}
               <div
-                className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-800"
+                className="flex items-center gap-3 pt-4"
+                style={{ borderTop: '1px solid var(--border-muted)' }}
               >
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
@@ -192,19 +193,19 @@ export default function Testimonials({ reviews: propReviews }: Props) {
           className="mt-12 flex justify-center"
         >
           <div
-            className="inline-flex items-center gap-4 px-6 py-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm"
+            className="card card-accent inline-flex items-center gap-5 px-7 py-5 rounded-2xl"
           >
             <div className="text-center">
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">4.9</p>
+              <p className="text-4xl font-black" style={{ color: '#ff7d0f' }}>4.9</p>
               <StarRating rating={5} />
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{t('googleRating')}</p>
+              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{t('googleRating')}</p>
             </div>
-            <div className="w-px h-12 self-center bg-gray-200 dark:bg-gray-700" />
+            <div className="w-px h-14 self-center" style={{ background: 'var(--border-default)' }} />
             <div>
-              <p className="font-semibold text-gray-700 dark:text-gray-200 text-sm">{t('ratedBy')}</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">{t('happyPilgrims')}</p>
-              <p className="text-xs font-semibold mt-1" style={{ color: '#ff7d0f' }}>
-                {t('verifiedReviews')}
+              <p className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>{t('ratedBy')}</p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{t('happyPilgrims')}</p>
+              <p className="text-xs font-semibold mt-1.5" style={{ color: '#ff7d0f' }}>
+                ✓ {t('verifiedReviews')}
               </p>
             </div>
           </div>

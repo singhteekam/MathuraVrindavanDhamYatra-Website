@@ -150,7 +150,7 @@ export default function ReviewEditModal({ review, onClose, onSaved }: Props) {
                   onClick={() => translateField('title')}
                   disabled={transField === 'title'}
                   className="flex items-center gap-1 text-xs px-2 py-1 rounded-lg font-medium transition-all disabled:opacity-60"
-                  style={{ background: '#eef2ff', color: '#4338ca' }}>
+                  style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
                   {transField === 'title'
                     ? <span className="w-3 h-3 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
                     : <Languages size={11} />
@@ -197,7 +197,7 @@ export default function ReviewEditModal({ review, onClose, onSaved }: Props) {
                   onClick={() => translateField('comment')}
                   disabled={transField === 'comment'}
                   className="flex items-center gap-1 text-xs px-2 py-1 rounded-lg font-medium transition-all disabled:opacity-60"
-                  style={{ background: '#eef2ff', color: '#4338ca' }}>
+                  style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
                   {transField === 'comment'
                     ? <span className="w-3 h-3 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
                     : <Languages size={11} />

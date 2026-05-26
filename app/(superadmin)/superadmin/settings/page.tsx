@@ -28,7 +28,7 @@ function Toggle({ checked, onChange, label, desc }: {
   checked: boolean; onChange: () => void; label: string; desc: string
 }) {
   return (
-    <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: '#f9fafb' }}>
+    <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
       <div>
         <p className="text-sm font-semibold text-gray-800">{label}</p>
         <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
@@ -159,7 +159,7 @@ export default function SuperadminSettingsPage() {
 
       {error && (
         <div className="flex items-center gap-2 p-4 rounded-xl mb-5"
-          style={{ background: '#fff1f2', border: '1px solid #fecdd3' }}>
+          style={{ background: 'var(--surface-red)', border: '1px solid var(--surface-red-border)' }}>
           <AlertCircle size={16} className="text-red-500 flex-shrink-0" />
           <p className="text-sm text-red-700">{error}</p>
         </div>
@@ -287,7 +287,7 @@ export default function SuperadminSettingsPage() {
 
         {/* Env vars note */}
         <div className="rounded-2xl p-5 mb-6"
-          style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
+          style={{ background: 'var(--surface-amber)', border: '1px solid var(--surface-amber-border)' }}>
           <div className="flex items-start gap-3">
             <Globe size={18} className="text-amber-600 flex-shrink-0 mt-0.5" />
             <div>

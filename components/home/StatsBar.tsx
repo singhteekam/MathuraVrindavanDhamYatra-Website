@@ -24,7 +24,8 @@ export default function StatsBar() {
       ref={ref}
       className="py-14"
       style={{
-        background: 'linear-gradient(135deg, #ff7d0f 0%, #f06205 50%, #c74a06 100%)',
+        background: 'var(--bg-stats)',
+        boxShadow: 'var(--bg-stats-shadow)',
       }}
     >
       <div className="container-custom">
