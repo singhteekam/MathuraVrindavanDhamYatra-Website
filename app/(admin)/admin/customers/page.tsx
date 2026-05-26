@@ -112,14 +112,14 @@ export default function AdminCustomersPage() {
                     {customers.map((c, i) => (
                       <motion.tr key={c._id}
                         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
-                        className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                        className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
                               style={{ background: 'linear-gradient(135deg, #ff7d0f, #c74a06)' }}>
                               {c.name.charAt(0).toUpperCase()}
                             </div>
-                            <span className="font-semibold text-gray-800 text-sm">{c.name}</span>
+                            <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm">{c.name}</span>
                           </div>
                         </td>
                         <td className="px-4 py-3">
@@ -132,7 +132,7 @@ export default function AdminCustomersPage() {
                         </td>
                         <td className="px-4 py-3">
                           <span className="flex items-center gap-1.5 text-sm font-semibold"
-                            style={{ color: c.bookingCount > 0 ? '#ff7d0f' : '#9ca3af' }}>
+                            style={{ color: c.bookingCount > 0 ? '#ff7d0f' : 'var(--text-faint)' }}>
                             <ShoppingBag size={13} />{c.bookingCount}
                           </span>
                         </td>
@@ -166,7 +166,7 @@ export default function AdminCustomersPage() {
                         {c.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-900 text-sm">{c.name}</p>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{c.name}</p>
                         <p className="text-xs text-gray-400">{formatDate(c.createdAt)}</p>
                       </div>
                       <span className="text-xs px-2 py-0.5 rounded-full font-semibold flex-shrink-0"

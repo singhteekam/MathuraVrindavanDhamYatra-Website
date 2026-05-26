@@ -123,7 +123,7 @@ export default function AdminAnalyticsPage() {
               style={{ background: kpi.bg, color: kpi.color }}>
               {kpi.icon}
             </div>
-            <p className="text-xl font-bold text-gray-900">{kpi.value}</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{kpi.value}</p>
             <p className="text-sm font-medium text-gray-500 mt-0.5">{kpi.label}</p>
             <p className="text-xs text-gray-400 mt-1">{kpi.sub}</p>
           </motion.div>
@@ -136,7 +136,7 @@ export default function AdminAnalyticsPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
           className="card rounded-2xl p-5">
-          <h3 className="font-bold text-gray-900 mb-5">Booking Status Breakdown</h3>
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-5">Booking Status Breakdown</h3>
           <div className="space-y-4">
             {[
               { label: 'Completed',  value: stats.bookings.completed, color: '#16a34a', max: stats.bookings.total },
@@ -149,7 +149,7 @@ export default function AdminAnalyticsPage() {
                   <div className="flex items-center justify-between text-sm mb-1.5">
                     <span className="font-medium text-gray-700">{item.label}</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-gray-900">{item.value}</span>
+                      <span className="font-bold text-gray-900 dark:text-gray-100">{item.value}</span>
                       <span className="text-xs text-gray-400">({pct}%)</span>
                     </div>
                   </div>
@@ -185,7 +185,7 @@ export default function AdminAnalyticsPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
           className="card rounded-2xl p-5">
-          <h3 className="font-bold text-gray-900 mb-5">Vehicle Type Popularity</h3>
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-5">Vehicle Type Popularity</h3>
           <div className="space-y-4">
             {CAR_BREAKDOWN.map((car) => (
               <div key={car.type}>
@@ -193,7 +193,7 @@ export default function AdminAnalyticsPage() {
                   <span className="flex items-center gap-2 font-medium text-gray-700">
                     <span>{car.emoji}</span>{car.name}
                   </span>
-                  <span className="font-bold text-gray-900">{car.share}%</span>
+                  <span className="font-bold text-gray-900 dark:text-gray-100">{car.share}%</span>
                 </div>
                 <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                   <motion.div
@@ -218,7 +218,7 @@ export default function AdminAnalyticsPage() {
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
         className="card rounded-2xl overflow-hidden mb-6">
         <div className="p-5 border-b border-gray-100">
-          <h3 className="font-bold text-gray-900">Top Performing Packages</h3>
+          <h3 className="font-bold text-gray-900 dark:text-gray-100">Top Performing Packages</h3>
           <p className="text-xs text-gray-400 mt-0.5">Estimated based on package popularity</p>
         </div>
         <div className="overflow-x-auto">
@@ -243,7 +243,7 @@ export default function AdminAnalyticsPage() {
                       <div className="flex items-center gap-2">
                         <span
                           className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                          style={{ background: i === 0 ? '#f59e0b' : i === 1 ? '#9ca3af' : i === 2 ? '#cd7c2f' : '#e5e7eb', color: i > 2 ? '#6b7280' : '#fff' }}
+                          style={{ background: i === 0 ? '#f59e0b' : i === 1 ? '#9ca3af' : i === 2 ? '#cd7c2f' : '#e5e7eb', color: i > 2 ? 'var(--text-muted)' : '#fff' }}
                         >
                           {i + 1}
                         </span>
@@ -300,7 +300,7 @@ export default function AdminAnalyticsPage() {
               {item.icon}
             </div>
             <div>
-              <p className="text-lg font-bold text-gray-900">{item.value}</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{item.value}</p>
               <p className="text-sm text-gray-500">{item.label}</p>
             </div>
           </div>

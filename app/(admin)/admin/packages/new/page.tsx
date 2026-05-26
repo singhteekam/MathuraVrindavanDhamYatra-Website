@@ -133,7 +133,7 @@ export default function NewPackagePage() {
             {/* Basic info */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Basic Information</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h3>
               <div className="space-y-4">
 
                 <BilingualInput
@@ -150,7 +150,7 @@ export default function NewPackagePage() {
                 />
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Slug (URL) *</label>
+                  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Slug (URL) *</label>
                   <input type="text" placeholder="same-day-mathura-vrindavan" required
                     value={form.slug}
                     onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })}
@@ -171,21 +171,21 @@ export default function NewPackagePage() {
 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Duration (days)</label>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Duration (days)</label>
                     <input type="number" min={1} max={30}
                       value={form.duration}
                       onChange={(e) => setForm({ ...form, duration: Number(e.target.value), nights: Math.max(0, Number(e.target.value) - 1) })}
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Nights</label>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Nights</label>
                     <input type="number" min={0}
                       value={form.nights}
                       onChange={(e) => setForm({ ...form, nights: Number(e.target.value) })}
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Base Price (â‚¹)</label>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Base Price (â‚¹)</label>
                     <input type="number" min={0}
                       value={form.basePrice}
                       onChange={(e) => setForm({ ...form, basePrice: Number(e.target.value) })}
@@ -212,7 +212,7 @@ export default function NewPackagePage() {
             {/* Pricing per vehicle */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Pricing Per Vehicle</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Pricing Per Vehicle</h3>
               <div className="space-y-3">
                 {form.pricing.map((p, i) => (
                   <div key={p.carType} className="flex items-center gap-4 p-3 rounded-xl"
@@ -234,7 +234,7 @@ export default function NewPackagePage() {
             {/* Highlights, inclusions, exclusions */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
               className="card rounded-2xl p-5 space-y-5">
-              <h3 className="font-bold text-gray-900">Package Details</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100">Package Details</h3>
               <BilingualListEditor
                 items={form.highlights}
                 onChange={(items) => setForm({ ...form, highlights: items })}
@@ -257,7 +257,7 @@ export default function NewPackagePage() {
           <div className="space-y-5">
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Settings</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Settings</h3>
               <div className="space-y-3">
                 {[
                   { key: 'isActive',   label: 'Active (visible on site)'    },
@@ -265,7 +265,7 @@ export default function NewPackagePage() {
                   { key: 'isPopular',  label: 'Popular (badge on card)'     },
                 ].map((toggle) => (
                   <div key={toggle.key} className="flex items-center justify-between py-2">
-                    <span className="text-sm text-gray-700">{toggle.label}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{toggle.label}</span>
                     <button type="button"
                       onClick={() => setForm({ ...form, [toggle.key]: !form[toggle.key as keyof typeof form] })}
                       className="relative w-10 h-5 rounded-full transition-all duration-200"

@@ -121,7 +121,7 @@ export default function SuperadminUsersPage() {
           <ShieldCheck size={16} className="text-indigo-500" />
           <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Superadmin</p>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
           User Management
         </h1>
         <p className="text-sm text-gray-400 mt-0.5">{total} total users</p>
@@ -159,7 +159,7 @@ export default function SuperadminUsersPage() {
               className="px-3 py-2 rounded-full text-xs font-semibold transition-all capitalize"
               style={roleFilter === r
                 ? { background: '#4338ca', color: '#fff' }
-                : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
+                : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
               }>
               {r}
             </button>

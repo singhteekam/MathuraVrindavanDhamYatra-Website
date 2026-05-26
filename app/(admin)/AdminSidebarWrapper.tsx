@@ -74,7 +74,7 @@ export default function AdminSidebarWrapper() {
       {isSuperAdmin && (!collapsed || mobile) && (
         <div className="px-3 pb-2"
           style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          <p className="text-xs text-gray-600 uppercase tracking-wider px-2 py-2">Superadmin</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wider px-2 py-2">Superadmin</p>
           <Link href="/superadmin"
             onClick={() => mobile && setMobileOpen(false)}
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-indigo-400 hover:text-indigo-300 hover:bg-indigo-400/10 transition-all">
@@ -88,7 +88,7 @@ export default function AdminSidebarWrapper() {
       <div className="p-3 space-y-2" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
         {(!collapsed || mobile) && (
           <div className="px-1 pb-1">
-            <p className="text-[10px] text-gray-600 uppercase tracking-wider mb-1.5 px-1">Theme</p>
+            <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1.5 px-1">Theme</p>
             <SimpleThemeSwitcher />
           </div>
         )}

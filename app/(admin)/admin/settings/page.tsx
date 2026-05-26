@@ -145,7 +145,7 @@ export default function AdminSettingsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900"
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100"
             style={{ fontFamily: 'var(--font-serif)' }}>
             Settings
           </h1>
@@ -181,7 +181,7 @@ export default function AdminSettingsPage() {
           <div className="flex items-center justify-between mb-5 pb-4"
             style={{ borderBottom: '1px solid #f3f4f6' }}>
             <div>
-              <h3 className="font-bold text-gray-900">Site Information</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100">Site Information</h3>
               <p className="text-xs text-gray-400 mt-0.5">
                 Business details â€” only Superadmin can edit these
               </p>
@@ -210,7 +210,7 @@ export default function AdminSettingsPage() {
         {/* â”€â”€ Booking Configuration â€” EDITABLE by admin â”€â”€ */}
         <div className="card rounded-2xl p-6">
           <div className="mb-5 pb-4" style={{ borderBottom: '1px solid #f3f4f6' }}>
-            <h3 className="font-bold text-gray-900">Booking Configuration</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100">Booking Configuration</h3>
             <p className="text-xs text-gray-400 mt-0.5">
               Control how bookings behave â€” you can edit these
             </p>
@@ -219,7 +219,7 @@ export default function AdminSettingsPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
                   Advance Payment (â‚¹)
                 </label>
                 <input type="number" min={0} step={50}
@@ -229,7 +229,7 @@ export default function AdminSettingsPage() {
                 <p className="text-xs text-gray-400 mt-1">Fixed â‚¹ amount customers pay online to confirm</p>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
                   Free Cancellation (hours)
                 </label>
                 <input type="number" min={0}
@@ -268,7 +268,7 @@ export default function AdminSettingsPage() {
           <div className="flex items-center justify-between mb-4 pb-4"
             style={{ borderBottom: '1px solid #f3f4f6' }}>
             <div>
-              <h3 className="font-bold text-gray-900">Email Configuration</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100">Email Configuration</h3>
               <p className="text-xs text-gray-400 mt-0.5">SMTP settings â€” only Superadmin can change these</p>
             </div>
             <Link href="/superadmin/settings"

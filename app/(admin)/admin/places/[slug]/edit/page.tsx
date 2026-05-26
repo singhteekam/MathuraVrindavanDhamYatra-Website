@@ -147,7 +147,7 @@ export default function EditPlacePage() {
   )
 
   const Label = ({ children }: { children: React.ReactNode }) => (
-    <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">{children}</label>
+    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">{children}</label>
   )
 
   return (
@@ -177,7 +177,7 @@ export default function EditPlacePage() {
           {/* Basic info */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4">Basic Information</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h3>
             <div className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <BilingualInput
@@ -241,7 +241,7 @@ export default function EditPlacePage() {
           {/* Timings */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4">Timings</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Timings</h3>
             <div className="space-y-4">
               <BilingualInput
                 value={form.timings.morning}
@@ -270,7 +270,7 @@ export default function EditPlacePage() {
           {/* Location */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
             className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4">Location</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Location</h3>
             <div className="space-y-3">
               <div>
                 <Label>Address</Label>
@@ -315,7 +315,7 @@ export default function EditPlacePage() {
           {/* Tags */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-3">Tags</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Tags</h3>
             <div className="flex gap-2 mb-3">
               <input type="text" placeholder="Add a tag..."
                 value={tagInput}
@@ -351,7 +351,7 @@ export default function EditPlacePage() {
         <div className="space-y-5">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
             className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4">Settings</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Settings</h3>
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-gray-800">Featured</p>

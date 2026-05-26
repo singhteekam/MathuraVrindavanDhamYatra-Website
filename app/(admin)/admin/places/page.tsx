@@ -11,7 +11,7 @@ export default function AdminPlacesDenied() {
           style={{ background: 'linear-gradient(135deg, #1e1b4b, #312e81)' }}>
           <ShieldCheck size={28} className="text-indigo-300" />
         </div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Superadmin Only</h2>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Superadmin Only</h2>
         <p className="text-gray-500 text-sm mb-6 leading-relaxed">
           Managing sacred places is restricted to the Superadmin.
           Please sign in with your Superadmin credentials to access this section.
@@ -22,7 +22,7 @@ export default function AdminPlacesDenied() {
             <ShieldCheck size={16} /> Go to Superadmin → Places
           </Link>
           <Link href="/admin"
-            className="flex items-center justify-center gap-2 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+            className="flex items-center justify-center gap-2 py-2.5 rounded-full border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
             <ArrowLeft size={14} /> Back to Admin Dashboard
           </Link>
         </div>

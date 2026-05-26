@@ -142,7 +142,7 @@ export default function NewPlacePage() {
   }
 
   const Label = ({ children }: { children: React.ReactNode }) => (
-    <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
       {children}
     </label>
   )
@@ -178,7 +178,7 @@ export default function NewPlacePage() {
             {/* Basic Info */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Basic Information</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h3>
               <div className="space-y-4">
 
                 <BilingualInput
@@ -271,7 +271,7 @@ export default function NewPlacePage() {
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Temple / Place Timings</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Temple / Place Timings</h3>
               <div className="space-y-4">
                 <BilingualInput
                   value={form.timings.morning}
@@ -350,7 +350,7 @@ export default function NewPlacePage() {
                       <button key={city.label} type="button"
                         onClick={() => setForm({ ...form, location: { ...form.location, lat: city.lat, lng: city.lng } })}
                         className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-                        style={{ background: '#fff', border: '1px solid var(--border-default)', color: '#374151' }}>
+                        style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-default)', color: 'var(--text-primary)' }}>
                         ðŸ“ {city.label}
                       </button>
                     ))}
@@ -378,7 +378,7 @@ export default function NewPlacePage() {
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.16 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-3">Tags</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Tags</h3>
               <p className="text-xs text-gray-400 mb-3">Tags help visitors find this place through search.</p>
               <div className="flex gap-2 mb-3">
                 <input type="text"
@@ -402,7 +402,7 @@ export default function NewPlacePage() {
                       <button key={tag} type="button"
                         onClick={() => setForm((prev) => ({ ...prev, tags: [...prev.tags, tag] }))}
                         className="px-2.5 py-1 rounded-full text-xs transition-colors"
-                        style={{ background: 'var(--bg-surface-muted)', color: '#6b7280' }}>
+                        style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
                         + {tag}
                       </button>
                     ))}
@@ -432,7 +432,7 @@ export default function NewPlacePage() {
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Visibility</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Visibility</h3>
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Featured</p>
@@ -452,7 +452,7 @@ export default function NewPlacePage() {
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.24 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-3">Preview</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Preview</h3>
               <div className="rounded-2xl overflow-hidden border border-gray-100">
                 <div className="h-24 flex items-center justify-center"
                   style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)' }}>
@@ -474,7 +474,7 @@ export default function NewPlacePage() {
                     <div className="flex gap-3 mt-2 text-xs text-gray-400">
                       {form.timeRequired.en && <span>â± {form.timeRequired.en}</span>}
                       {form.entryFee.en && (
-                        <span style={{ color: form.entryFee.en === 'Free' ? '#16a34a' : '#6b7280' }}>
+                        <span style={{ color: form.entryFee.en === 'Free' ? '#16a34a' : 'var(--text-muted)' }}>
                           ðŸŽ« {form.entryFee.en}
                         </span>
                       )}

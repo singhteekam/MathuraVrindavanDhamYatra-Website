@@ -201,7 +201,7 @@ export default function AdminReviewsPage() {
               className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
               style={filter === tab.value
                 ? { background: '#ff7d0f', color: '#fff' }
-                : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
+                : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
               }>
               {tab.label}
             </button>
@@ -218,7 +218,7 @@ export default function AdminReviewsPage() {
                 className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all"
                 style={ratingFilter === star
                   ? { background: 'var(--surface-amber)', color: 'var(--text-on-amber)', border: '1.5px solid var(--surface-amber-border)' }
-                  : { background: '#fff', color: '#9ca3af', border: '1px solid var(--border-default)' }
+                  : { background: 'var(--bg-surface)', color: 'var(--text-faint)', border: '1px solid var(--border-default)' }
                 }>
                 <Star size={11} fill={ratingFilter === star ? '#f59e0b' : 'none'}
                   stroke={ratingFilter === star ? '#f59e0b' : 'currentColor'} />
@@ -378,7 +378,7 @@ export default function AdminReviewsPage() {
                         onClick={() => deleteReview(review._id, review.customer.name)}
                         disabled={deletingId === review._id}
                         className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap disabled:opacity-60"
-                        style={{ background: 'var(--bg-surface-muted)', color: '#6b7280', border: '1px solid var(--border-default)' }}>
+                        style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }}>
                         {deletingId === review._id ? (
                           <span className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                         ) : (

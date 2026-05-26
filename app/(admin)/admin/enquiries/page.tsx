@@ -69,7 +69,7 @@ export default function AdminEnquiriesPage() {
             className="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
             style={filter === tab.value
               ? { background: '#ff7d0f', color: '#fff' }
-              : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
+              : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
             }
           >
             {tab.label}
@@ -167,7 +167,7 @@ export default function AdminEnquiriesPage() {
                   {!enq.isRead && (
                     <button
                       className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl transition-colors whitespace-nowrap"
-                      style={{ background: 'var(--bg-surface-muted)', color: '#6b7280' }}
+                      style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}
                       onClick={() => {
                         // TODO: PATCH /api/contact/:id to mark as read
                         toast.success('Marked as read.')

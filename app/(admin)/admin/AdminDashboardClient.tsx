@@ -71,7 +71,7 @@ export default function AdminDashboardClient() {
     <div className="flex-1 p-8 lg:p-10 pt-20 lg:pt-10">
       <div className="card rounded-2xl p-8 text-center">
         <AlertCircle size={40} className="text-red-400 mx-auto mb-3" />
-        <p className="text-gray-700 font-semibold">{error || 'No data'}</p>
+        <p className="text-gray-700 dark:text-gray-300 font-semibold">{error || 'No data'}</p>
         <button onClick={() => window.location.reload()} className="btn-primary mt-4 text-sm py-2 px-5">
           Retry
         </button>

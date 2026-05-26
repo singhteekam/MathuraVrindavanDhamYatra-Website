@@ -92,7 +92,7 @@ export default function SuperadminPlacesPage() {
               Superadmin
             </p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900"
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100"
             style={{ fontFamily: 'var(--font-serif)' }}>
             Sacred Places
           </h1>
@@ -118,7 +118,7 @@ export default function SuperadminPlacesPage() {
               className="px-3 py-2 rounded-full text-xs font-semibold transition-all"
               style={city === c
                 ? { background: '#4338ca', color: '#fff' }
-                : { background: '#fff', color: '#6b7280', border: '1px solid var(--border-default)' }
+                : { background: 'var(--bg-surface)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
               }>
               {c}
             </button>
@@ -168,7 +168,7 @@ export default function SuperadminPlacesPage() {
                     className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg flex-1 justify-center"
                     style={place.isFeatured
                       ? { background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }
-                      : { background: 'var(--bg-surface-muted)', color: '#6b7280' }
+                      : { background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }
                     }
                     title={place.isFeatured ? 'Remove from featured' : 'Mark as featured'}>
                     {place.isFeatured

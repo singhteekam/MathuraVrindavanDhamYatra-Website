@@ -72,7 +72,7 @@ function slugify(t: string) {
 }
 
 const Label = ({ children }: { children: React.ReactNode }) => (
-  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">{children}</label>
+  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">{children}</label>
 )
 
 export default function SuperadminNewPackagePage() {
@@ -121,7 +121,7 @@ export default function SuperadminNewPackagePage() {
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
             Add New Package
           </h1>
           <nav className="flex items-center gap-1.5 text-xs text-gray-400 mt-0.5">
@@ -155,7 +155,7 @@ export default function SuperadminNewPackagePage() {
             {/* Basic info */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Basic Information</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h3>
               <div className="space-y-4">
                 <BilingualInput
                   value={form.name}
@@ -225,7 +225,7 @@ export default function SuperadminNewPackagePage() {
             {/* Pricing */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Pricing Per Vehicle</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Pricing Per Vehicle</h3>
               <div className="space-y-3">
                 {form.pricing.map((p, i) => (
                   <div key={p.carType} className="flex items-center gap-4 p-3 rounded-xl"
@@ -250,7 +250,7 @@ export default function SuperadminNewPackagePage() {
             {/* Lists */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
               className="card rounded-2xl p-5 space-y-5">
-              <h3 className="font-bold text-gray-900">Package Details</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100">Package Details</h3>
               <BilingualListEditor
                 items={form.cities}
                 onChange={(items) => setForm({ ...form, cities: items })}
@@ -281,7 +281,7 @@ export default function SuperadminNewPackagePage() {
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}
               className="card rounded-2xl p-5">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-gray-900">Itinerary</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100">Itinerary</h3>
                 <button type="button"
                   onClick={() => setForm({ ...form, itinerary: [...form.itinerary, {
                     day: form.itinerary.length + 1,
@@ -346,7 +346,7 @@ export default function SuperadminNewPackagePage() {
           <div className="space-y-5">
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-4">Settings</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Settings</h3>
               <div className="space-y-4">
                 {[
                   { key: 'isActive',   label: 'Active',   desc: 'Visible on public site' },

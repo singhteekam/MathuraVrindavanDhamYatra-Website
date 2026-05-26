@@ -87,7 +87,7 @@ export default function SuperadminPackagesPage() {
             <ShieldCheck size={16} className="text-indigo-500" />
             <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Superadmin</p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
             Tour Packages
           </h1>
           <p className="text-sm text-gray-400 mt-0.5">{packages.length} packages in database</p>
@@ -222,7 +222,7 @@ export default function SuperadminPackagesPage() {
                     <button key={field} type="button"
                       onClick={() => toggleField(pkg, field)}
                       className="flex items-center gap-1 font-medium capitalize"
-                      style={{ color: pkg[field] ? '#22c55e' : '#9ca3af' }}>
+                      style={{ color: pkg[field] ? '#22c55e' : 'var(--text-faint)' }}>
                       {pkg[field] ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}
                       {field.replace('is', '')}
                     </button>

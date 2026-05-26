@@ -288,7 +288,7 @@ export default function AdminDriversPage() {
                   <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                     style={driver.isAvailable
                       ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
-                      : { background: 'var(--bg-surface-muted)', color: '#6b7280' }}>
+                      : { background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
                     {driver.isAvailable ? 'â— Available' : 'â—‹ On Trip'}
                   </span>
                 </div>
@@ -423,7 +423,7 @@ export default function AdminDriversPage() {
                       <span className="text-xs px-2.5 py-1 rounded-full font-semibold"
                         style={viewDriver.isAvailable
                           ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
-                          : { background: 'var(--bg-surface-muted)', color: '#6b7280' }}>
+                          : { background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
                         {viewDriver.isAvailable ? 'â— Available' : 'â—‹ On Trip'}
                       </span>
                     </div>
@@ -447,7 +447,7 @@ export default function AdminDriversPage() {
 
                 {/* Personal Info */}
                 <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--bg-surface-muted)' }}>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Personal Information</p>
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Personal Information</p>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {[
                       { icon: <Phone size={13} />,      label: 'Phone',          value: viewDriver.phone },
@@ -498,7 +498,7 @@ export default function AdminDriversPage() {
 
                 {/* KYC */}
                 <div className="rounded-xl p-4 space-y-4" style={{ background: 'var(--bg-surface-muted)' }}>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">KYC Documents</p>
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">KYC Documents</p>
 
                   {/* Aadhaar */}
                   <div>

@@ -131,23 +131,23 @@ export default function AdminPackagesPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: i * 0.04 }}
-                  className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                  className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <td className="px-4 py-3">
                     <div>
-                      <p className="font-semibold text-gray-800 text-sm">{str(pkg.name)}</p>
+                      <p className="font-semibold text-gray-800 dark:text-gray-200 text-sm">{str(pkg.name)}</p>
                       <p className="text-xs text-gray-400">{pkg.cities.join(' Â· ')}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="flex items-center gap-1 text-xs font-medium text-gray-600">
+                    <span className="flex items-center gap-1 text-xs font-medium text-gray-600 dark:text-gray-400">
                       <Clock size={11} />{pkg.duration} Day{pkg.duration > 1 ? 's' : ''}
                     </span>
                   </td>
                   <td className="px-4 py-3 font-semibold text-saffron-600 whitespace-nowrap">
                     {formatCurrency(pkg.basePrice)}
                   </td>
-                  <td className="px-4 py-3 text-gray-700">{pkg.totalBookings}</td>
+                  <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{pkg.totalBookings}</td>
                   <td className="px-4 py-3">
                     <span className="flex items-center gap-1 text-xs font-semibold text-amber-600">
                       <Star size={11} fill="currentColor" />{pkg.rating.toFixed(1)}
@@ -159,7 +159,7 @@ export default function AdminPackagesPage() {
                       <button
                         onClick={() => toggleActive(pkg.slug, pkg.isActive)}
                         className="flex items-center gap-1 text-xs font-semibold transition-colors"
-                        style={{ color: pkg.isActive ? '#16a34a' : '#6b7280' }}
+                        style={{ color: pkg.isActive ? '#16a34a' : 'var(--text-muted)' }}
                       >
                         {pkg.isActive
                           ? <><ToggleRight size={15} /> Active</>
@@ -169,7 +169,7 @@ export default function AdminPackagesPage() {
                       <button
                         onClick={() => toggleFeatured(pkg.slug, pkg.isFeatured)}
                         className="flex items-center gap-1 text-xs font-semibold transition-colors"
-                        style={{ color: pkg.isFeatured ? '#d97706' : '#9ca3af' }}
+                        style={{ color: pkg.isFeatured ? '#d97706' : 'var(--text-faint)' }}
                       >
                         <Star size={12} fill={pkg.isFeatured ? 'currentColor' : 'none'} />
                         {pkg.isFeatured ? 'Featured' : 'Not Featured'}

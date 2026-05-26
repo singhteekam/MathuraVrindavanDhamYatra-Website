@@ -151,7 +151,7 @@ export default function DriverDashboard() {
               <ToggleLeft size={24} className="text-gray-400" />
             )}
             <div className="text-left">
-              <p className="font-bold text-sm" style={{ color: profile.isAvailable ? '#16a34a' : '#6b7280' }}>
+              <p className="font-bold text-sm" style={{ color: profile.isAvailable ? '#16a34a' : 'var(--text-muted)' }}>
                 {profile.isAvailable ? 'Available' : 'Unavailable'}
               </p>
               <p className="text-xs text-gray-400">Tap to toggle</p>

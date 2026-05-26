@@ -147,7 +147,7 @@ export default function SuperadminRestaurantsPage() {
                 <span className="text-4xl">{r.emoji || '🍽️'}</span>
                 <div className="absolute top-2 left-2 flex gap-1.5">
                   <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                    style={{ background: 'rgba(255,255,255,0.9)', color: '#6b7280' }}>
+                    style={{ background: 'var(--bg-surface)', color: 'var(--text-muted)' }}>
                     <span className="flex items-center gap-1"><MapPin size={9} />{str(r.city)}</span>
                   </span>
                 </div>
@@ -180,7 +180,7 @@ export default function SuperadminRestaurantsPage() {
                     className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg flex-1 justify-center font-medium transition-all"
                     style={r.isActive
                       ? { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
-                      : { background: 'var(--bg-surface-muted)', color: '#6b7280' }
+                      : { background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }
                     }
                     title={r.isActive ? 'Hide' : 'Publish'}>
                     {r.isActive ? <><ToggleRight size={13} />Active</> : <><ToggleLeft size={13} />Hidden</>}
@@ -189,7 +189,7 @@ export default function SuperadminRestaurantsPage() {
                     className="p-1.5 rounded-lg transition-all"
                     style={r.isPopular
                       ? { background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }
-                      : { background: 'var(--bg-surface-muted)', color: '#9ca3af' }
+                      : { background: 'var(--bg-surface-muted)', color: 'var(--text-faint)' }
                     }
                     title={r.isPopular ? 'Remove popular' : 'Mark popular'}>
                     <Star size={13} fill={r.isPopular ? 'currentColor' : 'none'} />

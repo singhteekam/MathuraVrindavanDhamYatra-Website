@@ -106,7 +106,7 @@ function normalizeSection(s: unknown): PlaceSection {
 }
 
 const Label = ({ children }: { children: React.ReactNode }) => (
-  <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+  <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
     {children}
   </label>
 )
@@ -352,7 +352,7 @@ export default function SuperadminEditPlacePage() {
             <ShieldCheck size={16} className="text-indigo-500" />
             <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Superadmin</p>
           </div>
-          <h1 className="text-xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
             Edit: {form.name.en}
           </h1>
         </div>
@@ -377,7 +377,7 @@ export default function SuperadminEditPlacePage() {
           {/* Basic Info */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4">Basic Information</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h3>
             <div className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <BilingualInput value={form.name}
@@ -460,7 +460,7 @@ export default function SuperadminEditPlacePage() {
           {/* Timings */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.06 }} className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4">Timings</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Timings</h3>
             <div className="space-y-4">
               <BilingualInput value={form.timings.morning}
                 onChange={(val) => setForm({ ...form, timings: { ...form.timings, morning: val } })}
@@ -482,7 +482,7 @@ export default function SuperadminEditPlacePage() {
             transition={{ delay: 0.1 }} className="card rounded-2xl p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-bold text-gray-900">Sections</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100">Sections</h3>
                 <p className="text-xs text-gray-400 mt-0.5">Highlights, visitor tips, and distances shown on the detail page.</p>
               </div>
               <button type="button" onClick={addSection}
@@ -642,7 +642,7 @@ export default function SuperadminEditPlacePage() {
           {/* Location */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.14 }} className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4">Location</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Location</h3>
             <div className="space-y-3">
               <BilingualInput value={form.location.address}
                 onChange={(val) => setForm({ ...form, location: { ...form.location, address: val } })}
@@ -700,7 +700,7 @@ export default function SuperadminEditPlacePage() {
           {/* Tags */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.22 }} className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-3">Tags</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3">Tags</h3>
             <div className="grid grid-cols-[1fr_auto_1fr_auto] gap-2 mb-3">
               <input type="text" placeholder="English tag…"
                 value={tagInputEn} onChange={(e) => setTagInputEn(e.target.value)}
@@ -748,7 +748,7 @@ export default function SuperadminEditPlacePage() {
         <div className="space-y-5">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.26 }} className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4">Settings</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Settings</h3>
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-sm font-semibold text-gray-800">Featured</p>

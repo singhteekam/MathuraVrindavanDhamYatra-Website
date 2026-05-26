@@ -253,13 +253,13 @@ export default function AdminBookingDetailPage() {
                     className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all"
                     style={i <= currentStepIndex
                       ? { background: '#ff7d0f', color: '#fff' }
-                      : { background: 'var(--bg-surface-muted)', color: '#9ca3af' }
+                      : { background: 'var(--bg-surface-muted)', color: 'var(--text-faint)' }
                     }
                   >
                     {i < currentStepIndex ? <CheckCircle size={14} /> : i + 1}
                   </div>
                   <p className="text-center font-medium whitespace-nowrap mt-1.5"
-                    style={{ color: i <= currentStepIndex ? '#ff7d0f' : '#9ca3af', fontSize: '10px' }}>
+                    style={{ color: i <= currentStepIndex ? '#ff7d0f' : 'var(--text-faint)', fontSize: '10px' }}>
                     {STATUS_LABELS[step]}
                   </p>
                 </div>
@@ -334,7 +334,7 @@ export default function AdminBookingDetailPage() {
                   onChange={(e) => setField('totalPassengers', Number(e.target.value))} />
               </Field>
               <div className="flex flex-col gap-1">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Duration</span>
+                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Duration</span>
                 <p className="text-sm font-semibold text-gray-800 py-2.5">
                   {booking.duration} day{booking.duration > 1 ? 's' : ''}
                 </p>

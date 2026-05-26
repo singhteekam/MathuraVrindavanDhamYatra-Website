@@ -112,7 +112,7 @@ export default function SuperadminDashboard() {
             style={{ background: 'linear-gradient(135deg, #6366f1, #4338ca)' }}>
             <ShieldCheck size={18} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900"
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100"
             style={{ fontFamily: 'var(--font-serif)' }}>
             Superadmin Dashboard
           </h1>

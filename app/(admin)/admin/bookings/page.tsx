@@ -148,7 +148,7 @@ export default function AdminBookingsPage() {
           />
         </div>
         <p className="text-sm text-gray-500 flex-shrink-0">
-          <span className="font-semibold text-gray-800">{total}</span> bookings
+          <span className="font-semibold text-gray-800 dark:text-gray-200">{total}</span> bookings
         </p>
       </div>
 

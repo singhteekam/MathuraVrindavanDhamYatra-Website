@@ -212,7 +212,7 @@ export default function DriverDetailPage() {
           { label: 'Earnings',    value: formatCurrency(driver.earnings) },
         ].map(s => (
           <div key={s.label} className="card rounded-xl p-4 text-center">
-            <p className="text-xl font-bold text-gray-900">{s.value}</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{s.value}</p>
             <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
           </div>
         ))}
@@ -449,7 +449,7 @@ export default function DriverDetailPage() {
 function FormField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{label}</label>
+      <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{label}</label>
       {children}
     </div>
   )

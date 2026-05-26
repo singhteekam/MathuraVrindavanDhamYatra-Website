@@ -16,7 +16,7 @@ function Section({ title, description, children }: {
   return (
     <div className="card rounded-2xl p-6 mb-5">
       <div className="mb-5 pb-4" style={{ borderBottom: '1px solid #f3f4f6' }}>
-        <h3 className="font-bold text-gray-900">{title}</h3>
+        <h3 className="font-bold text-gray-900 dark:text-gray-100">{title}</h3>
         {description && <p className="text-sm text-gray-400 mt-0.5">{description}</p>}
       </div>
       {children}
@@ -150,7 +150,7 @@ export default function SuperadminSettingsPage() {
             <ShieldCheck size={16} className="text-indigo-500" />
             <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Superadmin</p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
             Site Settings
           </h1>
         </div>
@@ -170,13 +170,13 @@ export default function SuperadminSettingsPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Business Name</label>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Business Name</label>
                 <input type="text" value={siteInfo.name}
                   onChange={(e) => setSiteInfo({ ...siteInfo, name: e.target.value })}
                   className="input-field" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Tagline</label>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Tagline</label>
                 <input type="text" value={siteInfo.tagline}
                   onChange={(e) => setSiteInfo({ ...siteInfo, tagline: e.target.value })}
                   className="input-field" />
@@ -184,7 +184,7 @@ export default function SuperadminSettingsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
                   <Phone size={11} className="inline mr-1" />Phone
                 </label>
                 <input type="tel" value={siteInfo.phone}
@@ -192,7 +192,7 @@ export default function SuperadminSettingsPage() {
                   className="input-field" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">WhatsApp Number</label>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">WhatsApp Number</label>
                 <input type="tel" placeholder="919XXXXXXXXX" value={siteInfo.whatsapp}
                   onChange={(e) => setSiteInfo({ ...siteInfo, whatsapp: e.target.value })}
                   className="input-field" />
@@ -200,7 +200,7 @@ export default function SuperadminSettingsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
                 <Mail size={11} className="inline mr-1" />Email
               </label>
               <input type="email" value={siteInfo.email}
@@ -208,7 +208,7 @@ export default function SuperadminSettingsPage() {
                 className="input-field" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Office Address</label>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Office Address</label>
               <input type="text" value={siteInfo.address}
                 onChange={(e) => setSiteInfo({ ...siteInfo, address: e.target.value })}
                 className="input-field" />
@@ -220,14 +220,14 @@ export default function SuperadminSettingsPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Advance Payment (₹)</label>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Advance Payment (₹)</label>
                 <input type="number" min={0} step={50} value={bookingConfig.advanceAmount}
                   onChange={(e) => setBookingConfig({ ...bookingConfig, advanceAmount: Number(e.target.value) })}
                   className="input-field" />
                 <p className="text-xs text-gray-400 mt-1">Fixed advance customers pay online to confirm booking</p>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">Free Cancel (hours)</label>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Free Cancel (hours)</label>
                 <input type="number" min={0} value={bookingConfig.cancellationHours}
                   onChange={(e) => setBookingConfig({ ...bookingConfig, cancellationHours: Number(e.target.value) })}
                   className="input-field" />
@@ -251,26 +251,26 @@ export default function SuperadminSettingsPage() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">SMTP Host</label>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">SMTP Host</label>
                 <input type="text" placeholder="smtp.gmail.com" value={emailConfig.smtpHost}
                   onChange={(e) => setEmailConfig({ ...emailConfig, smtpHost: e.target.value })}
                   className="input-field" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">SMTP Port</label>
+                <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">SMTP Port</label>
                 <input type="text" placeholder="587" value={emailConfig.smtpPort}
                   onChange={(e) => setEmailConfig({ ...emailConfig, smtpPort: e.target.value })}
                   className="input-field" />
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">SMTP Email</label>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">SMTP Email</label>
               <input type="email" placeholder="yourgmail@gmail.com" value={emailConfig.smtpUser}
                 onChange={(e) => setEmailConfig({ ...emailConfig, smtpUser: e.target.value })}
                 className="input-field" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">App Password</label>
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">App Password</label>
               <div className="relative">
                 <input type={showPass ? 'text' : 'password'} placeholder="Gmail App Password (16 characters)"
                   value={emailConfig.smtpPass}

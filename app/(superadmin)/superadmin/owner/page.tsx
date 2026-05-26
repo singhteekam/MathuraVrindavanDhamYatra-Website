@@ -123,7 +123,7 @@ function Section({ title, description, children }: {
   return (
     <div className="card rounded-2xl p-6 mb-5">
       <div className="mb-5 pb-4" style={{ borderBottom: '1px solid #f3f4f6' }}>
-        <h3 className="font-bold text-gray-900">{title}</h3>
+        <h3 className="font-bold text-gray-900 dark:text-gray-100">{title}</h3>
         {description && <p className="text-sm text-gray-400 mt-0.5">{description}</p>}
       </div>
       {children}
@@ -364,7 +364,7 @@ export default function SuperadminOwnerPage() {
             <ShieldCheck size={16} className="text-indigo-500" />
             <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">Superadmin</p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
             Owner / Business Profile
           </h1>
           <p className="text-sm text-gray-400 mt-0.5">
@@ -472,7 +472,7 @@ export default function SuperadminOwnerPage() {
               translating={translating.title}
             />
             <div>
-              <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">
                 Years of Experience
               </label>
               <input type="number" min={0} max={99}
