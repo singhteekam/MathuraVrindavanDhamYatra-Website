@@ -317,7 +317,7 @@ export default function AdminReviewsPage() {
                         {review.package && (
                           <span className="px-2.5 py-1 rounded-full"
                             style={{ background: 'var(--surface-saffron)', color: 'var(--text-on-saffron)' }}>
-                            ðŸ“¦ {str(review.package.name)}
+                            📦“¦ {str(review.package.name)}
                           </span>
                         )}
                         <span>

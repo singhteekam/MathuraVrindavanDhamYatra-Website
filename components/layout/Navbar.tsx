@@ -368,8 +368,9 @@ export default function Navbar() {
                 </button>
               </div>
 
-              {/* Nav items — only this section scrolls, header/footer stay pinned */}
-              <nav className="flex-1 p-4 space-y-0.5 overflow-y-auto">
+              {/* Nav items — only this section scrolls, header/footer stay pinned.
+                  overscroll-y-contain stops iOS rubber-band bounce from revealing blank area */}
+              <nav className="flex-1 p-4 space-y-0.5 overflow-y-auto overscroll-y-contain">
                 {NAV_ITEMS.map((item) => (
                   <div key={item.labelKey}>
                     {item.children ? (

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import SuperadminSidebarWrapper from './SuperadminSidebarWrapper'
-import PortalHeader from '@/components/admin/PortalHeader'
+import PortalHeader              from '@/components/admin/PortalHeader'
+import PortalFooter              from '@/components/admin/PortalFooter'
 
 export const metadata: Metadata = {
   title:  { default: 'Superadmin', template: '%s | SA — MVTravel' },
@@ -14,6 +15,7 @@ export default function SuperadminLayout({ children }: { children: React.ReactNo
       <main className="flex-1 overflow-hidden flex flex-col">
         <PortalHeader role="superadmin" />
         {children}
+        <PortalFooter role="superadmin" />
       </main>
     </div>
   )

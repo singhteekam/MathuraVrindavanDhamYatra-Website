@@ -27,7 +27,7 @@ interface Stats {
 
 const CAR_BREAKDOWN = [
   { name: 'Swift Dzire',    type: 'swift',  emoji: '🚗', share: 35, color: '#ff7d0f' },
-  { name: 'Maruti Ertiga',  type: 'ertiga', emoji: 'ðŸš', share: 28, color: '#4338ca' },
+  { name: 'Maruti Ertiga',  type: 'ertiga', emoji: '🚐', share: 28, color: '#4338ca' },
   { name: 'Toyota Innova',  type: 'innova', emoji: '🚙', share: 22, color: '#16a34a' },
   { name: 'Maruti Eeco',    type: 'eeco',   emoji: '🚌', share: 10, color: '#db2777' },
   { name: 'Innova Crysta',  type: 'crysta', emoji: '🚘', share:  5, color: '#d97706' },

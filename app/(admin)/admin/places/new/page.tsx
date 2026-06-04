@@ -14,13 +14,13 @@ import BilingualInput,       { type BLValue } from '@/components/admin/Bilingual
 
 const CITIES = ['Mathura', 'Vrindavan', 'Gokul', 'Govardhan', 'Barsana', 'Nandgaon', 'Agra']
 const TYPES  = [
-  { value: 'temple',      label: 'ðŸ›• Temple'      },
-  { value: 'ghat',        label: 'ðŸŒŠ Ghat'        },
-  { value: 'sacred-site', label: 'ðŸ™ Sacred Site'  },
-  { value: 'hill',        label: 'â›°ï¸ Hill'         },
-  { value: 'garden',      label: 'ðŸŒº Garden'      },
-  { value: 'museum',      label: 'ðŸ›ï¸ Museum'      },
-  { value: 'village',     label: 'ðŸ¡ Village'     },
+  { value: 'temple',      label: '🛕 Temple'      },
+  { value: 'ghat',        label: '🌊 Ghat'        },
+  { value: 'sacred-site', label: '🙏 Sacred Site'  },
+  { value: 'hill',        label: '⛰️ Hill'         },
+  { value: 'garden',      label: '🌺 Garden'      },
+  { value: 'museum',      label: '🏛️ Museum'      },
+  { value: 'village',     label: '🏡 Village'     },
 ]
 
 interface PlaceForm {
@@ -129,7 +129,7 @@ export default function NewPlacePage() {
       const data = await res.json()
 
       if (res.ok) {
-        toast.success(`"${form.name.en}" created successfully! ðŸ™`)
+        toast.success(`"${form.name.en}" created successfully! 🙏`)
         router.push('/admin/places')
       } else {
         toast.error(data.error ?? 'Failed to create place.')

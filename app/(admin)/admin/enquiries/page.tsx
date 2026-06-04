@@ -150,7 +150,7 @@ export default function AdminEnquiriesPage() {
                 {/* Right: Actions */}
                 <div className="flex sm:flex-col gap-2 flex-shrink-0">
                   <a
-                    href={`https://wa.me/${enq.phone.replace(/\D/g, '')}?text=Namaste ${enq.name}! Thank you for enquiring with Mathura Vrindavan Dham Yatra. ðŸ™`}
+                    href={`https://wa.me/${enq.phone.replace(/\D/g, '')}?text=Namaste ${enq.name}! Thank you for enquiring with Mathura Vrindavan Dham Yatra. 🙏`}
                     target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl transition-colors whitespace-nowrap"
                     style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
