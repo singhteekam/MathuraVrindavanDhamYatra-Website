@@ -520,7 +520,7 @@ function Toggle({ label, description, checked, onChange, activeColor }: {
       </div>
       <button
         onClick={() => onChange(!checked)}
-        className="relative w-11 h-6 rounded-full transition-colors duration-200 shrink-0"
+        className="relative w-11 h-6 rounded-full overflow-hidden transition-colors duration-200 shrink-0"
         style={{ background: checked ? activeColor : '#d1d5db' }}>
         <span
           className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"

@@ -311,7 +311,7 @@ export default function HotelForm({ initial, id, pageTitle }: Props) {
                   </div>
                   <button type="button"
                     onClick={() => setField(toggle.key, !form[toggle.key])}
-                    className="relative w-10 h-5 rounded-full transition-all duration-200 mt-0.5 shrink-0"
+                    className="relative w-10 h-5 rounded-full overflow-hidden transition-all duration-200 mt-0.5 shrink-0"
                     style={{ background: form[toggle.key] ? '#4338ca' : '#d1d5db' }}>
                     <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
                       style={{ left: form[toggle.key] ? '22px' : '2px' }} />

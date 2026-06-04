@@ -713,7 +713,7 @@ export default function SuperadminNewPlacePage() {
                 </div>
                 <button type="button"
                   onClick={() => setForm((p) => ({ ...p, isFeatured: !p.isFeatured }))}
-                  className="relative w-11 h-6 rounded-full transition-colors duration-200"
+                  className="relative w-11 h-6 rounded-full overflow-hidden transition-colors duration-200"
                   style={{ background: form.isFeatured ? '#6366f1' : '#d1d5db' }}>
                   <span className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
                     style={{ transform: form.isFeatured ? 'translateX(22px)' : 'translateX(2px)' }} />

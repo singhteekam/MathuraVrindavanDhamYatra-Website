@@ -63,7 +63,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   }
 }
 
-// GET /api/users/[userId] — superadmin: get single user detail
+// GET /api/users/[userId] — admin/superadmin: get single user with enriched stats
 export async function GET(_req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
@@ -77,11 +77,52 @@ export async function GET(_req: NextRequest, { params }: Params) {
 
     const found = await User.findById(userId).select('-password').lean()
     if (!found) return errorResponse('User not found.', 404)
+
+    // Admins can only view customers
     if (user?.role === 'admin' && found.role !== 'customer') {
       return errorResponse('Forbidden.', 403)
     }
 
-    return successResponse(found)
+    const enriched: Record<string, unknown> = { ...found }
+
+    // ── Enrich customer with booking stats ───────────────────────────────────
+    if (found.role === 'customer') {
+      const Booking = (await import('@/models/Booking')).default
+      const [bookingStats] = await Booking.aggregate([
+        { $match: { customer: found._id } },
+        {
+          $group: {
+            _id:         null,
+            bookingCount: { $sum: 1 },
+            totalSpent:   { $sum: { $cond: [{ $eq: ['$status', 'completed'] }, '$totalAmount', 0] } },
+            lastBooking:  { $max: '$startDate' },
+          },
+        },
+      ])
+      if (bookingStats) {
+        enriched.bookingCount = bookingStats.bookingCount
+        enriched.totalSpent   = bookingStats.totalSpent
+        enriched.lastBooking  = bookingStats.lastBooking
+      }
+    }
+
+    // ── Enrich driver with vehicle & earnings info ────────────────────────────
+    if (found.role === 'driver') {
+      const Driver = (await import('@/models/Driver')).default
+      const driver = await Driver.findOne({ userId: found._id })
+        .select('licenseNumber isVerified rating totalTrips earnings vehicle')
+        .lean()
+      if (driver) {
+        enriched.licenseNumber = driver.licenseNumber
+        enriched.isVerified    = driver.isVerified
+        enriched.rating        = driver.rating
+        enriched.totalTrips    = driver.totalTrips
+        enriched.earnings      = driver.earnings
+        enriched.vehicle       = driver.vehicle
+      }
+    }
+
+    return successResponse(enriched)
   } catch (err) {
     console.error('[GET /api/users/:userId]', err)
     return errorResponse('Internal server error.', 500)

@@ -4,11 +4,12 @@ export const dynamic = 'force-dynamic'
 
 import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Users, Phone, Mail, Calendar, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Users, Phone, Mail, Calendar, ShoppingBag, ChevronLeft, ChevronRight, Eye, Info } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import AdminPageHeader from '@/components/admin/AdminPageHeader'
-import { formatDate } from '@/lib/utils'
+import AdminPageHeader  from '@/components/admin/AdminPageHeader'
+import UserInfoDialog   from '@/components/admin/UserInfoDialog'
+import { formatDate }   from '@/lib/utils'
 
 interface Customer {
   _id:          string
@@ -21,12 +22,13 @@ interface Customer {
 }
 
 export default function AdminCustomersPage() {
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [loading,   setLoading]   = useState(true)
-  const [search,    setSearch]    = useState('')
-  const [page,      setPage]      = useState(1)
-  const [total,     setTotal]     = useState(0)
-  const [totalPages,setTotalPages]= useState(1)
+  const [customers,  setCustomers]  = useState<Customer[]>([])
+  const [loading,    setLoading]    = useState(true)
+  const [search,     setSearch]     = useState('')
+  const [page,       setPage]       = useState(1)
+  const [total,      setTotal]      = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [viewUserId, setViewUserId] = useState<string | null>(null)
   const LIMIT = 20
 
   const fetchCustomers = useCallback(async () => {
@@ -150,11 +152,18 @@ export default function AdminCustomersPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <Link href={`/admin/customers/${c._id}`}
-                            className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
-                            style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
-                            View
-                          </Link>
+                          <div className="flex gap-1.5">
+                            <button onClick={() => setViewUserId(c._id)}
+                              className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+                              style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
+                              <Info size={11} />Info
+                            </button>
+                            <Link href={`/admin/customers/${c._id}`}
+                              className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+                              style={{ background: 'var(--surface-saffron)', color: '#c74a06' }}>
+                              <Eye size={11} />Bookings
+                            </Link>
+                          </div>
                         </td>
                       </motion.tr>
                     ))}
@@ -213,6 +222,13 @@ export default function AdminCustomersPage() {
           )}
         </div>
       )}
+
+      {/* Quick user info dialog */}
+      <UserInfoDialog
+        userId={viewUserId}
+        onClose={() => setViewUserId(null)}
+        viewMode="admin"
+      />
     </div>
   )
 }

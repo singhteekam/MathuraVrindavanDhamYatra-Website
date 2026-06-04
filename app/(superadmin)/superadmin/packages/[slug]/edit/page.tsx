@@ -393,7 +393,7 @@ export default function SuperadminEditPackagePage() {
                   </div>
                   <button type="button"
                     onClick={() => setForm({ ...form, [toggle.key]: !form[toggle.key as keyof PackageForm] })}
-                    className="relative w-10 h-5 rounded-full transition-all duration-200 shrink-0 mt-0.5"
+                    className="relative w-10 h-5 rounded-full overflow-hidden transition-all duration-200 shrink-0 mt-0.5"
                     style={{ background: form[toggle.key as keyof PackageForm] ? '#6366f1' : '#d1d5db' }}>
                     <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
                       style={{ left: form[toggle.key as keyof PackageForm] ? '22px' : '2px' }} />

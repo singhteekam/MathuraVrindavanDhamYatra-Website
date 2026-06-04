@@ -6,10 +6,11 @@ import { useEffect, useState, useCallback } from 'react'
 import { motion }         from 'framer-motion'
 import {
   Search, Users, Mail, Phone, Shield,
-  CheckCircle, XCircle, ChevronLeft, ChevronRight, ShieldCheck,
+  CheckCircle, XCircle, ChevronLeft, ChevronRight, ShieldCheck, Eye,
 } from 'lucide-react'
 import toast              from 'react-hot-toast'
 import { formatDate }     from '@/lib/utils'
+import UserInfoDialog     from '@/components/admin/UserInfoDialog'
 
 interface UserRow {
   _id:          string
@@ -38,6 +39,7 @@ export default function SuperadminUsersPage() {
   const [page,       setPage]       = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total,      setTotal]      = useState(0)
+  const [viewUserId, setViewUserId] = useState<string | null>(null)
   const LIMIT = 20
 
   const fetchUsers = useCallback(async () => {
@@ -235,14 +237,21 @@ export default function SuperadminUsersPage() {
                         {formatDate(u.createdAt)}
                       </td>
                       <td className="px-4 py-3">
-                        <button type="button" onClick={() => toggleActive(u)}
-                          className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
-                          style={u.isActive
-                            ? { background: 'var(--surface-red)', color: 'var(--text-on-red)' }
-                            : { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
-                          }>
-                          {u.isActive ? <><XCircle size={12} />Deactivate</> : <><CheckCircle size={12} />Activate</>}
-                        </button>
+                        <div className="flex gap-2 flex-wrap">
+                          <button type="button" onClick={() => setViewUserId(u._id)}
+                            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+                            style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
+                            <Eye size={12} />View
+                          </button>
+                          <button type="button" onClick={() => toggleActive(u)}
+                            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+                            style={u.isActive
+                              ? { background: 'var(--surface-red)', color: 'var(--text-on-red)' }
+                              : { background: 'var(--surface-green)', color: 'var(--text-on-green)' }
+                            }>
+                            {u.isActive ? <><XCircle size={12} />Deactivate</> : <><CheckCircle size={12} />Activate</>}
+                          </button>
+                        </div>
                       </td>
                     </motion.tr>
                   )
@@ -286,6 +295,11 @@ export default function SuperadminUsersPage() {
                         <option key={r} value={r} className="capitalize">{r}</option>
                       ))}
                     </select>
+                    <button type="button" onClick={() => setViewUserId(u._id)}
+                      className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg"
+                      style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
+                      <Eye size={12} />View
+                    </button>
                     <button type="button" onClick={() => toggleActive(u)}
                       className="text-xs font-semibold px-3 py-1.5 rounded-lg"
                       style={u.isActive
@@ -328,6 +342,13 @@ export default function SuperadminUsersPage() {
           )}
         </div>
       )}
+
+      {/* User info dialog */}
+      <UserInfoDialog
+        userId={viewUserId}
+        onClose={() => setViewUserId(null)}
+        viewMode="superadmin"
+      />
     </div>
   )
 }
