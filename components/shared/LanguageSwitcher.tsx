@@ -51,7 +51,7 @@ export default function LanguageSwitcher({ variant = 'default' }: Props) {
   if (variant === 'mobile') {
     return (
       <div className="space-y-1">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 py-2">
+        <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider px-4 py-2">
           {localeNames[locale]}
         </p>
         {routing.locales.map((loc) => (
@@ -62,8 +62,8 @@ export default function LanguageSwitcher({ variant = 'default' }: Props) {
             className={cn(
               'flex items-center justify-between w-full px-4 py-2.5 rounded-lg text-sm transition-colors',
               loc === locale
-                ? 'bg-saffron-50 text-saffron-600 font-semibold'
-                : 'text-gray-700 hover:bg-saffron-50 hover:text-saffron-600',
+                ? 'bg-saffron-50 dark:bg-saffron-900/30 text-saffron-600 dark:text-saffron-400 font-semibold'
+                : 'text-gray-700 dark:text-gray-300 hover:bg-saffron-50 dark:hover:bg-gray-800 hover:text-saffron-600 dark:hover:text-saffron-400',
             )}
           >
             <span className="flex items-center gap-2">
@@ -82,7 +82,7 @@ export default function LanguageSwitcher({ variant = 'default' }: Props) {
       <button
         onClick={() => setOpen(!open)}
         disabled={isPending}
-        className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-gray-200 hover:border-saffron-300 hover:bg-saffron-50 transition-all text-sm font-medium text-gray-700"
+        className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-gray-200 dark:border-gray-700 hover:border-saffron-300 dark:hover:border-saffron-600 hover:bg-saffron-50 dark:hover:bg-gray-800 transition-all text-sm font-medium text-gray-700 dark:text-gray-300"
         aria-label="Change language"
       >
         <Globe size={14} className="text-saffron-500" />
@@ -98,7 +98,7 @@ export default function LanguageSwitcher({ variant = 'default' }: Props) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.97 }}
             transition={{ duration: 0.12 }}
-            className="absolute right-0 top-full mt-2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
+            className="absolute right-0 top-full mt-2 w-44 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 py-2 z-50 overflow-hidden"
           >
             {routing.locales.map((loc) => (
               <button
@@ -108,8 +108,8 @@ export default function LanguageSwitcher({ variant = 'default' }: Props) {
                 className={cn(
                   'flex items-center justify-between w-full px-4 py-2.5 text-sm transition-colors',
                   loc === locale
-                    ? 'bg-saffron-50 text-saffron-600 font-semibold'
-                    : 'text-gray-700 hover:bg-saffron-50',
+                    ? 'bg-saffron-50 dark:bg-saffron-900/30 text-saffron-600 dark:text-saffron-400 font-semibold'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-saffron-50 dark:hover:bg-gray-800',
                 )}
               >
                 <span>{localeNames[loc as Locale]}</span>

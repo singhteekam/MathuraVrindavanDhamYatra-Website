@@ -94,10 +94,10 @@ body {
    theme-aware without duplicating dark: Tailwind variants.
 ───────────────────────────────────────────────────────── */
 :root {
-  /* Base surfaces */
-  --bg-body:           #ffffff;
+  /* Base surfaces — warm saffron-cream, sacred parchment tone */
+  --bg-body:           #fffcf7;
   --bg-surface:        #ffffff;
-  --bg-surface-muted:  #f9fafb;
+  --bg-surface-muted:  #f8f5f0;
   --bg-input:          #ffffff;
 
   /* Section backgrounds */
@@ -166,40 +166,40 @@ body {
 }
 
 .dark {
-  /* Base surfaces */
-  --bg-body:           #0a0a0a;
-  --bg-surface:        #18181b;
-  --bg-surface-muted:  #27272a;
-  --bg-input:          #1f1f23;
+  /* Base surfaces — Vrindavan night sky, deep indigo-black */
+  --bg-body:           #08080f;
+  --bg-surface:        #0e0f1a;
+  --bg-surface-muted:  #161828;
+  --bg-input:          #131520;
 
   /* Section backgrounds */
-  --bg-section-alt:    #111113;
-  --bg-section-warm:   #110e0a;
-  --bg-section-divine: linear-gradient(135deg, #1a0e05 0%, #12100a 45%, #0f0f1a 100%);
+  --bg-section-alt:    #0b0c16;
+  --bg-section-warm:   #0a0900;
+  --bg-section-divine: linear-gradient(135deg, #150a02 0%, #0d0b00 45%, #0a0c1f 100%);
 
-  /* Tinted surfaces — semi-transparent overlays on dark bg */
-  --surface-saffron:        rgba(255,125,15,0.10);
-  --surface-saffron-border: rgba(255,125,15,0.25);
-  --text-on-saffron:        #fb923c;
+  /* Tinted surfaces — richer, warmer overlays on indigo-dark bg */
+  --surface-saffron:        rgba(255,125,15,0.13);
+  --surface-saffron-border: rgba(255,125,15,0.30);
+  --text-on-saffron:        #fdba74;
 
-  --surface-krishna:        rgba(99,102,241,0.12);
-  --surface-krishna-border: rgba(99,102,241,0.28);
+  --surface-krishna:        rgba(99,102,241,0.15);
+  --surface-krishna-border: rgba(99,102,241,0.32);
   --text-on-krishna:        #a5b4fc;
 
-  --surface-green:          rgba(22,163,74,0.10);
-  --surface-green-border:   rgba(22,163,74,0.25);
+  --surface-green:          rgba(22,163,74,0.13);
+  --surface-green-border:   rgba(22,163,74,0.30);
   --text-on-green:          #4ade80;
 
-  --surface-amber:          rgba(245,158,11,0.10);
-  --surface-amber-border:   rgba(245,158,11,0.25);
+  --surface-amber:          rgba(245,158,11,0.13);
+  --surface-amber-border:   rgba(245,158,11,0.30);
   --text-on-amber:          #fcd34d;
 
-  --surface-blue:           rgba(59,130,246,0.10);
-  --surface-blue-border:    rgba(59,130,246,0.25);
+  --surface-blue:           rgba(59,130,246,0.13);
+  --surface-blue-border:    rgba(59,130,246,0.30);
   --text-on-blue:           #93c5fd;
 
-  --surface-red:            rgba(239,68,68,0.10);
-  --surface-red-border:     rgba(239,68,68,0.25);
+  --surface-red:            rgba(239,68,68,0.13);
+  --surface-red-border:     rgba(239,68,68,0.30);
   --text-on-red:            #fca5a5;
 
   /* Text */
@@ -209,8 +209,8 @@ body {
   --text-faint:        #71717a;
 
   /* Borders */
-  --border-default:    #3f3f46;
-  --border-muted:      #27272a;
+  --border-default:    #2a2b40;
+  --border-muted:      #1a1b2e;
 
   /* Shadow */
   --shadow-card-rgb:   0,0,0;
@@ -469,9 +469,13 @@ body {
 
   /* Cards */
   .card              { background-color: var(--bg-surface); border-radius: 1rem; border: 1px solid var(--border-muted); box-shadow: var(--shadow-card); transition: box-shadow 0.3s, transform 0.3s, background-color 0.2s, border-color 0.2s; }
-  .card:hover        { box-shadow: var(--shadow-card-hover); border-color: rgba(255,125,15,0.25); }
+  .card:hover        { box-shadow: var(--shadow-card-hover); border-color: rgba(255,125,15,0.30); }
   .card-hover:hover  { transform: translateY(-4px); }
   .card-accent       { border-top: 3px solid var(--color-saffron-500); border-radius: 1rem; }
+
+  /* Dark mode cards get a subtle indigo border glow */
+  .dark .card        { box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(99,102,241,0.08); }
+  .dark .card:hover  { border-color: rgba(255,125,15,0.35); box-shadow: 0 8px 40px rgba(0,0,0,0.65), 0 0 16px rgba(255,125,15,0.12); }
 
   /* Typography */
   .section-title {

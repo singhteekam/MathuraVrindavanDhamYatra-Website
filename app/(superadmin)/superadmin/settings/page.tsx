@@ -15,7 +15,7 @@ function Section({ title, description, children }: {
 }) {
   return (
     <div className="card rounded-2xl p-6 mb-5">
-      <div className="mb-5 pb-4" style={{ borderBottom: '1px solid #f3f4f6' }}>
+      <div className="mb-5 pb-4" style={{ borderBottom: '1px solid var(--border-muted)' }}>
         <h3 className="font-bold text-gray-900 dark:text-gray-100">{title}</h3>
         {description && <p className="text-sm text-gray-400 mt-0.5">{description}</p>}
       </div>

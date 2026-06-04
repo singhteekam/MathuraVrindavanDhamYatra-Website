@@ -122,7 +122,7 @@ function Section({ title, description, children }: {
 }) {
   return (
     <div className="card rounded-2xl p-6 mb-5">
-      <div className="mb-5 pb-4" style={{ borderBottom: '1px solid #f3f4f6' }}>
+      <div className="mb-5 pb-4" style={{ borderBottom: '1px solid var(--border-muted)' }}>
         <h3 className="font-bold text-gray-900 dark:text-gray-100">{title}</h3>
         {description && <p className="text-sm text-gray-400 mt-0.5">{description}</p>}
       </div>
@@ -502,7 +502,7 @@ export default function SuperadminOwnerPage() {
         <Section title="Achievements & Highlights" description="Key milestones shown as bullet cards — supports English + Hindi">
           <div className="space-y-3">
             {form.achievements.map((ach, i) => (
-              <div key={i} className="relative p-4 rounded-xl" style={{ background: 'var(--bg-surface-muted)', border: '1px solid #f3f4f6' }}>
+              <div key={i} className="relative p-4 rounded-xl" style={{ background: 'var(--bg-surface-muted)', border: '1px solid var(--border-muted)' }}>
                 <button type="button" onClick={() => removeAchievement(i)}
                   className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-50"
                   style={{ color: '#ef4444' }}>

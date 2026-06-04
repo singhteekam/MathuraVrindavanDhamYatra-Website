@@ -116,7 +116,7 @@ export default function AdminPackagesPage() {
         <div className="card rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
+              <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
                 {['Package', 'Duration', 'Price', 'Bookings', 'Rating', 'Status', 'Actions'].map((h) => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                     {h}

@@ -99,10 +99,11 @@ function BookingForm() {
       .catch(() => {})
 
     // Load Razorpay script once
-    if (!document.getElementById('rzp-script')) {
+    if (!document.getElementById('rzp-script') && !window.Razorpay) {
       const s = document.createElement('script')
-      s.id  = 'rzp-script'
-      s.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      s.id    = 'rzp-script'
+      s.src   = 'https://checkout.razorpay.com/v1/checkout.js'
+      s.async = true
       document.head.appendChild(s)
     }
   }, [])
@@ -227,6 +228,10 @@ function BookingForm() {
 
   /* ── Razorpay helper ── */
   async function initiateRazorpay(paymentType: 'full' | 'advance') {
+    if (!window.Razorpay) {
+      toast.error('Payment gateway is loading. Please try again in a moment.')
+      return
+    }
     if (status === 'unauthenticated') {
       toast.error(t('toast.signInRequired'))
       router.push(`/login?callbackUrl=/booking?package=${selectedPackage}&car=${selectedCar}`)
@@ -255,8 +260,14 @@ function BookingForm() {
 
       // Keep loading=true until the modal fires (handler or ondismiss)
       // so the button can't be clicked again while the modal is open
+      const rzpKey = orderData.data.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || ''
+      if (!rzpKey) {
+        toast.error('Payment not configured. Please contact support.')
+        setLoading(false)
+        return
+      }
       const rzp = new window.Razorpay({
-        key:         process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ?? '',
+        key:         rzpKey,
         amount:      orderData.data.amount,
         currency:    orderData.data.currency,
         name:        'MV Dham Yatra',

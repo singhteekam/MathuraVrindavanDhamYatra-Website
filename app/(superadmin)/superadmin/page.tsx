@@ -239,7 +239,7 @@ export default function SuperadminDashboard() {
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
         className="mt-6 p-4 rounded-2xl flex items-center gap-3"
-        style={{ background: 'var(--bg-surface-muted)', border: '1px solid #f3f4f6' }}>
+        style={{ background: 'var(--bg-surface-muted)', border: '1px solid var(--border-muted)' }}>
         <Settings size={16} className="text-gray-400 flex-shrink-0" />
         <p className="text-sm text-gray-500 flex-1">
           For bookings, drivers, customers, and reviews — use the{' '}

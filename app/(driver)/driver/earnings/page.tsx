@@ -68,7 +68,7 @@ export default function DriverEarningsPage() {
 
       {/* Trip history table */}
       <div className="card rounded-2xl overflow-hidden">
-        <div className="p-5 border-b border-gray-100">
+        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
           <h2 className="font-bold text-gray-900 dark:text-gray-100">Trip History</h2>
         </div>
 
@@ -85,7 +85,7 @@ export default function DriverEarningsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
                   {['Booking ID', 'Date', 'Customer', 'Package/Car', 'Amount'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
@@ -98,7 +98,7 @@ export default function DriverEarningsPage() {
                   <motion.tr
                     key={trip._id}
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
-                    className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                    className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     <td className="px-4 py-3">
                       <span className="font-mono text-xs font-bold text-saffron-600">{trip.bookingId}</span>
@@ -106,8 +106,8 @@ export default function DriverEarningsPage() {
                     <td className="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
                       {formatDate(trip.startDate)}
                     </td>
-                    <td className="px-4 py-3 font-medium text-gray-800">{trip.customer.name}</td>
-                    <td className="px-4 py-3 text-gray-600 text-xs">
+                    <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200">{trip.customer.name}</td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 text-xs">
                       {trip.package?.name ?? trip.carName}
                     </td>
                     <td className="px-4 py-3 font-bold text-green-600 whitespace-nowrap">
@@ -117,8 +117,8 @@ export default function DriverEarningsPage() {
                 ))}
               </tbody>
               <tfoot>
-                <tr style={{ background: 'var(--bg-surface-muted)', borderTop: '2px solid #f3f4f6' }}>
-                  <td colSpan={4} className="px-4 py-3 font-bold text-gray-800 text-sm">Total</td>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderTop: '2px solid var(--border-muted)' }}>
+                  <td colSpan={4} className="px-4 py-3 font-bold text-gray-800 dark:text-gray-200 text-sm">Total</td>
                   <td className="px-4 py-3 font-bold text-green-600 text-base">
                     {formatCurrency(totalEarnings)}
                   </td>

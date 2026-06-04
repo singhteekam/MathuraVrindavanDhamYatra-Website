@@ -217,14 +217,14 @@ export default function AdminAnalyticsPage() {
       <motion.div
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
         className="card rounded-2xl overflow-hidden mb-6">
-        <div className="p-5 border-b border-gray-100">
+        <div className="p-5 border-b border-gray-100 dark:border-gray-800">
           <h3 className="font-bold text-gray-900 dark:text-gray-100">Top Performing Packages</h3>
           <p className="text-xs text-gray-400 mt-0.5">Estimated based on package popularity</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
+              <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
                 {['Package', 'Est. Bookings', 'Est. Revenue', 'Popularity'].map((h) => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                     {h}
@@ -238,7 +238,7 @@ export default function AdminAnalyticsPage() {
                 const pct = Math.round((pkg.bookings / maxBookings) * 100)
                 return (
                   <tr key={pkg.name}
-                    className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                    className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span

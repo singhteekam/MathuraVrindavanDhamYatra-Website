@@ -177,7 +177,7 @@ export default function SuperadminUsersPage() {
           <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
                   {['User', 'Contact', 'Role', 'Status', 'Joined', 'Actions'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
@@ -252,7 +252,7 @@ export default function SuperadminUsersPage() {
           </div>
 
           {/* Mobile cards */}
-          <div className="sm:hidden divide-y divide-gray-50">
+          <div className="sm:hidden divide-y divide-gray-50 dark:divide-gray-800">
             {users.map((u, i) => {
               const rc = ROLE_COLORS[u.role] ?? ROLE_COLORS.customer
               return (

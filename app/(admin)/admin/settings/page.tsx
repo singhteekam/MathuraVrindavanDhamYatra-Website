@@ -179,7 +179,7 @@ export default function AdminSettingsPage() {
         {/* â”€â”€ Site Information â€” READ ONLY for admin â”€â”€ */}
         <div className="card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-5 pb-4"
-            style={{ borderBottom: '1px solid #f3f4f6' }}>
+            style={{ borderBottom: '1px solid var(--border-muted)' }}>
             <div>
               <h3 className="font-bold text-gray-900 dark:text-gray-100">Site Information</h3>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -209,7 +209,7 @@ export default function AdminSettingsPage() {
 
         {/* â”€â”€ Booking Configuration â€” EDITABLE by admin â”€â”€ */}
         <div className="card rounded-2xl p-6">
-          <div className="mb-5 pb-4" style={{ borderBottom: '1px solid #f3f4f6' }}>
+          <div className="mb-5 pb-4" style={{ borderBottom: '1px solid var(--border-muted)' }}>
             <h3 className="font-bold text-gray-900 dark:text-gray-100">Booking Configuration</h3>
             <p className="text-xs text-gray-400 mt-0.5">
               Control how bookings behave â€” you can edit these
@@ -266,7 +266,7 @@ export default function AdminSettingsPage() {
         {/* â”€â”€ SMTP â€” READ ONLY for admin â”€â”€ */}
         <div className="card rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4 pb-4"
-            style={{ borderBottom: '1px solid #f3f4f6' }}>
+            style={{ borderBottom: '1px solid var(--border-muted)' }}>
             <div>
               <h3 className="font-bold text-gray-900 dark:text-gray-100">Email Configuration</h3>
               <p className="text-xs text-gray-400 mt-0.5">SMTP settings â€” only Superadmin can change these</p>
@@ -280,7 +280,7 @@ export default function AdminSettingsPage() {
 
           {/* Show locked SMTP info */}
           <div className="flex items-start gap-3 p-4 rounded-xl"
-            style={{ background: 'var(--bg-surface-muted)', border: '1px solid #f3f4f6' }}>
+            style={{ background: 'var(--bg-surface-muted)', border: '1px solid var(--border-muted)' }}>
             <Lock size={16} className="text-gray-300 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-semibold text-gray-700">SMTP credentials are secured</p>

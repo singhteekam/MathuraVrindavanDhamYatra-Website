@@ -298,11 +298,15 @@ export default function Navbar() {
                 <Phone size={14} />{t('callNow')}
               </a>
 
-              {/* Theme switcher */}
-              <ThemeSwitcher />
+              {/* Theme switcher — hidden on xs (available in mobile drawer) */}
+              <div className="hidden sm:block">
+                <ThemeSwitcher />
+              </div>
 
-              {/* Language switcher */}
-              <LanguageSwitcher />
+              {/* Language switcher — hidden on xs (available in mobile drawer) */}
+              <div className="hidden sm:block">
+                <LanguageSwitcher />
+              </div>
 
               {/* Auth section */}
               {isLoading ? (

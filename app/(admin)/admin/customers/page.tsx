@@ -102,7 +102,7 @@ export default function AdminCustomersPage() {
               <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
+                    <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
                       {['Customer', 'Contact', 'Bookings', 'Joined', 'Status'].map((h) => (
                         <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{h}</th>
                       ))}
@@ -155,7 +155,7 @@ export default function AdminCustomersPage() {
               </div>
 
               {/* Mobile cards */}
-              <div className="sm:hidden divide-y divide-gray-50">
+              <div className="sm:hidden divide-y divide-gray-50 dark:divide-gray-800">
                 {customers.map((c, i) => (
                   <motion.div key={c._id}
                     initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}

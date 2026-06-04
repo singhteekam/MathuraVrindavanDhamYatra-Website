@@ -119,7 +119,7 @@ export default function SuperadminPackagesPage() {
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid #f3f4f6' }}>
+                <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
                   {['Package', 'Duration', 'Price', 'Rating', 'Active', 'Featured', 'Popular', 'Actions'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                       {h}
@@ -193,7 +193,7 @@ export default function SuperadminPackagesPage() {
           </div>
 
           {/* Mobile cards */}
-          <div className="md:hidden divide-y divide-gray-50">
+          <div className="md:hidden divide-y divide-gray-50 dark:divide-gray-800">
             {filtered.map((pkg, i) => (
               <motion.div key={pkg._id}
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
