@@ -66,7 +66,7 @@ export default function AdminSettingsPage() {
     phone:    '+91 8534890870',
     email:    'info@mathuravrindavandhamyatra.com',
     whatsapp: '918534890870',
-    address:  'Mathura, Uttar Pradesh "” 281001',
+    address:  'Mathura, Uttar Pradesh – 281001',
     tagline:  'Divine Journey. Trusted Hands.',
   })
 

@@ -277,15 +277,15 @@ export default function NewPlacePage() {
                   value={form.timings.morning}
                   onChange={(val) => setForm({ ...form, timings: { ...form.timings, morning: val } })}
                   label="Morning Session"
-                  enPlaceholder="5:00 AM "“ 12:00 PM"
-                  hiPlaceholder="à¤¸à¥à¤¬à¤¹ 5:00 "“ à¤¦à¥‹à¤ªà¤¹à¤° 12:00"
+                  enPlaceholder="5:00 AM – 12:00 PM"
+                  hiPlaceholder="सुबह 5:00 – दोपहर 12:00"
                 />
                 <BilingualInput
                   value={form.timings.evening}
                   onChange={(val) => setForm({ ...form, timings: { ...form.timings, evening: val } })}
                   label="Evening Session"
-                  enPlaceholder="4:00 PM "“ 9:00 PM"
-                  hiPlaceholder="à¤¶à¤¾à¤® 4:00 "“ à¤°à¤¾à¤¤ 9:00"
+                  enPlaceholder="4:00 PM – 9:00 PM"
+                  hiPlaceholder="शाम 4:00 – रात 9:00"
                 />
                 <BilingualInput
                   value={form.timings.note}
@@ -309,7 +309,7 @@ export default function NewPlacePage() {
                 <div>
                   <Label>Address *</Label>
                   <input type="text"
-                    placeholder="e.g. Near Mathura Junction, Mathura, UP "” 281001"
+                    placeholder="e.g. Near Mathura Junction, Mathura, UP – 281001"
                     value={form.location.address}
                     onChange={(e) => setForm({ ...form, location: { ...form.location, address: e.target.value } })}
                     className="input-field" required />
@@ -351,7 +351,7 @@ export default function NewPlacePage() {
                         onClick={() => setForm({ ...form, location: { ...form.location, lat: city.lat, lng: city.lng } })}
                         className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
                         style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-default)', color: 'var(--text-primary)' }}>
-                        ðŸ“ {city.label}
+                        📍 {city.label}
                       </button>
                     ))}
                   </div>
@@ -457,7 +457,7 @@ export default function NewPlacePage() {
                 <div className="h-24 flex items-center justify-center"
                   style={{ background: 'linear-gradient(135deg, #fff8ed, #ffefd4)' }}>
                   <span className="text-4xl">
-                    {TYPES.find((t) => t.value === form.type)?.label.split(' ')[0] ?? 'ðŸ“'}
+                    {TYPES.find((t) => t.value === form.type)?.label.split(' ')[0] ?? '📍'}
                   </span>
                 </div>
                 <div className="p-3">
@@ -486,12 +486,12 @@ export default function NewPlacePage() {
 
             <div className="rounded-2xl p-4 text-xs leading-relaxed"
               style={{ background: 'var(--surface-amber)', border: '1px solid var(--surface-amber-border)', color: '#92400e' }}>
-              <p className="font-semibold mb-2">ðŸ’¡ Tips</p>
+              <p className="font-semibold mb-2">💡 Tips</p>
               <ul className="space-y-1.5 list-none">
-                <li>"¢ Slug is auto-generated from English name</li>
-                <li>"¢ Use ENâ†’HI button to auto-translate fields</li>
-                <li>"¢ Hindi is optional "” English is always shown as fallback</li>
-                <li>"¢ Featured places appear on the homepage</li>
+                <li>• Slug is auto-generated from English name</li>
+                <li>• Use EN→HI button to auto-translate fields</li>
+                <li>• Hindi is optional — English is always shown as fallback</li>
+                <li>• Featured places appear on the homepage</li>
               </ul>
             </div>
 
