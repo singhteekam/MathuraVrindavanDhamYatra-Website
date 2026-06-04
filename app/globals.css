@@ -364,6 +364,11 @@ body {
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* Prevent the viewport from ever scrolling horizontally.
+       Setting this on <html> (the actual scroll root) is what makes it
+       effective cross-browser — body-only clip doesn't stop iOS/Chrome
+       from letting the html element itself scroll. */
+    overflow-x: hidden;
   }
 
   body {

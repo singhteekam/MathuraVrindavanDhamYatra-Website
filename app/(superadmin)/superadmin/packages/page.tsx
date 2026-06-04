@@ -132,14 +132,14 @@ export default function SuperadminPackagesPage() {
                   <motion.tr key={pkg._id}
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                     transition={{ delay: i * 0.03 }}
-                    className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                    className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                           style={{ background: 'var(--surface-krishna)' }}>
                           <Package size={14} style={{ color: '#6366f1' }} />
                         </div>
-                        <span className="font-semibold text-gray-800 text-sm max-w-[200px] truncate">
+                        <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm max-w-[200px] truncate">
                           {str(pkg.name)}
                         </span>
                       </div>
@@ -201,7 +201,7 @@ export default function SuperadminPackagesPage() {
                 className="p-4">
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="min-w-0">
-                    <p className="font-bold text-gray-900 text-sm leading-snug truncate">{str(pkg.name)}</p>
+                    <p className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-snug truncate">{str(pkg.name)}</p>
                     <p className="text-xs text-gray-400 mt-0.5">
                       {pkg.duration}D · {formatCurrency(pkg.basePrice)}
                     </p>

@@ -26,11 +26,11 @@ interface Stats {
 }
 
 const CAR_BREAKDOWN = [
-  { name: 'Swift Dzire',    type: 'swift',  emoji: 'ðŸš—', share: 35, color: '#ff7d0f' },
+  { name: 'Swift Dzire',    type: 'swift',  emoji: '🚗', share: 35, color: '#ff7d0f' },
   { name: 'Maruti Ertiga',  type: 'ertiga', emoji: 'ðŸš', share: 28, color: '#4338ca' },
-  { name: 'Toyota Innova',  type: 'innova', emoji: 'ðŸš™', share: 22, color: '#16a34a' },
-  { name: 'Maruti Eeco',    type: 'eeco',   emoji: 'ðŸšŒ', share: 10, color: '#db2777' },
-  { name: 'Innova Crysta',  type: 'crysta', emoji: 'ðŸš˜', share:  5, color: '#d97706' },
+  { name: 'Toyota Innova',  type: 'innova', emoji: '🚙', share: 22, color: '#16a34a' },
+  { name: 'Maruti Eeco',    type: 'eeco',   emoji: '🚌', share: 10, color: '#db2777' },
+  { name: 'Innova Crysta',  type: 'crysta', emoji: '🚘', share:  5, color: '#d97706' },
 ]
 
 const TOP_PACKAGES = [
@@ -63,7 +63,7 @@ export default function AdminAnalyticsPage() {
     <div className="flex-1 p-8 pt-20 lg:pt-8">
       <div className="card rounded-2xl p-10 text-center">
         <AlertCircle size={36} className="text-red-400 mx-auto mb-3" />
-        <p className="text-gray-600">Could not load analytics data.</p>
+        <p className="text-gray-600 dark:text-gray-400">Could not load analytics data.</p>
       </div>
     </div>
   )
@@ -147,7 +147,7 @@ export default function AdminAnalyticsPage() {
               return (
                 <div key={item.label}>
                   <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="font-medium text-gray-700">{item.label}</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">{item.label}</span>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-gray-900 dark:text-gray-100">{item.value}</span>
                       <span className="text-xs text-gray-400">({pct}%)</span>
@@ -190,7 +190,7 @@ export default function AdminAnalyticsPage() {
             {CAR_BREAKDOWN.map((car) => (
               <div key={car.type}>
                 <div className="flex items-center justify-between text-sm mb-1.5">
-                  <span className="flex items-center gap-2 font-medium text-gray-700">
+                  <span className="flex items-center gap-2 font-medium text-gray-700 dark:text-gray-300">
                     <span>{car.emoji}</span>{car.name}
                   </span>
                   <span className="font-bold text-gray-900 dark:text-gray-100">{car.share}%</span>
@@ -247,10 +247,10 @@ export default function AdminAnalyticsPage() {
                         >
                           {i + 1}
                         </span>
-                        <span className="font-medium text-gray-800 text-xs">{pkg.name}</span>
+                        <span className="font-medium text-gray-800 dark:text-gray-200 text-xs">{pkg.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-semibold text-gray-800">{pkg.bookings}</td>
+                    <td className="px-4 py-3 font-semibold text-gray-800 dark:text-gray-200">{pkg.bookings}</td>
                     <td className="px-4 py-3 font-semibold text-saffron-600">{formatCurrency(pkg.revenue)}</td>
                     <td className="px-4 py-3 w-40">
                       <div className="flex items-center gap-2">

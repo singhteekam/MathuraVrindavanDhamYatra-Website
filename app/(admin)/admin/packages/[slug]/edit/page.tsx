@@ -141,7 +141,7 @@ export default function EditPackagePage() {
   if (!form) return (
     <div className="flex-1 p-8 pt-20 lg:pt-8 text-center">
       <AlertCircle size={40} className="text-red-400 mx-auto mb-3" />
-      <p className="text-gray-600">Package not found.</p>
+      <p className="text-gray-600 dark:text-gray-400">Package not found.</p>
       <Link href="/admin/packages" className="btn-primary mt-4 inline-flex text-sm">
         Back to Packages
       </Link>
@@ -156,7 +156,7 @@ export default function EditPackagePage() {
         action={
           <div className="flex gap-2">
             <Link href="/admin/packages"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
               <ArrowLeft size={14} />Cancel
             </Link>
             <button onClick={handleSave} disabled={saving} className="btn-primary text-sm py-2.5 px-5">
@@ -187,7 +187,7 @@ export default function EditPackagePage() {
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Slug (read-only)</label>
                   <input type="text" value={form.slug} disabled
-                    className="input-field bg-gray-50 text-gray-400 cursor-not-allowed font-mono text-sm" />
+                    className="input-field bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed font-mono text-sm" />
                 </div>
               </div>
 
@@ -231,7 +231,7 @@ export default function EditPackagePage() {
               {form.pricing.map((p, i) => (
                 <div key={p.carType} className="flex items-center gap-4 p-3 rounded-xl"
                   style={{ background: 'var(--bg-surface-muted)' }}>
-                  <p className="text-sm font-semibold text-gray-800 flex-1">{p.carName}</p>
+                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex-1">{p.carName}</p>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500 text-sm">₹</span>
                     <input type="number" min={0} value={p.price || ''} placeholder="0"
@@ -250,7 +250,7 @@ export default function EditPackagePage() {
           {/* Images */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
             className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-1">Photo Gallery</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1">Photo Gallery</h3>
             <p className="text-xs text-gray-400 mb-4">Upload package/tour photos via Cloudinary. First image is the main thumbnail.</p>
             <ImageManager
               images={form.images}
@@ -363,7 +363,7 @@ export default function EditPackagePage() {
               ].map((toggle) => (
                 <div key={toggle.key} className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">{toggle.label}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{toggle.label}</p>
                     <p className="text-xs text-gray-400">{toggle.desc}</p>
                   </div>
                   <button type="button"

@@ -140,7 +140,7 @@ export default function HotelForm({ initial, id, pageTitle }: Props) {
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
             {pageTitle}
@@ -198,7 +198,7 @@ export default function HotelForm({ initial, id, pageTitle }: Props) {
                   URL: /hotels/<span className="text-indigo-500 font-medium">{form.slug || 'your-slug'}</span>
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label>City</Label>
                   <select value={form.city.en} onChange={(e) => handleCityChange(e.target.value)} className="input-field text-sm">
@@ -221,7 +221,7 @@ export default function HotelForm({ initial, id, pageTitle }: Props) {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}
             className="card rounded-2xl p-5">
             <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Pricing (₹ per night)</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label>Min Price (₹)</Label>
                 <input type="number" min={0} value={form.priceRange.min}

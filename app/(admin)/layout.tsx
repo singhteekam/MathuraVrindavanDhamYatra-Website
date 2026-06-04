@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import AdminSidebarWrapper from './AdminSidebarWrapper'
+import PortalHeader from '@/components/admin/PortalHeader'
 
 export const metadata: Metadata = {
   title: {
@@ -14,6 +15,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex">
       <AdminSidebarWrapper />
       <div className="flex-1 flex flex-col min-w-0">
+        <PortalHeader role="admin" />
         {children}
       </div>
     </div>

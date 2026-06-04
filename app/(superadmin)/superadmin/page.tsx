@@ -57,7 +57,7 @@ function StatCard({
           style={{ background: bg, color }}>
           {icon}
         </div>
-        <p className="text-2xl font-bold text-gray-900 mb-0.5">{value}</p>
+        <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-0.5">{value}</p>
         <p className="text-sm text-gray-500">{label}</p>
       </Link>
     </motion.div>
@@ -141,7 +141,7 @@ export default function SuperadminDashboard() {
             <div key={i} className="card rounded-2xl p-5 animate-pulse">
               <div className="h-10 w-10 bg-gray-100 rounded-xl mb-3" />
               <div className="h-7 w-16 bg-gray-100 rounded mb-1" />
-              <div className="h-4 w-24 bg-gray-50 rounded" />
+              <div className="h-4 w-24 bg-gray-50 dark:bg-gray-800 rounded" />
             </div>
           ))}
         </div>
@@ -159,7 +159,7 @@ export default function SuperadminDashboard() {
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="card rounded-2xl p-5 mb-6">
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
             <BookOpen size={16} className="text-saffron-500" />Booking Overview
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -215,7 +215,7 @@ export default function SuperadminDashboard() {
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 + i * 0.07 }}
             className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-1">{action.title}</h3>
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1">{action.title}</h3>
             <p className="text-sm text-gray-500 mb-4 leading-relaxed">{action.desc}</p>
             <div className="flex gap-2">
               <Link href={action.href}

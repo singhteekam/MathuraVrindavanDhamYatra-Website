@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic'
 import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Search, Users, Phone, Mail, Calendar, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 import toast from 'react-hot-toast'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
 import { formatDate } from '@/lib/utils'
@@ -103,7 +104,7 @@ export default function AdminCustomersPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
-                      {['Customer', 'Contact', 'Bookings', 'Joined', 'Status'].map((h) => (
+                      {['Customer', 'Contact', 'Bookings', 'Joined', 'Status', ''].map((h) => (
                         <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{h}</th>
                       ))}
                     </tr>
@@ -148,6 +149,13 @@ export default function AdminCustomersPage() {
                             {c.isActive ? 'Active' : 'Inactive'}
                           </span>
                         </td>
+                        <td className="px-4 py-3">
+                          <Link href={`/admin/customers/${c._id}`}
+                            className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+                            style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
+                            View
+                          </Link>
+                        </td>
                       </motion.tr>
                     ))}
                   </tbody>
@@ -188,14 +196,14 @@ export default function AdminCustomersPage() {
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-400">Page {page} of {totalPages} Â· {total} total</p>
+                  <p className="text-xs text-gray-400">Page {page} of {totalPages} · {total} total</p>
                   <div className="flex gap-2">
                     <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
-                      className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-40 transition-colors">
+                      className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 transition-colors">
                       <ChevronLeft size={15} />
                     </button>
                     <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                      className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-40 transition-colors">
+                      className="p-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 transition-colors">
                       <ChevronRight size={15} />
                     </button>
                   </div>

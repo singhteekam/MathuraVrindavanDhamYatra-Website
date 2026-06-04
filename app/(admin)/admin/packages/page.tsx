@@ -114,7 +114,8 @@ export default function AdminPackagesPage() {
         </div>
       ) : (
         <div className="card rounded-2xl overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-160">
             <thead>
               <tr style={{ background: 'var(--bg-surface-muted)', borderBottom: '1px solid var(--border-muted)' }}>
                 {['Package', 'Duration', 'Price', 'Bookings', 'Rating', 'Status', 'Actions'].map((h) => (
@@ -136,7 +137,7 @@ export default function AdminPackagesPage() {
                   <td className="px-4 py-3">
                     <div>
                       <p className="font-semibold text-gray-800 dark:text-gray-200 text-sm">{str(pkg.name)}</p>
-                      <p className="text-xs text-gray-400">{pkg.cities.join(' Â· ')}</p>
+                      <p className="text-xs text-gray-400">{pkg.cities.join(' · ')}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -201,6 +202,7 @@ export default function AdminPackagesPage() {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

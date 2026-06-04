@@ -163,7 +163,7 @@ export default function AdminReviewsPage() {
         crumbs={[{ label: 'Reviews' }]}
         action={
           <button type="button" onClick={fetchReviews}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
             <RefreshCw size={14} /> Refresh
           </button>
         }
@@ -272,7 +272,7 @@ export default function AdminReviewsPage() {
                 <div className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
 
-                    {/* Left â€” review content */}
+                    {/* Left "” review content */}
                     <div className="flex-1 min-w-0">
                       {/* Customer + rating row */}
                       <div className="flex flex-wrap items-center gap-3 mb-3">
@@ -281,7 +281,7 @@ export default function AdminReviewsPage() {
                           {review.customer.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-bold text-gray-900 text-sm leading-tight">{review.customer.name}</p>
+                          <p className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-tight">{review.customer.name}</p>
                           <p className="text-xs text-gray-400 truncate">{review.customer.email}</p>
                         </div>
                         <StarDisplay count={review.rating} />
@@ -294,9 +294,9 @@ export default function AdminReviewsPage() {
                         </span>
                       </div>
 
-                      {/* Review text â€” EN */}
+                      {/* Review text "” EN */}
                       <p className="font-semibold text-gray-800 text-sm mb-0.5">{str(review.title)}</p>
-                      <p className="text-sm text-gray-600 leading-relaxed mb-1">{str(review.comment)}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-1">{str(review.comment)}</p>
 
                       {/* Hindi translation (shown when available) */}
                       {strHi(review.title) && (
@@ -328,7 +328,7 @@ export default function AdminReviewsPage() {
                       </div>
                     </div>
 
-                    {/* Right â€” action buttons */}
+                    {/* Right "” action buttons */}
                     <div className="flex sm:flex-col gap-2 flex-shrink-0">
                       {/* Approve / Unpublish */}
                       <button type="button"

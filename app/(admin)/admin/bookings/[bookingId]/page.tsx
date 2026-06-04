@@ -209,7 +209,7 @@ export default function AdminBookingDetailPage() {
   if (!booking) return (
     <div className="flex-1 p-8 pt-20 lg:pt-8 text-center">
       <AlertCircle size={40} className="text-red-400 mx-auto mb-3" />
-      <p className="text-gray-600">Booking not found.</p>
+      <p className="text-gray-600 dark:text-gray-400">Booking not found.</p>
       <Link href="/admin/bookings" className="btn-primary mt-4 inline-flex text-sm">
         Back to Bookings
       </Link>
@@ -245,12 +245,12 @@ export default function AdminBookingDetailPage() {
           className="card rounded-2xl p-5 mb-6"
         >
           <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-4">Trip Progress</h3>
-          <div className="flex items-center">
+          <div className="flex items-end">
             {STATUS_STEPS.map((step, i) => (
               <div key={step} className="flex items-center flex-1 min-w-0">
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center min-w-0 flex-1">
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shrink-0"
                     style={i <= currentStepIndex
                       ? { background: '#ff7d0f', color: '#fff' }
                       : { background: 'var(--bg-surface-muted)', color: 'var(--text-faint)' }
@@ -258,13 +258,13 @@ export default function AdminBookingDetailPage() {
                   >
                     {i < currentStepIndex ? <CheckCircle size={14} /> : i + 1}
                   </div>
-                  <p className="text-center font-medium whitespace-nowrap mt-1.5"
-                    style={{ color: i <= currentStepIndex ? '#ff7d0f' : 'var(--text-faint)', fontSize: '10px' }}>
+                  <p className="text-center font-medium mt-1.5 leading-tight w-full px-0.5"
+                    style={{ color: i <= currentStepIndex ? '#ff7d0f' : 'var(--text-faint)', fontSize: '9px', wordBreak: 'break-word' }}>
                     {STATUS_LABELS[step]}
                   </p>
                 </div>
                 {i < STATUS_STEPS.length - 1 && (
-                  <div className="flex-1 h-0.5 mx-1 mb-4"
+                  <div className="w-4 sm:w-6 h-0.5 shrink-0 mb-4 mx-0.5"
                     style={{ background: i < currentStepIndex ? '#ff7d0f' : 'var(--bg-surface-muted)' }} />
                 )}
               </div>

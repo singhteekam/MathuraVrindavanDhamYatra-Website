@@ -135,7 +135,7 @@ export default function RestaurantForm({ initial, id, pageTitle }: Props) {
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100" style={{ fontFamily: 'var(--font-serif)' }}>
             {pageTitle}
@@ -193,7 +193,7 @@ export default function RestaurantForm({ initial, id, pageTitle }: Props) {
                   URL: /restaurants/<span className="text-orange-500 font-medium">{form.slug || 'your-slug'}</span>
                 </p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label>City</Label>
                   <select value={form.city.en} onChange={(e) => handleCityChange(e.target.value)} className="input-field text-sm">
@@ -221,7 +221,7 @@ export default function RestaurantForm({ initial, id, pageTitle }: Props) {
                 enPlaceholder="e.g. Temple Restaurant" hiPlaceholder="e.g. मंदिर रेस्तराँ" />
               <BilingualInput label="Specialty" value={form.specialty} onChange={(v) => setBL('specialty', v)}
                 enPlaceholder="e.g. Peda, Mathura Peda, Kachori" hiPlaceholder="e.g. पेड़ा, मथुरा पेड़ा, कचौरी" />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <BilingualInput label="Price Range" value={form.priceRange} onChange={(v) => setBL('priceRange', v)}
                   enPlaceholder="e.g. ₹50–200" hiPlaceholder="e.g. ₹50–200" />
                 <BilingualInput label="Timings" value={form.timings} onChange={(v) => setBL('timings', v)}

@@ -179,8 +179,8 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           {/* Main content */}
-          <article className="flex-1 min-w-0">
-            <div className="card rounded-2xl p-6 md:p-8">
+          <article className="flex-1 min-w-0 overflow-hidden">
+            <div className="card rounded-2xl p-6 md:p-8 overflow-hidden">
               {post.content.map((block, i) => renderBlock(block, t, i))}
             </div>
           </article>

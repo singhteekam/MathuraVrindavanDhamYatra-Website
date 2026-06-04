@@ -130,10 +130,11 @@ export async function GET(req: NextRequest) {
     await connectDB()
 
     const { searchParams } = new URL(req.url)
-    const page   = Number(searchParams.get('page')   ?? 1)
-    const limit  = Number(searchParams.get('limit')  ?? 10)
-    const status = searchParams.get('status')
-    const skip   = (page - 1) * limit
+    const page       = Number(searchParams.get('page')       ?? 1)
+    const limit      = Number(searchParams.get('limit')      ?? 10)
+    const status     = searchParams.get('status')
+    const customerId = searchParams.get('customerId')
+    const skip       = (page - 1) * limit
 
     const user   = session.user as { id: string; role: string }
     const filter: Record<string, unknown> = {}
@@ -151,6 +152,10 @@ export async function GET(req: NextRequest) {
     }
 
     if (status) filter.status = status
+    // Admin can filter by specific customer
+    if (customerId && (user.role === 'admin' || user.role === 'superadmin')) {
+      filter.customer = customerId
+    }
 
     const [bookings, total] = await Promise.all([
       Booking.find(filter)

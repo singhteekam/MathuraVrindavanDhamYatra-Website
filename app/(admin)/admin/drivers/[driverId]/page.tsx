@@ -185,7 +185,7 @@ export default function DriverDetailPage() {
   if (!driver) return (
     <div className="flex-1 p-8 pt-20 lg:pt-8 text-center">
       <AlertCircle size={40} className="text-red-400 mx-auto mb-3" />
-      <p className="text-gray-600">Driver not found.</p>
+      <p className="text-gray-600 dark:text-gray-400">Driver not found.</p>
       <Link href="/admin/drivers" className="btn-primary mt-4 inline-flex text-sm">Back to Drivers</Link>
     </div>
   )
@@ -225,7 +225,7 @@ export default function DriverDetailPage() {
 
           {/* Personal Info */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <User size={15} className="text-saffron-500" />Personal Information
             </h3>
 
@@ -248,7 +248,7 @@ export default function DriverDetailPage() {
                 )}
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-700 mb-2">Driver Photo</p>
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Driver Photo</p>
                 <ImageUploadButton
                   label="Upload Photo"
                   loading={!!uploading.avatar}
@@ -288,7 +288,7 @@ export default function DriverDetailPage() {
 
           {/* KYC Documents */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <FileText size={15} className="text-saffron-500" />KYC Documents
             </h3>
 
@@ -347,7 +347,7 @@ export default function DriverDetailPage() {
 
           {/* Status */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <Shield size={15} className="text-saffron-500" />Status
             </h3>
             <div className="space-y-3">
@@ -370,7 +370,7 @@ export default function DriverDetailPage() {
 
           {/* Vehicle */}
           <div className="card rounded-2xl p-5">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
               <Car size={15} className="text-saffron-500" />Vehicle
             </h3>
             <div className="space-y-3">
@@ -408,7 +408,7 @@ export default function DriverDetailPage() {
 
           {/* Rating */}
           <div className="card rounded-2xl p-4">
-            <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
               <Star size={14} className="text-saffron-500" />Driver Rating
             </h3>
             <div className="flex items-center gap-3 mb-3">
@@ -515,7 +515,7 @@ function Toggle({ label, description, checked, onChange, activeColor }: {
   return (
     <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
       <div>
-        <p className="text-sm font-semibold text-gray-800">{label}</p>
+        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{label}</p>
         <p className="text-xs text-gray-400">{description}</p>
       </div>
       <button

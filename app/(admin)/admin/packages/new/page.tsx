@@ -146,7 +146,7 @@ export default function NewPackagePage() {
                   label="Package Name"
                   required
                   enPlaceholder="Same Day Mathura Vrindavan Tour"
-                  hiPlaceholder="à¤®à¤¥à¥à¤°à¤¾ à¤µà¥ƒà¤¨à¥à¤¦à¤¾à¤µà¤¨ à¤¦à¤°à¥à¤¶à¤¨"
+                  hiPlaceholder="मथुरा वृन्दावन दर्शन"
                 />
 
                 <div>
@@ -166,7 +166,7 @@ export default function NewPackagePage() {
                   type="textarea"
                   rows={2}
                   enPlaceholder="Brief description shown on listing pages..."
-                  hiPlaceholder="à¤¸à¤‚à¤•à¥à¤·à¤¿à¤ªà¥à¤¤ à¤µà¤¿à¤µà¤°à¤£..."
+                  hiPlaceholder="संक्षिप्त विवरण..."
                 />
 
                 <div className="grid grid-cols-3 gap-4">
@@ -185,7 +185,7 @@ export default function NewPackagePage() {
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Base Price (â‚¹)</label>
+                    <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1.5 uppercase tracking-wide">Base Price (₹)</label>
                     <input type="number" min={0}
                       value={form.basePrice}
                       onChange={(e) => setForm({ ...form, basePrice: Number(e.target.value) })}
@@ -198,7 +198,7 @@ export default function NewPackagePage() {
             {/* Images */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}
               className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-1">Photo Gallery</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1">Photo Gallery</h3>
               <p className="text-xs text-gray-400 mb-4">Upload package photos. First image becomes the main thumbnail.</p>
               <ImageManager
                 images={form.images}
@@ -217,9 +217,9 @@ export default function NewPackagePage() {
                 {form.pricing.map((p, i) => (
                   <div key={p.carType} className="flex items-center gap-4 p-3 rounded-xl"
                     style={{ background: 'var(--bg-surface-muted)' }}>
-                    <p className="text-sm font-semibold text-gray-800 flex-1">{p.carName}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 flex-1">{p.carName}</p>
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-500 text-sm">â‚¹</span>
+                      <span className="text-gray-500 text-sm">₹</span>
                       <input type="number" min={0} placeholder="0"
                         value={p.price || ''}
                         onChange={(e) => setForm({ ...form, pricing: updatePricingItem(form.pricing, i, Number(e.target.value)) })}
@@ -268,7 +268,7 @@ export default function NewPackagePage() {
                     <span className="text-sm text-gray-700 dark:text-gray-300">{toggle.label}</span>
                     <button type="button"
                       onClick={() => setForm({ ...form, [toggle.key]: !form[toggle.key as keyof typeof form] })}
-                      className="relative w-10 h-5 rounded-full transition-all duration-200"
+                      className="relative w-10 h-5 rounded-full overflow-hidden transition-all duration-200"
                       style={{ background: form[toggle.key as keyof typeof form] ? '#ff7d0f' : '#d1d5db' }}>
                       <span className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all duration-200"
                         style={{ left: form[toggle.key as keyof typeof form] ? '20px' : '2px' }} />

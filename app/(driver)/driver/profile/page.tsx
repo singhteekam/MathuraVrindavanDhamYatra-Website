@@ -139,7 +139,7 @@ export default function DriverProfilePage() {
         initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
         className="card rounded-2xl p-6"
       >
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Car size={18} className="text-saffron-500" />
           Vehicle Details
         </h3>

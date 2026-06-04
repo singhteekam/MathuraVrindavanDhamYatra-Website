@@ -28,7 +28,7 @@ export default function CTASection() {
   }
 
   return (
-    <section className="py-20 section-divine">
+    <section className="py-20 section-divine overflow-hidden">
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 

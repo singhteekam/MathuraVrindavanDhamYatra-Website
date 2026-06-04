@@ -293,7 +293,7 @@ export default function SuperadminNewPlacePage() {
         </div>
         <div className="flex gap-2">
           <Link href="/superadmin/places"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
             <ArrowLeft size={14} /> Cancel
           </Link>
           <button type="button" onClick={handleSubmit} disabled={saving}
@@ -412,7 +412,7 @@ export default function SuperadminNewPlacePage() {
             {/* Images */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.06 }} className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-1">Photo Gallery</h3>
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1">Photo Gallery</h3>
               <p className="text-xs text-gray-400 mb-4">First image = main thumbnail on cards and homepage.</p>
               <ImageManager
                 images={form.images}
@@ -607,7 +607,7 @@ export default function SuperadminNewPlacePage() {
             {/* Location */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12 }} className="card rounded-2xl p-5">
-              <h3 className="font-bold text-gray-900 mb-1 flex items-center gap-2">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-2">
                 <MapPin size={16} className="text-indigo-500" />Location
               </h3>
               <p className="text-xs text-gray-400 mb-4">Used for Google Maps directions link.</p>
@@ -619,7 +619,7 @@ export default function SuperadminNewPlacePage() {
                   enPlaceholder="e.g. Near Mathura Junction, Mathura, UP 281001"
                   hiPlaceholder="e.g. मथुरा जंक्शन के पास, मथुरा, UP 281001"
                 />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label>Latitude</Label>
                     <input type="number" step="0.0001" value={form.location.lat || ''}
@@ -708,7 +708,7 @@ export default function SuperadminNewPlacePage() {
               <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4">Settings</h3>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">Featured</p>
+                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">Featured</p>
                   <p className="text-xs text-gray-400 mt-0.5">Show on homepage</p>
                 </div>
                 <button type="button"

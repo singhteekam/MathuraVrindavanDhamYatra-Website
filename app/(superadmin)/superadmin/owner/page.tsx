@@ -47,8 +47,8 @@ function BLInput({
   const cls = 'input-field text-sm'
   return (
     <div>
-      <p className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">{label}</p>
-      <div className="grid grid-cols-2 gap-3">
+      <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">{label}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* English */}
         <div>
           <p className="text-[10px] text-gray-400 mb-1 font-medium">🇬🇧 English</p>
@@ -103,7 +103,7 @@ function Toggle({ checked, onChange, label, desc }: {
   return (
     <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
       <div>
-        <p className="text-sm font-semibold text-gray-800">{label}</p>
+        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{label}</p>
         <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
       </div>
       <button type="button" onClick={onChange}
@@ -345,8 +345,8 @@ export default function SuperadminOwnerPage() {
           {[1, 2, 3].map((i) => (
             <div key={i} className="card rounded-2xl p-6 animate-pulse">
               <div className="h-5 w-40 bg-gray-100 rounded mb-4" />
-              <div className="h-10 bg-gray-50 rounded-xl mb-3" />
-              <div className="h-10 bg-gray-50 rounded-xl" />
+              <div className="h-10 bg-gray-50 dark:bg-gray-800 rounded-xl mb-3" />
+              <div className="h-10 bg-gray-50 dark:bg-gray-800 rounded-xl" />
             </div>
           ))}
         </div>
@@ -358,7 +358,7 @@ export default function SuperadminOwnerPage() {
     <div className="flex-1 p-6 lg:p-8 pt-20 lg:pt-8 overflow-auto">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <div className="flex items-center gap-2 mb-0.5">
             <ShieldCheck size={16} className="text-indigo-500" />

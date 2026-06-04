@@ -303,10 +303,8 @@ export default function Navbar() {
                 <ThemeSwitcher />
               </div>
 
-              {/* Language switcher — hidden on xs (available in mobile drawer) */}
-              <div className="hidden sm:block">
-                <LanguageSwitcher />
-              </div>
+              {/* Language switcher — always visible */}
+              <LanguageSwitcher />
 
               {/* Auth section */}
               {isLoading ? (
@@ -345,7 +343,7 @@ export default function Navbar() {
             <motion.aside
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-              className="fixed right-0 top-0 h-full w-80 max-w-[90vw] bg-white dark:bg-gray-900 z-50 lg:hidden flex flex-col overflow-y-auto"
+              className="fixed right-0 top-0 h-dvh w-80 max-w-[90vw] bg-white dark:bg-gray-900 z-50 lg:hidden flex flex-col"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
@@ -370,8 +368,8 @@ export default function Navbar() {
                 </button>
               </div>
 
-              {/* Nav items */}
-              <nav className="flex-1 p-4 space-y-0.5">
+              {/* Nav items — only this section scrolls, header/footer stay pinned */}
+              <nav className="flex-1 p-4 space-y-0.5 overflow-y-auto">
                 {NAV_ITEMS.map((item) => (
                   <div key={item.labelKey}>
                     {item.children ? (

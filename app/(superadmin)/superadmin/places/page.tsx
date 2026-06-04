@@ -159,7 +159,7 @@ export default function SuperadminPlacesPage() {
                 <p className="text-xs text-gray-400 flex items-center gap-1 mb-0.5">
                   <MapPin size={9} />{str(place.city)}
                 </p>
-                <h3 className="font-bold text-gray-900 text-sm leading-tight mb-2 line-clamp-2">
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm leading-tight mb-2 line-clamp-2">
                   {str(place.name)}
                 </h3>
 

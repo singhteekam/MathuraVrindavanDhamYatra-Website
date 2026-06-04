@@ -51,7 +51,7 @@ export default function AdminEnquiriesPage() {
         crumbs={[{ label: 'Enquiries' }]}
         action={
           <button onClick={fetchEnquiries}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
             <RefreshCw size={14} /> Refresh
           </button>
         }
@@ -109,7 +109,7 @@ export default function AdminEnquiriesPage() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="font-bold text-gray-900 text-sm">{enq.name}</p>
+                        <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">{enq.name}</p>
                         {!enq.isRead && (
                           <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                             style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
@@ -126,7 +126,7 @@ export default function AdminEnquiriesPage() {
                     </div>
                   </div>
 
-                  <p className="text-sm text-gray-700 leading-relaxed mb-3">{enq.message}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-3">{enq.message}</p>
 
                   <div className="flex flex-wrap gap-3 text-xs text-gray-500">
                     {enq.tourDate && (

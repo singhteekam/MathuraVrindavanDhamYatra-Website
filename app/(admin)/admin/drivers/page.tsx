@@ -272,7 +272,7 @@ export default function AdminDriversPage() {
                     </div>
                   )}
                   <div>
-                    <p className="font-bold text-gray-900 text-sm">{driver.name}</p>
+                    <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">{driver.name}</p>
                     <p className="text-xs text-gray-400 flex items-center gap-1">
                       <Phone size={10} /> {driver.phone}
                     </p>
@@ -314,7 +314,7 @@ export default function AdminDriversPage() {
                   { label: 'Rating', value: driver.rating.toFixed(1) },
                 ].map((s) => (
                   <div key={s.label}>
-                    <p className="font-bold text-gray-900 text-base">{s.value}</p>
+                    <p className="font-bold text-gray-900 dark:text-gray-100 text-base">{s.value}</p>
                     <p className="text-xs text-gray-400">{s.label}</p>
                   </div>
                 ))}
@@ -366,11 +366,11 @@ export default function AdminDriversPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
           >
             {/* Header */}
-            <div className="sticky top-0 bg-white z-10 flex items-center justify-between p-5 border-b border-gray-100 rounded-t-2xl">
-              <h3 className="font-bold text-gray-900 text-lg">Driver Details</h3>
+            <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800 rounded-t-2xl">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">Driver Details</h3>
               <div className="flex items-center gap-2">
                 {viewDriver && (
                   <Link href={`/admin/drivers/${viewDriver._id}`}
@@ -378,7 +378,7 @@ export default function AdminDriversPage() {
                     <Pencil size={12} />Edit
                   </Link>
                 )}
-                <button onClick={() => setViewDriver(null)} className="p-1.5 rounded-lg hover:bg-gray-100">
+                <button onClick={() => setViewDriver(null)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                   <X size={18} className="text-gray-500" />
                 </button>
               </div>
@@ -409,8 +409,8 @@ export default function AdminDriversPage() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-xl font-bold text-gray-900 truncate">{viewDriver.name}</h2>
-                    <p className="text-sm text-gray-500 mb-2">{viewDriver.gender ? viewDriver.gender.charAt(0).toUpperCase() + viewDriver.gender.slice(1) : 'â€”'}</p>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 truncate">{viewDriver.name}</h2>
+                    <p className="text-sm text-gray-500 mb-2">{viewDriver.gender ? viewDriver.gender.charAt(0).toUpperCase() + viewDriver.gender.slice(1) : '"”'}</p>
                     <div className="flex flex-wrap gap-2">
                       <span className="text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1"
                         style={viewDriver.isVerified
@@ -435,7 +435,7 @@ export default function AdminDriversPage() {
                   {[
                     { label: 'Total Trips', value: viewDriver.totalTrips,                     icon: <Car size={14} />,         color: '#4338ca', bg: 'var(--surface-krishna)' },
                     { label: 'Rating',      value: `${viewDriver.rating.toFixed(1)} â˜…`,       icon: <Star size={14} />,        color: '#d97706', bg: 'var(--surface-amber)' },
-                    { label: 'Earnings',    value: `â‚¹${(viewDriver.earnings ?? 0).toLocaleString('en-IN')}`, icon: <IndianRupee size={14} />, color: '#16a34a', bg: 'var(--surface-green)' },
+                    { label: 'Earnings',    value: `₹${(viewDriver.earnings ?? 0).toLocaleString('en-IN')}`, icon: <IndianRupee size={14} />, color: '#16a34a', bg: 'var(--surface-green)' },
                   ].map(s => (
                     <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: s.bg }}>
                       <div className="flex justify-center mb-1" style={{ color: s.color }}>{s.icon}</div>
@@ -458,7 +458,7 @@ export default function AdminDriversPage() {
                         <div className="mt-0.5 text-saffron-500 shrink-0">{row.icon}</div>
                         <div>
                           <p className="text-xs text-gray-400">{row.label}</p>
-                          <p className="text-sm font-semibold text-gray-800 font-mono break-all">{row.value || 'â€”'}</p>
+                          <p className="text-sm font-semibold text-gray-800 font-mono break-all">{row.value || '"”'}</p>
                         </div>
                       </div>
                     ))}
@@ -489,7 +489,7 @@ export default function AdminDriversPage() {
                       ].map(r => (
                         <div key={r.label}>
                           <p className="text-xs text-gray-400">{r.label}</p>
-                          <p className="font-semibold text-gray-800 font-mono">{r.value || 'â€”'}</p>
+                          <p className="font-semibold text-gray-800 font-mono">{r.value || '"”'}</p>
                         </div>
                       ))}
                     </div>
@@ -505,12 +505,12 @@ export default function AdminDriversPage() {
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs font-medium text-gray-600">Aadhaar Card</p>
                       {viewDriver.aadharNumber && (
-                        <span className="text-xs font-mono text-gray-700 bg-white px-2 py-0.5 rounded-lg border border-gray-200">
+                        <span className="text-xs font-mono text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 px-2 py-0.5 rounded-lg border border-gray-200">
                           {viewDriver.aadharNumber}
                         </span>
                       )}
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <p className="text-xs text-gray-400 mb-1.5">Front</p>
                         {viewDriver.aadharFront ? (
@@ -537,7 +537,7 @@ export default function AdminDriversPage() {
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs font-medium text-gray-600">PAN Card <span className="text-gray-400 font-normal">(optional)</span></p>
                       {viewDriver.panNumber && (
-                        <span className="text-xs font-mono text-gray-700 bg-white px-2 py-0.5 rounded-lg border border-gray-200">
+                        <span className="text-xs font-mono text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 px-2 py-0.5 rounded-lg border border-gray-200">
                           {viewDriver.panNumber}
                         </span>
                       )}
@@ -588,11 +588,11 @@ export default function AdminDriversPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
           >
-            <div className="sticky top-0 bg-white z-10 flex items-center justify-between p-5 border-b border-gray-100 rounded-t-2xl">
-              <h3 className="font-bold text-gray-900 text-lg">Add New Driver</h3>
-              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-gray-100">
+            <div className="sticky top-0 bg-white dark:bg-gray-900 z-10 flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800 rounded-t-2xl">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg">Add New Driver</h3>
+              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                 <X size={18} className="text-gray-500" />
               </button>
             </div>
@@ -601,7 +601,7 @@ export default function AdminDriversPage() {
 
               {/* Driver Photo */}
               <div>
-                <p className="text-xs font-semibold text-gray-600 mb-2 uppercase tracking-wide">Driver Photo</p>
+                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wide">Driver Photo</p>
                 <div className="flex items-center gap-4">
                   <div className="relative shrink-0">
                     {form.avatar ? (
@@ -632,40 +632,40 @@ export default function AdminDriversPage() {
 
               {/* Personal Info */}
               <div>
-                <p className="text-xs font-semibold text-gray-600 mb-3 uppercase tracking-wide">Personal Info</p>
-                <div className="grid grid-cols-2 gap-3">
+                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-3 uppercase tracking-wide">Personal Info</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Full Name *</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Full Name *</label>
                     <input type="text" placeholder="Driver name" required
                       value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Phone *</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Phone *</label>
                     <input type="tel" placeholder="+91 9999999999" required
                       value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Email *</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Email *</label>
                     <input type="email" placeholder="driver@email.com" required
                       value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Password *</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Password *</label>
                     <input type="password" placeholder="Min 6 characters" required
                       value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">License Number *</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">License Number *</label>
                     <input type="text" placeholder="UP85 20230012345" required
                       value={form.licenseNumber} onChange={(e) => setForm({ ...form, licenseNumber: e.target.value })}
                       className="input-field" />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Gender</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Gender</label>
                     <select value={form.gender} onChange={(e) => setForm({ ...form, gender: e.target.value })}
                       className="input-field">
                       <option value="male">Male</option>
@@ -678,16 +678,16 @@ export default function AdminDriversPage() {
 
               {/* KYC Documents */}
               <div className="p-4 rounded-xl space-y-4" style={{ background: 'var(--bg-surface-muted)' }}>
-                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">KYC Documents</p>
+                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">KYC Documents</p>
 
                 {/* Aadhaar */}
                 <div>
-                  <p className="text-xs font-medium text-gray-500 mb-2">Aadhaar Card</p>
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Aadhaar Card</p>
                   <input type="text" placeholder="XXXX XXXX XXXX"
                     value={form.aadharNumber}
                     onChange={(e) => setForm({ ...form, aadharNumber: e.target.value })}
                     className="input-field text-sm py-2 mb-3" />
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <p className="text-xs text-gray-400 mb-1.5">Front Side</p>
                       <ModalUploadSlot
@@ -711,10 +711,10 @@ export default function AdminDriversPage() {
 
                 {/* PAN Card */}
                 <div>
-                  <p className="text-xs font-medium text-gray-500 mb-2">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                     PAN Card <span className="font-normal text-gray-400">(optional)</span>
                   </p>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <input type="text" placeholder="ABCDE1234F"
                         value={form.panNumber}
@@ -735,10 +735,10 @@ export default function AdminDriversPage() {
 
               {/* Vehicle */}
               <div className="p-4 rounded-xl space-y-3" style={{ background: 'var(--bg-surface-muted)' }}>
-                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Vehicle Details</p>
-                <div className="grid grid-cols-2 gap-3">
+                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Vehicle Details</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Vehicle Type *</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Vehicle Type *</label>
                     <select
                       value={form.vehicle.type}
                       onChange={(e) => {
@@ -751,14 +751,14 @@ export default function AdminDriversPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">Vehicle Number *</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Vehicle Number *</label>
                     <input type="text" placeholder="UP85AB1234" required
                       value={form.vehicle.number}
                       onChange={(e) => setForm({ ...form, vehicle: { ...form.vehicle, number: e.target.value.toUpperCase() } })}
                       className="input-field text-sm py-2" />
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-xs text-gray-500 mb-1">Color</label>
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Color</label>
                     <input type="text" placeholder="White / Silver / Grey..."
                       value={form.vehicle.color}
                       onChange={(e) => setForm({ ...form, vehicle: { ...form.vehicle, color: e.target.value } })}

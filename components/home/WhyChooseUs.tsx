@@ -21,7 +21,7 @@ export default function WhyChooseUs() {
 
   return (
     <section
-      className="py-20"
+      className="py-20 overflow-hidden"
       style={{ background: 'var(--bg-why-us)' }}
     >
       <div className="container-custom">
