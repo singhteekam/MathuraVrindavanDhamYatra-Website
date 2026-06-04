@@ -8,12 +8,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, MapPin, Package, Users, Settings,
   LogOut, Menu, X, Key, ShieldCheck, ChevronRight,
-  UtensilsCrossed, Hotel, UserCircle,
+  UtensilsCrossed, Hotel, UserCircle, Activity,
 } from 'lucide-react'
 import SimpleThemeSwitcher from '@/components/shared/SimpleThemeSwitcher'
 
 const NAV = [
-  { href: '/superadmin',               icon: <LayoutDashboard  size={18} />, label: 'Dashboard'   },
+  { href: '/superadmin',                    icon: <LayoutDashboard size={18} />, label: 'Dashboard'   },
+  { href: '/superadmin/visitor-analytics',  icon: <Activity        size={18} />, label: 'Visitors'     },
   { href: '/superadmin/places',        icon: <MapPin           size={18} />, label: 'Places'      },
   { href: '/superadmin/packages',      icon: <Package          size={18} />, label: 'Packages'    },
   { href: '/superadmin/restaurants',   icon: <UtensilsCrossed  size={18} />, label: 'Restaurants' },
