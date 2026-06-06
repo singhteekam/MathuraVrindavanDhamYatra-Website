@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import crypto          from 'crypto'
 import { connectDB }   from '@/lib/db'
 import User            from '@/models/User'
 import { sendOTPEmail } from '@/lib/email'
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
       return errorResponse('OTP already sent. Please wait a moment before requesting again.', 429)
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString()
+    const otp = crypto.randomInt(100000, 1000000).toString()
 
     // updateOne bypasses any Document-level issues — writes directly to MongoDB
     await User.updateOne(

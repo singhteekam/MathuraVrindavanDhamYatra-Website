@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 import { connectDB } from '@/lib/db'
 import User from '@/models/User'
 import { sendOTPEmail } from '@/lib/email'
@@ -13,8 +14,8 @@ export async function POST(req: NextRequest) {
       return errorResponse('All fields are required.')
     }
 
-    if (password.length < 6) {
-      return errorResponse('Password must be at least 6 characters.')
+    if (password.length < 8) {
+      return errorResponse('Password must be at least 8 characters.')
     }
 
     await connectDB()
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
     if (existing) {
       if (!existing.emailVerified) {
         // Account exists but unverified — resend OTP via atomic updateOne
-        const otp = Math.floor(100000 + Math.random() * 900000).toString()
+        const otp = crypto.randomInt(100000, 1000000).toString()
         await User.updateOne(
           { _id: existing._id },
           { $set: { otpCode: otp, otpExpiry: new Date(Date.now() + 10 * 60 * 1000) } },
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
     })
 
     // Write OTP fields atomically after creation — bypasses any schema-caching issues
-    const otp = Math.floor(100000 + Math.random() * 900000).toString()
+    const otp = crypto.randomInt(100000, 1000000).toString()
     await User.updateOne(
       { _id: user._id },
       { $set: { otpCode: otp, otpExpiry: new Date(Date.now() + 10 * 60 * 1000) } },

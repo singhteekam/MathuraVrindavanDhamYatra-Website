@@ -16,13 +16,19 @@ export async function POST(req: NextRequest) {
       return errorResponse('Name, phone, and message are required.')
     }
 
+    // Length guards — prevent oversized payloads and spam
+    if (name.trim().length > 100)    return errorResponse('Name is too long.')
+    if (phone.trim().length > 20)    return errorResponse('Invalid phone number.')
+    if (message.trim().length > 2000) return errorResponse('Message must be under 2000 characters.')
+    if (email && email.trim().length > 254) return errorResponse('Invalid email address.')
+
     await connectDB()
 
     const contact = await Contact.create({
-      name:       name.trim(),
-      phone:      phone.trim(),
-      email:      email?.trim(),
-      message:    message.trim(),
+      name:       name.trim().slice(0, 100),
+      phone:      phone.trim().slice(0, 20),
+      email:      email?.trim().slice(0, 254),
+      message:    message.trim().slice(0, 2000),
       tourDate,
       passengers,
     })

@@ -40,9 +40,18 @@ export async function POST(req: NextRequest) {
 
     const isFullPayment = paymentType === 'full'
     const amountPaid    = Number(paidAmount) || 0
+    const userId        = (session.user as { id?: string }).id
+
+    // Verify booking belongs to this user before updating (prevents one user
+    // confirming another user's payment)
+    const existingBooking = await Booking.findOne({ bookingId }).lean()
+    if (!existingBooking) return errorResponse('Booking not found.', 404)
+    if (String(existingBooking.customer) !== String(userId)) {
+      return errorResponse('Forbidden.', 403)
+    }
 
     const booking = await Booking.findOneAndUpdate(
-      { bookingId },
+      { bookingId, customer: userId },
       {
         $set: {
           paymentId:          razorpay_payment_id,

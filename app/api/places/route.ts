@@ -6,23 +6,29 @@ import Place from '@/models/Place'
 import { revalidateTag }  from 'next/cache'
 import { successResponse, errorResponse, paginatedResponse } from '@/lib/apiResponse'
 
+// Escape special regex characters to prevent ReDoS attacks
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 // GET /api/places — public
 export async function GET(req: NextRequest) {
   try {
     await connectDB()
 
     const { searchParams } = new URL(req.url)
-    const page     = Number(searchParams.get('page')     ?? 1)
-    const limit    = Number(searchParams.get('limit')    ?? 20)
-    const city     = searchParams.get('city')
-    const type     = searchParams.get('type')
+    const page     = Math.max(1, Number(searchParams.get('page')  ?? 1))
+    const limit    = Math.min(100, Math.max(1, Number(searchParams.get('limit') ?? 20)))
+    const city     = searchParams.get('city')?.slice(0, 100)
+    const type     = searchParams.get('type')?.slice(0, 100)
     const featured = searchParams.get('featured') === 'true'
-    const search   = searchParams.get('search')
+    const rawSearch = searchParams.get('search')?.slice(0, 100) // cap length to prevent abuse
+    const search   = rawSearch ? escapeRegex(rawSearch) : null
     const skip     = (page - 1) * limit
 
     const filter: Record<string, unknown> = {}
     if (city) {
-      const re = { $regex: city, $options: 'i' }
+      const re = { $regex: escapeRegex(city), $options: 'i' }
       filter.$and = [{ $or: [{ 'city.en': re }, { city: re }] }]
     }
     if (type) {
