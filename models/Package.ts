@@ -33,8 +33,11 @@ export interface IPackageDoc extends Document {
   isFeatured: boolean
   isPopular: boolean
   rating: number
-  totalReviews: number
-  totalBookings: number
+  totalReviews:    number
+  totalBookings:   number
+  discountPercent: number
+  discountEndsAt:  Date | null
+  discountLabel:   string
   createdAt: Date
   updatedAt: Date
 }
@@ -73,7 +76,10 @@ const PackageSchema = new Schema<IPackageDoc>(
     isPopular:     { type: Boolean, default: false },
     rating:        { type: Number, default: 5.0 },
     totalReviews:  { type: Number, default: 0 },
-    totalBookings: { type: Number, default: 0 },
+    totalBookings:   { type: Number,  default: 0 },
+    discountPercent: { type: Number,  default: 0, min: 0, max: 100 },
+    discountEndsAt:  { type: Date,    default: null },
+    discountLabel:   { type: String,  default: '' },
   },
   { timestamps: true },
 )

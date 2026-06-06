@@ -60,6 +60,9 @@ export interface PackageSummary {
   highlights:       string[]
   shortDescription: string
   pricing:          PackagePricing[]
+  discountPercent:  number
+  discountEndsAt:   string | null
+  discountLabel:    string
 }
 
 /** Full shape — used for /packages/[slug] detail page */
@@ -273,6 +276,30 @@ export const getFeaturedPackages = unstable_cache(
   },
   ['featured-packages'],
   { revalidate: 300, tags: ['packages'] },
+)
+
+/** Active discounted packages for homepage Hot Deals — cached 60 s */
+export const getDiscountedPackages = unstable_cache(
+  async (locale: string = 'en'): Promise<PackageSummary[]> => {
+    await connectDB()
+    const PackageModel = (await import('@/models/Package')).default
+    const now = new Date()
+    const docs = await PackageModel
+      .find({
+        isActive:        true,
+        discountPercent: { $gt: 0 },
+        $or: [{ discountEndsAt: null }, { discountEndsAt: { $gt: now } }],
+      })
+      .sort({ discountPercent: -1, basePrice: -1 })
+      .limit(6)
+      .select('-itinerary -inclusions -exclusions')
+      .lean()
+    return docs
+      .map(d => ser<Record<string, unknown>>(d as Record<string, unknown>))
+      .map(d => localizePackageSummary(d, locale))
+  },
+  ['discounted-packages'],
+  { revalidate: 60, tags: ['packages'] },
 )
 
 /** All active packages for /packages listing — cached 5 min */

@@ -4,7 +4,7 @@ import { authOptions }      from '@/lib/auth'
 import { connectDB }         from '@/lib/db'
 import Booking              from '@/models/Booking'
 import User                 from '@/models/User'
-import { sendBookingConfirmation } from '@/lib/email'
+import { sendBookingConfirmation, sendAdminBookingNotification } from '@/lib/email'
 import { successResponse, errorResponse, paginatedResponse } from '@/lib/apiResponse'
 import { generateBookingId } from '@/lib/utils'
 import bcrypt from 'bcryptjs'
@@ -25,6 +25,8 @@ export async function POST(req: NextRequest) {
       dropLocation,
       totalPassengers,
       totalAmount,
+      originalAmount,
+      discountPercent,
       advanceAmount,
       addons,
       specialRequests,
@@ -46,9 +48,14 @@ export async function POST(req: NextRequest) {
       return errorResponse('You must be signed in to pay online.', 401)
     }
 
-    // Guest booking requires contact details
-    if (!session?.user && (!customerName || !customerPhone || !customerEmail)) {
-      return errorResponse('Name, phone, and email are required for guest booking.')
+    // Guest booking: online payments require email; cash/whatsapp only need name + phone
+    if (!session?.user) {
+      if (!customerName || !customerPhone) {
+        return errorResponse('Name and phone are required for guest booking.')
+      }
+      if (isOnlinePaymentEarly && !customerEmail) {
+        return errorResponse('Email is required for online payment.')
+      }
     }
 
     await connectDB()
@@ -69,9 +76,11 @@ export async function POST(req: NextRequest) {
       duration:       duration   ?? 1,
       pickupLocation: pickupLocation.trim(),
       dropLocation:   dropLocation ?? undefined,
-      totalPassengers:totalPassengers ?? 1,
+      totalPassengers: totalPassengers ?? 1,
       totalAmount,
-      advanceAmount:  calcAdvance,
+      originalAmount:  originalAmount  ?? undefined,
+      discountPercent: discountPercent ?? 0,
+      advanceAmount:   calcAdvance,
       paidAmount:     0,          // nothing paid yet — updated by /payment/verify
       addons:         addons     ?? [],
       specialRequests:specialRequests ?? undefined,
@@ -83,27 +92,47 @@ export async function POST(req: NextRequest) {
       paymentStatus:  'pending',
     })
 
-    // Send confirmation email only for non-online methods (cash / whatsapp).
-    // Online payment bookings get their email after /api/payment/verify succeeds.
     const isOnlinePayment = resolvedMethod === 'online_full' || resolvedMethod === 'online_advance'
+    const formattedDate   = new Date(startDate).toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
+    const resolvedName  = customerName ?? session?.user?.name ?? 'Valued Customer'
+    const resolvedPhone = customerPhone ?? 'Not provided'
+
+    // ── Customer confirmation email (cash / whatsapp only — online sends after payment/verify) ──
     if (!isOnlinePayment) {
-      // Collect both account email and form-entered email, deduplicated
       const emailList = [session?.user?.email, customerEmail]
         .filter((e): e is string => Boolean(e?.trim()))
       if (emailList.length > 0) {
         sendBookingConfirmation({
           bookingId,
-          customerName:   customerName ?? session?.user?.name ?? 'Valued Customer',
+          customerName:   resolvedName,
           customerEmail:  emailList,
           carName:        carName ?? carType,
-          startDate:      new Date(startDate).toLocaleDateString('en-IN', {
-            day: 'numeric', month: 'long', year: 'numeric',
-          }),
+          startDate:      formattedDate,
           pickupLocation: pickupLocation.trim(),
           totalAmount,
+          advanceAmount:  calcAdvance > 0 ? calcAdvance : undefined,
         }).catch(console.error)
       }
     }
+
+    // ── Admin notification — sent for every booking regardless of payment method ──
+    sendAdminBookingNotification({
+      bookingId,
+      customerName:    resolvedName,
+      customerPhone:   resolvedPhone,
+      customerEmail:   customerEmail ?? session?.user?.email ?? undefined,
+      carName:         carName ?? carType,
+      startDate:       formattedDate,
+      pickupLocation:  pickupLocation.trim(),
+      totalAmount,
+      originalAmount:  originalAmount  ?? undefined,
+      discountPercent: discountPercent ?? 0,
+      paymentMethod:   resolvedMethod,
+      addons:          addons?.length ? addons : undefined,
+      specialRequests: specialRequests ?? undefined,
+    }).catch(console.error)
 
     return successResponse(
       {

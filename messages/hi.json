@@ -918,7 +918,6 @@
     "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
     "secretKeyLabel": "सीक्रेट कुंजी",
     "secretKeyPlaceholder": "अपनी सुपर एडमिन सीक्रेट कुंजी दर्ज करें",
-    "secretKeyHint": "Vercel env vars में SUPERADMIN_SECRET_KEY द्वारा सेट करें",
     "buttonSigningIn": "साइन इन हो रहा है...",
     "buttonSuperadminSignIn": "सुपर एडमिन साइन इन",
     "buttonSignIn": "साइन इन",

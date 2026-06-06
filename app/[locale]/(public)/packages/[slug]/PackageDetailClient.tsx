@@ -32,7 +32,10 @@ export interface PackageData {
   duration: number
   nights: number
   cities: string[]
-  basePrice: number
+  basePrice:       number
+  discountPercent: number
+  discountEndsAt:  string | null
+  discountLabel:   string
   rating: number
   totalReviews: number
   isPopular: boolean
@@ -42,8 +45,8 @@ export interface PackageData {
   exclusions: string[]
   itinerary: ItineraryDay[]
   pricing:   Pricing[]
-  images:    string[]   // always an array, never undefined ([] if empty)
-  thumbnail: string     // always a string ('' if empty)
+  images:    string[]
+  thumbnail: string
 }
 
 const TAB_KEYS = ['Overview', 'Itinerary', 'Pricing', 'Inclusions', 'Reviews'] as const
@@ -81,6 +84,21 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
 
   const selectedPricing = pkg.pricing.find((p) => p.carType === selectedCar)
   const whatsappMsg     = t('whatsAppGreeting', { name: pkg.name })
+
+  // Discount helpers
+  const hasDiscount = pkg.discountPercent > 0 &&
+    (!pkg.discountEndsAt || new Date(pkg.discountEndsAt) > new Date())
+  const discountedPrice = (price: number) =>
+    hasDiscount ? Math.round(price * (1 - pkg.discountPercent / 100)) : null
+  const discountTag = hasDiscount
+    ? (() => {
+        if (!pkg.discountEndsAt) return null
+        const diff = new Date(pkg.discountEndsAt).getTime() - Date.now()
+        if (diff <= 0) return null
+        const hours = Math.floor(diff / 3_600_000)
+        return hours < 24 ? `Ends in ${hours}h` : `${Math.floor(hours / 24)}d left`
+      })()
+    : null
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -148,7 +166,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
               <div className="space-y-2">
                 {pkg.highlights.map((h) => (
                   <div key={h} className="flex items-start gap-2.5 text-sm text-gray-300">
-                    <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>
+                    <span className="text-green-400 mt-0.5 shrink-0">✓</span>
                     {h}
                   </div>
                 ))}
@@ -165,9 +183,34 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
               }}
             >
               <p className="text-gray-300 text-sm mb-1">{t('startingFrom')}</p>
-              <p className="text-4xl font-bold mb-1" style={{ color: '#ff7d0f' }}>
-                {formatCurrency(pkg.basePrice)}
-              </p>
+              {hasDiscount ? (
+                <>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xl text-gray-400 line-through">{formatCurrency(pkg.basePrice)}</span>
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full"
+                      style={{ background: 'rgba(239,68,68,0.25)', color: '#fca5a5' }}>
+                      🔥 {pkg.discountPercent}% OFF
+                    </span>
+                  </div>
+                  <p className="text-4xl font-bold mb-1" style={{ color: '#4ade80' }}>
+                    {formatCurrency(discountedPrice(pkg.basePrice)!)}
+                  </p>
+                  {pkg.discountLabel && (
+                    <p className="text-xs font-semibold mb-1" style={{ color: '#fca5a5' }}>
+                      {pkg.discountLabel}
+                    </p>
+                  )}
+                  {discountTag && (
+                    <p className="text-xs font-semibold mb-1" style={{ color: '#fbbf24' }}>
+                      ⏰ {discountTag}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-4xl font-bold mb-1" style={{ color: '#ff7d0f' }}>
+                  {formatCurrency(pkg.basePrice)}
+                </p>
+              )}
               <p className="text-gray-400 text-xs mb-6">
                 {t('perTripInclusive')}
               </p>
@@ -185,8 +228,15 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                     }
                   >
                     <span className="text-sm font-medium text-gray-200">{p.carName}</span>
-                    <span className="font-bold" style={{ color: '#ff7d0f' }}>
-                      {formatCurrency(p.price)}
+                    <span className="text-right">
+                      {hasDiscount ? (
+                        <>
+                          <span className="text-xs text-gray-400 line-through mr-1">{formatCurrency(p.price)}</span>
+                          <span className="font-bold" style={{ color: '#4ade80' }}>{formatCurrency(discountedPrice(p.price)!)}</span>
+                        </>
+                      ) : (
+                        <span className="font-bold" style={{ color: '#ff7d0f' }}>{formatCurrency(p.price)}</span>
+                      )}
                     </span>
                   </button>
                 ))}
@@ -285,7 +335,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                 {pkg.highlights.map((h) => (
                   <div key={h}
                     className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
-                    <span className="text-green-500 font-bold flex-shrink-0">✓</span>
+                    <span className="text-green-500 font-bold shrink-0">✓</span>
                     <span className="text-sm text-gray-700 dark:text-gray-300">{h}</span>
                   </div>
                 ))}
@@ -324,7 +374,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                     >
                       <div className="flex items-center gap-4">
                         <div
-                          className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white text-sm flex-shrink-0"
+                          className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white text-sm shrink-0"
                           style={{ background: 'linear-gradient(135deg, #ff7d0f, #c74a06)' }}
                         >
                           {day.day}
@@ -401,11 +451,23 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                         <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{t('vehicleFeatures')}</p>
                       </div>
                     </div>
-                    <div className="text-right flex-shrink-0 ml-4">
-                      <p className="text-2xl font-bold" style={{ color: '#ff7d0f' }}>
-                        {formatCurrency(p.price)}
-                      </p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500">{t('perTrip')}</p>
+                    <div className="text-right shrink-0 ml-4">
+                      {hasDiscount ? (
+                        <>
+                          <p className="text-sm text-gray-400 line-through">{formatCurrency(p.price)}</p>
+                          <p className="text-2xl font-bold" style={{ color: '#16a34a' }}>
+                            {formatCurrency(discountedPrice(p.price)!)}
+                          </p>
+                          <p className="text-xs font-semibold" style={{ color: '#ef4444' }}>🔥 {pkg.discountPercent}% OFF</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-2xl font-bold" style={{ color: '#ff7d0f' }}>
+                            {formatCurrency(p.price)}
+                          </p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500">{t('perTrip')}</p>
+                        </>
+                      )}
                     </div>
                   </button>
                 ))}
@@ -414,7 +476,15 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
               {selectedPricing && (
                 <div className="rounded-2xl p-5 mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/40">
                   <p className="text-green-700 dark:text-green-300 font-semibold text-sm mb-1">{t('selected', { car: selectedPricing.carName })}</p>
-                  <p className="text-2xl font-bold text-green-800 dark:text-green-200">{formatCurrency(selectedPricing.price)}</p>
+                  {hasDiscount ? (
+                    <div className="flex items-center gap-3">
+                      <p className="text-lg text-gray-400 line-through">{formatCurrency(selectedPricing.price)}</p>
+                      <p className="text-2xl font-bold text-green-800 dark:text-green-200">{formatCurrency(discountedPrice(selectedPricing.price)!)}</p>
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600">🔥 {pkg.discountPercent}% OFF</span>
+                    </div>
+                  ) : (
+                    <p className="text-2xl font-bold text-green-800 dark:text-green-200">{formatCurrency(selectedPricing.price)}</p>
+                  )}
                   <p className="text-green-600 dark:text-green-400 text-xs mt-1">{t('selectedNote')}</p>
                 </div>
               )}
@@ -424,7 +494,12 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                 className="btn-primary w-full justify-center py-4 text-base"
               >
                 <Calendar size={18} />
-                {t('bookNow')} — {selectedPricing ? formatCurrency(selectedPricing.price) : ''}
+                {t('bookNow')} —{' '}
+                {selectedPricing
+                  ? hasDiscount
+                    ? formatCurrency(discountedPrice(selectedPricing.price)!)
+                    : formatCurrency(selectedPricing.price)
+                  : ''}
               </Link>
             </motion.div>
           )}
@@ -441,7 +516,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                     {pkg.inclusions.map((item) => (
                       <li key={item}
                         className="flex items-start gap-3 p-3 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/40">
-                        <Check size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
+                        <Check size={16} className="text-green-500 mt-0.5 shrink-0" />
                         <span className="text-sm text-gray-700 dark:text-gray-300">{item}</span>
                       </li>
                     ))}
@@ -456,7 +531,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                     {pkg.exclusions.map((item) => (
                       <li key={item}
                         className="flex items-start gap-3 p-3 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-900/40">
-                        <XIcon size={16} className="text-red-400 mt-0.5 flex-shrink-0" />
+                        <XIcon size={16} className="text-red-400 mt-0.5 shrink-0" />
                         <span className="text-sm text-gray-700 dark:text-gray-300">{item}</span>
                       </li>
                     ))}
@@ -512,7 +587,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="flex items-center gap-3">
                           <div
-                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
                             style={{ background: 'linear-gradient(135deg, #ff7d0f, #c74a06)' }}
                           >
                             {review.customer.name.charAt(0).toUpperCase()}
@@ -526,7 +601,7 @@ export default function PackageDetailClient({ pkg, reviews = [] }: { pkg: Packag
                             </p>
                           </div>
                         </div>
-                        <div className="flex gap-0.5 flex-shrink-0">
+                        <div className="flex gap-0.5 shrink-0">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star key={i} size={13}
                               fill={i < review.rating ? '#f59e0b' : 'none'}

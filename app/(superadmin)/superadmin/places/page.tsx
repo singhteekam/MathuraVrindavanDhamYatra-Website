@@ -8,7 +8,7 @@ import Link           from 'next/link'
 import Image          from 'next/image'
 import {
   Plus, Search, MapPin, Edit, Eye, Star,
-  ToggleLeft, ToggleRight, ShieldCheck,
+  ToggleLeft, ToggleRight, ShieldCheck, Trash2,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -37,10 +37,12 @@ const TYPE_EMOJI: Record<string, string> = {
 }
 
 export default function SuperadminPlacesPage() {
-  const [places,  setPlaces]  = useState<Place[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search,  setSearch]  = useState('')
-  const [city,    setCity]    = useState('All')
+  const [places,      setPlaces]      = useState<Place[]>([])
+  const [loading,     setLoading]     = useState(true)
+  const [search,      setSearch]      = useState('')
+  const [city,        setCity]        = useState('All')
+  const [confirmSlug, setConfirmSlug] = useState<string | null>(null)
+  const [deleting,    setDeleting]    = useState(false)
 
   const fetchPlaces = useCallback(async () => {
     setLoading(true)
@@ -58,6 +60,9 @@ export default function SuperadminPlacesPage() {
   useEffect(() => { fetchPlaces() }, [fetchPlaces])
 
   async function toggleFeatured(place: Place) {
+    setPlaces((prev) =>
+      prev.map((p) => p._id === place._id ? { ...p, isFeatured: !p.isFeatured } : p),
+    )
     try {
       const res = await fetch(`/api/places/${place.slug}`, {
         method:  'PUT',
@@ -66,12 +71,35 @@ export default function SuperadminPlacesPage() {
       })
       if (res.ok) {
         toast.success(place.isFeatured ? 'Removed from featured.' : 'Marked as featured!')
+      } else {
         setPlaces((prev) =>
-          prev.map((p) => p._id === place._id ? { ...p, isFeatured: !p.isFeatured } : p),
+          prev.map((p) => p._id === place._id ? { ...p, isFeatured: place.isFeatured } : p),
         )
       }
     } catch {
+      setPlaces((prev) =>
+        prev.map((p) => p._id === place._id ? { ...p, isFeatured: place.isFeatured } : p),
+      )
       toast.error('Failed to update.')
+    }
+  }
+
+  async function deletePlace(slug: string) {
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/places/${slug}`, { method: 'DELETE' })
+      if (res.ok) {
+        setPlaces((prev) => prev.filter((p) => p.slug !== slug))
+        toast.success('Place permanently deleted.')
+      } else {
+        const data = await res.json()
+        toast.error(data.error ?? 'Delete failed.')
+      }
+    } catch {
+      toast.error('Network error.')
+    } finally {
+      setDeleting(false)
+      setConfirmSlug(null)
     }
   }
 
@@ -99,7 +127,7 @@ export default function SuperadminPlacesPage() {
           <p className="text-sm text-gray-400 mt-0.5">{places.length} places in the database</p>
         </div>
         <Link href="/superadmin/places/new"
-          className="btn-primary text-sm py-2.5 px-5 flex-shrink-0">
+          className="btn-primary text-sm py-2.5 px-5 shrink-0">
           <Plus size={16} /> Add Place
         </Link>
       </div>
@@ -139,7 +167,7 @@ export default function SuperadminPlacesPage() {
               className="card rounded-2xl overflow-hidden flex flex-col">
 
               {/* Image */}
-              <div className="relative h-32 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center">
+              <div className="relative h-32 bg-linear-to-br from-orange-50 to-orange-100 flex items-center justify-center">
                 {place.thumbnail ? (
                   <Image src={place.thumbnail} alt={str(place.name)} fill
                     sizes="300px" className="object-cover" />
@@ -163,30 +191,55 @@ export default function SuperadminPlacesPage() {
                   {str(place.name)}
                 </h3>
 
-                <div className="flex gap-2 mt-auto">
-                  <button type="button" onClick={() => toggleFeatured(place)}
-                    className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg flex-1 justify-center"
-                    style={place.isFeatured
-                      ? { background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }
-                      : { background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }
-                    }
-                    title={place.isFeatured ? 'Remove from featured' : 'Mark as featured'}>
-                    {place.isFeatured
-                      ? <><ToggleRight size={13} />Featured</>
-                      : <><ToggleLeft  size={13} />Feature</>
-                    }
-                  </button>
-                  <Link href={`/places/${place.slug}`} target="_blank"
-                    className="p-1.5 rounded-lg transition-colors"
-                    style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
-                    <Eye size={14} />
-                  </Link>
-                  <Link href={`/superadmin/places/${place.slug}/edit`}
-                    className="p-1.5 rounded-lg transition-colors"
-                    style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
-                    <Edit size={14} />
-                  </Link>
-                </div>
+                {confirmSlug === place.slug ? (
+                  <div className="flex gap-2 mt-auto">
+                    <button type="button"
+                      onClick={() => deletePlace(place.slug)}
+                      disabled={deleting}
+                      className="flex-1 text-xs font-semibold py-1.5 rounded-lg text-white"
+                      style={{ background: '#ef4444' }}>
+                      {deleting ? '...' : 'Yes, delete'}
+                    </button>
+                    <button type="button"
+                      onClick={() => setConfirmSlug(null)}
+                      className="flex-1 text-xs font-semibold py-1.5 rounded-lg"
+                      style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2 mt-auto">
+                    <button type="button" onClick={() => toggleFeatured(place)}
+                      className="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-lg flex-1 justify-center"
+                      style={place.isFeatured
+                        ? { background: 'var(--surface-amber)', color: 'var(--text-on-amber)' }
+                        : { background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }
+                      }
+                      title={place.isFeatured ? 'Remove from featured' : 'Mark as featured'}>
+                      {place.isFeatured
+                        ? <><ToggleRight size={13} />Featured</>
+                        : <><ToggleLeft  size={13} />Feature</>
+                      }
+                    </button>
+                    <Link href={`/places/${place.slug}`} target="_blank"
+                      className="p-1.5 rounded-lg transition-colors"
+                      style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
+                      <Eye size={14} />
+                    </Link>
+                    <Link href={`/superadmin/places/${place.slug}/edit`}
+                      className="p-1.5 rounded-lg transition-colors"
+                      style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
+                      <Edit size={14} />
+                    </Link>
+                    <button type="button"
+                      onClick={() => setConfirmSlug(place.slug)}
+                      className="p-1.5 rounded-lg transition-colors"
+                      style={{ background: 'var(--surface-red)', color: '#ef4444' }}
+                      title="Delete place">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}

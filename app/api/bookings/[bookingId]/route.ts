@@ -181,3 +181,23 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     return errorResponse('Internal server error.', 500)
   }
 }
+
+// DELETE /api/bookings/[bookingId] — superadmin only: hard delete
+export async function DELETE(_req: NextRequest, { params }: Params) {
+  try {
+    const session = await getServerSession(authOptions)
+    const user    = session?.user as { role?: string } | undefined
+    if (user?.role !== 'superadmin') return errorResponse('Forbidden. Superadmin access required.', 403)
+
+    const { bookingId } = await params
+    await connectDB()
+
+    const booking = await Booking.findByIdAndDelete(bookingId)
+    if (!booking) return errorResponse('Booking not found.', 404)
+
+    return successResponse({ message: 'Booking deleted.' })
+  } catch (err) {
+    console.error('[DELETE /api/bookings/:id]', err)
+    return errorResponse('Internal server error.', 500)
+  }
+}

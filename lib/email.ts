@@ -128,16 +128,18 @@ export async function sendOTPEmail(email: string, name: string, otp: string) {
 
 // Booking confirmation to customer
 export async function sendBookingConfirmation(booking: {
-  bookingId:      string
-  customerName:   string
-  customerEmail:  string | string[]
-  carName:        string
-  startDate:      string
-  pickupLocation: string
-  totalAmount:    number
-  addons?:        string[]
-  specialRequests?:string
-  locale?:        string
+  bookingId:       string
+  customerName:    string
+  customerEmail:   string | string[]
+  carName:         string
+  startDate:       string
+  pickupLocation:  string
+  totalAmount:     number
+  advanceAmount?:  number   // for cash/whatsapp: advance to bring on trip day
+  paidAmount?:     number   // for online: amount already paid
+  addons?:         string[]
+  specialRequests?: string
+  locale?:         string
 }) {
   const isHi = booking.locale === 'hi'
 
@@ -167,6 +169,44 @@ export async function sendBookingConfirmation(booking: {
     ? `<tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Add-ons</td><td style="padding:8px 0;font-weight:600;color:#111827;text-align:right;">${booking.addons.join(', ')}</td></tr>`
     : ''
 
+  // Payment breakdown rows
+  const balance = booking.paidAmount != null && booking.paidAmount > 0
+    ? booking.totalAmount - booking.paidAmount
+    : booking.advanceAmount != null && booking.advanceAmount > 0
+    ? booking.totalAmount - booking.advanceAmount
+    : 0
+
+  const paymentRows = booking.paidAmount != null && booking.paidAmount > 0
+    ? `
+      <tr style="border-top:1px solid #ffdba8;">
+        <td style="padding:10px 0 0;color:#374151;font-weight:bold;">${t.total}</td>
+        <td style="padding:10px 0 0;font-weight:bold;color:#ff7d0f;font-size:18px;text-align:right;">₹${booking.totalAmount.toLocaleString('en-IN')}</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#16a34a;font-size:14px;font-weight:600;">✓ Paid Online</td>
+        <td style="padding:6px 0;font-weight:bold;color:#16a34a;text-align:right;">₹${booking.paidAmount.toLocaleString('en-IN')}</td>
+      </tr>
+      ${balance > 0 ? `<tr><td style="padding:6px 0;color:#d97706;font-size:14px;">Balance Due on Trip Day</td><td style="padding:6px 0;font-weight:bold;color:#d97706;text-align:right;">₹${balance.toLocaleString('en-IN')}</td></tr>` : ''}`
+    : booking.advanceAmount != null && booking.advanceAmount > 0
+    ? `
+      <tr style="border-top:1px solid #ffdba8;">
+        <td style="padding:10px 0 0;color:#374151;font-weight:bold;">${t.total}</td>
+        <td style="padding:10px 0 0;font-weight:bold;color:#ff7d0f;font-size:18px;text-align:right;">₹${booking.totalAmount.toLocaleString('en-IN')}</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#6b7280;font-size:14px;">Advance Amount</td>
+        <td style="padding:6px 0;font-weight:bold;color:#ff7d0f;text-align:right;">₹${booking.advanceAmount.toLocaleString('en-IN')}</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#d97706;font-size:14px;">Balance Due on Trip Day</td>
+        <td style="padding:6px 0;font-weight:bold;color:#d97706;text-align:right;">₹${balance.toLocaleString('en-IN')}</td>
+      </tr>`
+    : `
+      <tr style="border-top:1px solid #ffdba8;">
+        <td style="padding:12px 0 0;color:#374151;font-weight:bold;">${t.total}</td>
+        <td style="padding:12px 0 0;font-weight:bold;color:#ff7d0f;font-size:18px;text-align:right;">₹${booking.totalAmount.toLocaleString('en-IN')}</td>
+      </tr>`
+
   const body = `
     <p style="font-size:16px;color:#374151;">${t.dear} <strong>${booking.customerName}</strong>,</p>
     <p style="color:#6b7280;">${t.body}</p>
@@ -178,10 +218,7 @@ export async function sendBookingConfirmation(booking: {
         <tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">${t.pickup}</td><td style="padding:8px 0;font-weight:600;color:#111827;text-align:right;">${booking.pickupLocation}</td></tr>
         ${addonsRow}
         ${booking.specialRequests ? `<tr><td style="padding:8px 0;color:#6b7280;font-size:14px;">Special Requests</td><td style="padding:8px 0;font-weight:600;color:#111827;text-align:right;">${booking.specialRequests}</td></tr>` : ''}
-        <tr style="border-top:1px solid #ffdba8;">
-          <td style="padding:12px 0 0;color:#374151;font-weight:bold;">${t.total}</td>
-          <td style="padding:12px 0 0;font-weight:bold;color:#ff7d0f;font-size:18px;text-align:right;">₹${booking.totalAmount.toLocaleString('en-IN')}</td>
-        </tr>
+        ${paymentRows}
       </table>
     </div>
     <p style="color:#6b7280;font-size:14px;">${t.callNotice}</p>
@@ -386,5 +423,152 @@ export async function sendEnquiryNotification(contact: {
     to:      process.env.SMTP_USER ?? siteConfig.email,
     subject: `New Enquiry from ${contact.name} — ${siteConfig.shortName}`,
     html:    emailWrap(emailHeader('New Enquiry Received 📩', siteConfig.shortName), body),
+  })
+}
+
+// New booking notification to admin
+export async function sendAdminBookingNotification(booking: {
+  bookingId:       string
+  customerName:    string
+  customerPhone:   string
+  customerEmail?:  string
+  carName:         string
+  startDate:       string
+  pickupLocation:  string
+  totalAmount:     number
+  originalAmount?: number
+  discountPercent?: number
+  paymentMethod:   string
+  addons?:         string[]
+  specialRequests?: string
+}) {
+  const methodLabel: Record<string, string> = {
+    cash:           'Pay Cash on Arrival',
+    online_full:    'Online — Full Payment',
+    online_advance: 'Online — Advance Payment',
+    whatsapp:       'Book via WhatsApp',
+  }
+
+  const discountRow = (booking.discountPercent ?? 0) > 0 && booking.originalAmount
+    ? `<tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Discount Applied</td><td style="padding:7px 0;font-weight:600;color:#16a34a;text-align:right;">${booking.discountPercent}% OFF (was ₹${booking.originalAmount.toLocaleString('en-IN')})</td></tr>`
+    : ''
+
+  const body = `
+    <p style="font-size:15px;color:#374151;">A new booking has been received on the platform.</p>
+    <div style="background:#fff8ed;border:1px solid #ffdba8;border-radius:8px;padding:20px;margin:16px 0;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Booking ID</td><td style="padding:7px 0;font-weight:bold;color:#ff7d0f;text-align:right;font-family:monospace;">${booking.bookingId}</td></tr>
+        <tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Customer</td><td style="padding:7px 0;font-weight:600;color:#111827;text-align:right;">${booking.customerName}</td></tr>
+        <tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Phone</td><td style="padding:7px 0;text-align:right;"><a href="tel:${booking.customerPhone.replace(/\s/g,'')}" style="color:#ff7d0f;font-weight:600;">${booking.customerPhone}</a></td></tr>
+        ${booking.customerEmail ? `<tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Email</td><td style="padding:7px 0;text-align:right;"><a href="mailto:${booking.customerEmail}" style="color:#ff7d0f;">${booking.customerEmail}</a></td></tr>` : ''}
+        <tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Vehicle</td><td style="padding:7px 0;font-weight:600;color:#111827;text-align:right;">${booking.carName}</td></tr>
+        <tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Travel Date</td><td style="padding:7px 0;font-weight:600;color:#111827;text-align:right;">${booking.startDate}</td></tr>
+        <tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Pickup</td><td style="padding:7px 0;font-weight:600;color:#111827;text-align:right;">${booking.pickupLocation}</td></tr>
+        ${booking.addons?.length ? `<tr><td style="padding:7px 0;color:#6b7280;font-size:14px;">Add-ons</td><td style="padding:7px 0;font-weight:600;color:#111827;text-align:right;">${booking.addons.join(', ')}</td></tr>` : ''}
+        ${booking.specialRequests ? `<tr><td style="padding:7px 0;color:#6b7280;font-size:14px;vertical-align:top;">Special Requests</td><td style="padding:7px 0;font-weight:600;color:#111827;text-align:right;">${booking.specialRequests}</td></tr>` : ''}
+        ${discountRow}
+        <tr style="border-top:1px solid #ffdba8;">
+          <td style="padding:10px 0 0;font-weight:bold;color:#374151;">Total Amount</td>
+          <td style="padding:10px 0 0;font-weight:bold;color:#ff7d0f;font-size:17px;text-align:right;">₹${booking.totalAmount.toLocaleString('en-IN')}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;color:#6b7280;font-size:14px;">Payment Method</td>
+          <td style="padding:4px 0;font-weight:600;color:#111827;text-align:right;">${methodLabel[booking.paymentMethod] ?? booking.paymentMethod}</td>
+        </tr>
+      </table>
+    </div>
+    <p style="font-size:13px;color:#9ca3af;">
+      Log in to the admin panel to manage this booking:<br />
+      <a href="${siteConfig.url}/admin/bookings" style="color:#ff7d0f;">${siteConfig.url}/admin/bookings</a>
+    </p>
+  `
+
+  return sendEmail({
+    to:      process.env.SMTP_USER ?? siteConfig.email,
+    subject: `New Booking — ${booking.bookingId} from ${booking.customerName} | ${siteConfig.shortName}`,
+    html:    emailWrap(emailHeader('New Booking Received 🎉', siteConfig.shortName), body),
+  })
+}
+
+// ── Newsletter ──────────────────────────────────────────────────────────────
+
+export async function sendNewsletterEmail({
+  to,
+  subject,
+  previewText,
+  htmlContent,
+  unsubscribeUrl,
+}: {
+  to:             string
+  subject:        string
+  previewText:    string
+  htmlContent:    string
+  unsubscribeUrl: string
+}) {
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${subject}</title>
+  <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
+</head>
+<body style="margin:0;padding:0;background:#f9fafb;font-family:Arial,Helvetica,sans-serif;">
+  <!-- Preview text (hidden, shows in email clients) -->
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${previewText}&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌</div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#ff7d0f,#ff9a40);border-radius:16px 16px 0 0;padding:28px 32px;text-align:center;">
+              <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.85);letter-spacing:1px;text-transform:uppercase;">
+                ${siteConfig.name}
+              </p>
+              <h1 style="margin:8px 0 0;font-size:22px;font-weight:700;color:#ffffff;line-height:1.3;">
+                ${subject}
+              </h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="background:#ffffff;padding:32px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
+              ${htmlContent}
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f3f4f6;border-radius:0 0 16px 16px;border:1px solid #e5e7eb;border-top:none;padding:20px 32px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:13px;color:#6b7280;">
+                You are receiving this email because you registered on
+                <a href="https://mathuravrindavandhamyatra.com" style="color:#ff7d0f;text-decoration:none;">${siteConfig.name}</a>.
+              </p>
+              <p style="margin:0;font-size:12px;color:#9ca3af;">
+                Don&apos;t want these emails?&nbsp;
+                <a href="${unsubscribeUrl}" style="color:#6b7280;text-decoration:underline;">Unsubscribe</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+
+  return transporter.sendMail({
+    from:        process.env.EMAIL_FROM ?? `${siteConfig.name} <info@mathuravrindavandhamyatra.com>`,
+    to,
+    subject,
+    html,
+    list: {
+      unsubscribe: { url: unsubscribeUrl, comment: 'Unsubscribe' },
+    },
   })
 }

@@ -9,8 +9,9 @@ export interface IUserDoc extends Document {
   avatar?: string
   isActive: boolean
   emailVerified?: Date
-  otpCode?:    string
-  otpExpiry?:  Date
+  otpCode?:          string
+  otpExpiry?:        Date
+  newsletterOptOut:  boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -25,8 +26,9 @@ const UserSchema = new Schema<IUserDoc>(
     avatar:        { type: String },
     isActive:      { type: Boolean, default: true },
     emailVerified: { type: Date },
-    otpCode:       { type: String },
-    otpExpiry:     { type: Date },
+    otpCode:          { type: String },
+    otpExpiry:        { type: Date },
+    newsletterOptOut: { type: Boolean, default: false },
   },
   { timestamps: true },
 )

@@ -38,6 +38,9 @@ interface PackageForm {
   isFeatured:       boolean
   isPopular:        boolean
   pricing:          { carType: string; carName: string; price: number }[]
+  discountPercent:  number
+  discountEndsAt:   string
+  discountLabel:    string
 }
 
 function bl(val: unknown): BLValue {
@@ -83,9 +86,14 @@ export default function SuperadminEditPackagePage() {
             })),
             thumbnail:        p.thumbnail  ?? '',
             images:           p.images     ?? [],
-            isActive:         p.isActive   ?? true,
-            isFeatured:       p.isFeatured ?? false,
-            isPopular:        p.isPopular  ?? false,
+            isActive:         p.isActive        ?? true,
+            isFeatured:       p.isFeatured      ?? false,
+            isPopular:        p.isPopular       ?? false,
+            discountPercent:  p.discountPercent ?? 0,
+            discountEndsAt:   p.discountEndsAt
+              ? new Date(p.discountEndsAt).toISOString().slice(0, 16)
+              : '',
+            discountLabel:    p.discountLabel   ?? '',
             pricing: cars.map((c) => {
               const existing = p.pricing?.find((pr: { carType: string }) => pr.carType === c.id)
               return { carType: c.id, carName: c.name, price: existing?.price ?? 0 }
@@ -400,6 +408,52 @@ export default function SuperadminEditPackagePage() {
                   </button>
                 </div>
               ))}
+            </div>
+          </motion.div>
+
+          {/* Discount & Offers */}
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
+            className="card rounded-2xl p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100">🔥 Discount & Offers</h3>
+              {form.discountPercent > 0 && (
+                <button type="button"
+                  onClick={() => setForm({ ...form, discountPercent: 0, discountEndsAt: '', discountLabel: '' })}
+                  className="text-xs font-semibold text-red-400 hover:text-red-600 transition-colors">
+                  Clear
+                </button>
+              )}
+            </div>
+            <div className="space-y-3">
+              <div>
+                <Label>Discount % (0 = none)</Label>
+                <input type="number" min={0} max={100} value={form.discountPercent}
+                  onChange={(e) => setForm({ ...form, discountPercent: Math.min(100, Math.max(0, Number(e.target.value))) })}
+                  className="input-field" placeholder="e.g. 20" />
+              </div>
+              <div>
+                <Label>Offer Label (optional)</Label>
+                <input type="text" value={form.discountLabel}
+                  onChange={(e) => setForm({ ...form, discountLabel: e.target.value })}
+                  className="input-field" placeholder="e.g. Flash Sale!" maxLength={40} />
+              </div>
+              <div>
+                <Label>Offer Ends At (optional)</Label>
+                <input type="datetime-local" value={form.discountEndsAt}
+                  onChange={(e) => setForm({ ...form, discountEndsAt: e.target.value })}
+                  className="input-field text-sm" />
+              </div>
+              {form.discountPercent > 0 && (
+                <div className="p-3 rounded-xl text-sm"
+                  style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  <p className="font-semibold text-red-600 dark:text-red-400">
+                    {form.discountPercent}% OFF applied
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Price: ₹{form.basePrice} → ₹{Math.round(form.basePrice * (1 - form.discountPercent / 100))}
+                  </p>
+                </div>
+              )}
             </div>
           </motion.div>
 

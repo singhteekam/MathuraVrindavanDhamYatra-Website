@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     } else {
       const session = await getServerSession(authOptions)
       const user    = session?.user as { role?: string } | undefined
-      if (user?.role !== 'superadmin') filter.isActive = true
+      if (user?.role !== 'superadmin' && user?.role !== 'admin') filter.isActive = true
     }
     if (featured) filter.isFeatured = true
     if (city)     filter.cities     = { $in: [city] }

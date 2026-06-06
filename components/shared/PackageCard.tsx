@@ -20,6 +20,17 @@ interface PackageCardProps {
   totalReviews:     number
   highlights:       string[]
   isPopular?:       boolean
+  discountPercent?: number
+  discountEndsAt?:  string | null
+  discountLabel?:   string
+}
+
+function endsInText(endsAt: string): string {
+  const diff = new Date(endsAt).getTime() - Date.now()
+  if (diff <= 0) return ''
+  const hours = Math.floor(diff / 3600000)
+  if (hours < 24) return `${hours}h left`
+  return `${Math.floor(hours / 24)}d left`
 }
 
 export default function PackageCard({
@@ -34,7 +45,15 @@ export default function PackageCard({
   totalReviews,
   highlights,
   isPopular,
+  discountPercent,
+  discountEndsAt,
+  discountLabel,
 }: PackageCardProps) {
+  const hasDiscount = (discountPercent ?? 0) > 0 &&
+    (!discountEndsAt || new Date(discountEndsAt) > new Date())
+  const discountedPrice = hasDiscount
+    ? Math.round(basePrice * (1 - (discountPercent ?? 0) / 100))
+    : null
   const t                        = useTranslations('PackageCard')
   const resolvedSrc              = getPackageImageSrc(slug, thumbnail)
   const [imgSrc, setImgSrc]      = useState<string | null>(resolvedSrc)
@@ -80,8 +99,8 @@ export default function PackageCard({
             style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.45) 100%)' }} />
         )}
 
-        {/* Duration badge */}
-        <div className="absolute top-3 left-3 z-10 flex gap-2">
+        {/* Duration + discount badges */}
+        <div className="absolute top-3 left-3 z-10 flex flex-wrap gap-1.5">
           <span className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-semibold backdrop-blur-sm"
             style={{ background: 'rgba(255,255,255,0.92)', color: '#c74a06' }}>
             <Clock size={10} />
@@ -92,6 +111,12 @@ export default function PackageCard({
             <span className="text-xs px-2.5 py-1 rounded-full font-semibold backdrop-blur-sm"
               style={{ background: 'rgba(254,243,199,0.95)', color: '#92400e' }}>
               {t('popular')}
+            </span>
+          )}
+          {hasDiscount && (
+            <span className="text-xs px-2.5 py-1 rounded-full font-bold backdrop-blur-sm"
+              style={{ background: 'rgba(239,68,68,0.92)', color: '#fff' }}>
+              🔥 {discountPercent}% OFF
             </span>
           )}
         </div>
@@ -123,7 +148,7 @@ export default function PackageCard({
         <ul className="space-y-1 mb-4 flex-1">
           {highlights.slice(0, 3).map((h) => (
             <li key={h} className="flex items-start gap-2 text-xs text-gray-500 dark:text-gray-400">
-              <span className="text-green-500 mt-0.5 flex-shrink-0">✓</span>
+              <span className="text-green-500 mt-0.5 shrink-0">✓</span>
               {h}
             </li>
           ))}
@@ -132,10 +157,27 @@ export default function PackageCard({
         {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
           <div>
-            <p className="text-xs text-gray-400 dark:text-gray-500">{t('startingFrom')}</p>
-            <p className="text-xl font-bold" style={{ color: '#ff7d0f' }}>
-              {formatCurrency(basePrice)}
-            </p>
+            {hasDiscount ? (
+              <>
+                {discountLabel && (
+                  <p className="text-xs font-bold uppercase tracking-wide mb-0.5" style={{ color: '#ef4444' }}>
+                    {discountLabel}
+                  </p>
+                )}
+                <p className="text-xs text-gray-400 line-through">{formatCurrency(basePrice)}</p>
+                <p className="text-xl font-bold" style={{ color: '#16a34a' }}>{formatCurrency(discountedPrice!)}</p>
+                {discountEndsAt && endsInText(discountEndsAt) && (
+                  <p className="text-xs font-semibold mt-0.5" style={{ color: '#ef4444' }}>
+                    ⏰ {endsInText(discountEndsAt)}
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-xs text-gray-400 dark:text-gray-500">{t('startingFrom')}</p>
+                <p className="text-xl font-bold" style={{ color: '#ff7d0f' }}>{formatCurrency(basePrice)}</p>
+              </>
+            )}
           </div>
           <Link href={`/packages/${slug}`}
             className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full transition-all duration-200"

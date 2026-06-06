@@ -1,10 +1,10 @@
-﻿'use client'
+'use client'
 
 export const dynamic = 'force-dynamic'
 
 import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Search, Star, Clock, ToggleLeft, ToggleRight, Eye } from 'lucide-react'
+import { Plus, Search, Star, Clock, ToggleLeft, ToggleRight, Eye, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
@@ -17,29 +17,33 @@ function str(v: BLField | undefined): string {
 }
 
 interface Package {
-  _id: string
-  slug: string
-  name: BLField
-  duration: number
-  cities: string[]
-  basePrice: number
-  rating: number
-  totalReviews: number
-  totalBookings: number
-  isActive: boolean
-  isFeatured: boolean
-  isPopular: boolean
+  _id:             string
+  slug:            string
+  name:            BLField
+  duration:        number
+  cities:          string[]
+  basePrice:       number
+  rating:          number
+  totalReviews:    number
+  totalBookings:   number
+  isActive:        boolean
+  isFeatured:      boolean
+  isPopular:       boolean
+  discountPercent: number
+  discountEndsAt:  string | null
 }
 
 export default function AdminPackagesPage() {
-  const [packages, setPackages] = useState<Package[]>([])
-  const [loading,  setLoading]  = useState(true)
-  const [search,   setSearch]   = useState('')
+  const [packages,     setPackages]     = useState<Package[]>([])
+  const [loading,      setLoading]      = useState(true)
+  const [search,       setSearch]       = useState('')
+  const [confirmSlug,  setConfirmSlug]  = useState<string | null>(null)
+  const [deleting,     setDeleting]     = useState(false)
 
   const fetchPackages = useCallback(async () => {
     setLoading(true)
     try {
-      const res  = await fetch('/api/packages?limit=50')
+      const res  = await fetch('/api/packages?limit=100&all=true')
       const data = await res.json()
       if (data.success) setPackages(data.data)
     } catch {
@@ -59,6 +63,7 @@ export default function AdminPackagesPage() {
     : packages
 
   async function toggleActive(slug: string, current: boolean) {
+    setPackages((prev) => prev.map((p) => p.slug === slug ? { ...p, isActive: !current } : p))
     try {
       const res = await fetch(`/api/packages/${slug}`, {
         method:  'PUT',
@@ -67,24 +72,52 @@ export default function AdminPackagesPage() {
       })
       if (res.ok) {
         toast.success(`Package ${!current ? 'activated' : 'deactivated'}.`)
-        fetchPackages()
+      } else {
+        setPackages((prev) => prev.map((p) => p.slug === slug ? { ...p, isActive: current } : p))
+        toast.error('Failed to update.')
       }
     } catch {
+      setPackages((prev) => prev.map((p) => p.slug === slug ? { ...p, isActive: current } : p))
       toast.error('Failed to update.')
     }
   }
 
   async function toggleFeatured(slug: string, current: boolean) {
+    setPackages((prev) => prev.map((p) => p.slug === slug ? { ...p, isFeatured: !current } : p))
     try {
-      await fetch(`/api/packages/${slug}`, {
+      const res = await fetch(`/api/packages/${slug}`, {
         method:  'PUT',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ isFeatured: !current }),
       })
-      toast.success(`Package ${!current ? 'featured' : 'unfeatured'}.`)
-      fetchPackages()
+      if (res.ok) {
+        toast.success(`Package ${!current ? 'featured' : 'unfeatured'}.`)
+      } else {
+        setPackages((prev) => prev.map((p) => p.slug === slug ? { ...p, isFeatured: current } : p))
+        toast.error('Failed to update.')
+      }
     } catch {
+      setPackages((prev) => prev.map((p) => p.slug === slug ? { ...p, isFeatured: current } : p))
       toast.error('Failed to update.')
+    }
+  }
+
+  async function deletePackage(slug: string) {
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/packages/${slug}`, { method: 'DELETE' })
+      if (res.ok) {
+        setPackages((prev) => prev.filter((p) => p.slug !== slug))
+        toast.success('Package deleted.')
+      } else {
+        const data = await res.json()
+        toast.error(data.error ?? 'Delete failed.')
+      }
+    } catch {
+      toast.error('Network error.')
+    } finally {
+      setDeleting(false)
+      setConfirmSlug(null)
     }
   }
 
@@ -145,8 +178,15 @@ export default function AdminPackagesPage() {
                       <Clock size={11} />{pkg.duration} Day{pkg.duration > 1 ? 's' : ''}
                     </span>
                   </td>
-                  <td className="px-4 py-3 font-semibold text-saffron-600 whitespace-nowrap">
-                    {formatCurrency(pkg.basePrice)}
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <p className="font-semibold text-saffron-600">{formatCurrency(pkg.basePrice)}</p>
+                    {(pkg.discountPercent ?? 0) > 0 &&
+                      (!pkg.discountEndsAt || new Date(pkg.discountEndsAt) > new Date()) && (
+                      <span className="text-xs font-bold px-1.5 py-0.5 rounded-full"
+                        style={{ background: 'var(--surface-red)', color: '#ef4444' }}>
+                        🔥 {pkg.discountPercent}% OFF
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{pkg.totalBookings}</td>
                   <td className="px-4 py-3">
@@ -178,18 +218,43 @@ export default function AdminPackagesPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <Link href={`/packages/${pkg.slug}`} target="_blank"
-                        className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
-                        style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
-                        <Eye size={11} /> View
-                      </Link>
-                      <Link href={`/admin/packages/${pkg.slug}/edit`}
-                        className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
-                        style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
-                        Edit
-                      </Link>
-                    </div>
+                    {confirmSlug === pkg.slug ? (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => deletePackage(pkg.slug)}
+                          disabled={deleting}
+                          className="text-xs font-semibold px-2.5 py-1.5 rounded-lg text-white"
+                          style={{ background: '#ef4444' }}>
+                          {deleting ? '...' : 'Yes, delete'}
+                        </button>
+                        <button
+                          onClick={() => setConfirmSlug(null)}
+                          className="text-xs font-semibold px-2.5 py-1.5 rounded-lg"
+                          style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <Link href={`/packages/${pkg.slug}`} target="_blank"
+                          className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+                          style={{ background: 'var(--surface-krishna)', color: '#4338ca' }}>
+                          <Eye size={11} /> View
+                        </Link>
+                        <Link href={`/admin/packages/${pkg.slug}/edit`}
+                          className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors"
+                          style={{ background: 'var(--surface-saffron)', color: '#ff7d0f' }}>
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => setConfirmSlug(pkg.slug)}
+                          className="p-1.5 rounded-lg transition-colors"
+                          style={{ background: 'var(--surface-red)', color: '#ef4444' }}
+                          title="Delete package">
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </motion.tr>
               ))}

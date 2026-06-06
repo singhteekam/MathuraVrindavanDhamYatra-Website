@@ -16,19 +16,19 @@ function Toggle({
   checked: boolean; onChange: () => void; label: string; desc: string
 }) {
   return (
-    <div className="flex items-center justify-between p-4 rounded-xl"
+    <div className="flex items-center gap-4 p-4 rounded-xl overflow-hidden"
       style={{ background: 'var(--bg-surface-muted)' }}>
-      <div>
+      <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{label}</p>
         <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
       </div>
       <button type="button" onClick={onChange}
-        className="relative w-11 h-6 rounded-full overflow-hidden transition-colors duration-200 flex-shrink-0"
+        className="relative w-11 h-6 rounded-full transition-colors duration-200 shrink-0"
         style={{ background: checked ? '#ff7d0f' : '#d1d5db' }}
         role="switch" aria-checked={checked}>
         <span
-          className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
-          style={{ transform: checked ? 'translateX(22px)' : 'translateX(2px)' }} />
+          className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+          style={{ transform: checked ? 'translateX(20px)' : 'translateX(0px)' }} />
       </button>
     </div>
   )
@@ -47,7 +47,7 @@ function LockedField({ label, value }: { label: string; value: string }) {
       </label>
       <div className="input-field bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed select-none flex items-center gap-2"
         style={{ opacity: 0.7 }}>
-        <Lock size={12} className="text-gray-300 flex-shrink-0" />
+        <Lock size={12} className="text-gray-300 shrink-0" />
         <span className="text-sm truncate">{value}</span>
       </div>
     </div>
@@ -169,7 +169,7 @@ export default function AdminSettingsPage() {
       {error && (
         <div className="flex items-center gap-2 p-4 rounded-xl mb-5"
           style={{ background: 'var(--surface-red)', border: '1px solid var(--surface-red-border)' }}>
-          <AlertCircle size={16} className="text-red-500 flex-shrink-0" />
+          <AlertCircle size={16} className="text-red-500 shrink-0" />
           <p className="text-sm text-red-700">{error}</p>
         </div>
       )}
@@ -281,7 +281,7 @@ export default function AdminSettingsPage() {
           {/* Show locked SMTP info */}
           <div className="flex items-start gap-3 p-4 rounded-xl"
             style={{ background: 'var(--bg-surface-muted)', border: '1px solid var(--border-muted)' }}>
-            <Lock size={16} className="text-gray-300 flex-shrink-0 mt-0.5" />
+            <Lock size={16} className="text-gray-300 shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-semibold text-gray-700">SMTP credentials are secured</p>
               <p className="text-xs text-gray-400 mt-1 leading-relaxed">

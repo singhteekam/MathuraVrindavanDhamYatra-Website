@@ -918,7 +918,6 @@
     "passwordPlaceholder": "Enter your password",
     "secretKeyLabel": "Secret Key",
     "secretKeyPlaceholder": "Enter your superadmin secret key",
-    "secretKeyHint": "Set via SUPERADMIN_SECRET_KEY in Vercel env vars",
     "buttonSigningIn": "Signing in...",
     "buttonSuperadminSignIn": "Superadmin Sign In",
     "buttonSignIn": "Sign In",

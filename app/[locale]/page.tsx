@@ -12,8 +12,11 @@ import {
   getFeaturedPlaces,
   getApprovedReviews,
   getOwnerProfile,
+  getDiscountedPackages,
 } from '@/lib/fetchData'
-import OwnerSection  from '@/components/home/OwnerSection'
+import OwnerSection   from '@/components/home/OwnerSection'
+import HotDeals       from '@/components/home/HotDeals'
+import DivineGallery  from '@/components/home/DivineGallery'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import WhatsAppButton from '@/components/layout/WhatsAppButton'
@@ -47,7 +50,7 @@ async function BookingNotice() {
       <div className="container-custom py-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700">
               <AlertTriangle size={17} />
             </span>
             <div>
@@ -61,7 +64,7 @@ async function BookingNotice() {
             href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(message)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex flex-shrink-0 items-center justify-center gap-2 rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-700"
           >
             <MessageCircle size={16} />
             {t('bookOnWhatsApp')}
@@ -78,12 +81,12 @@ export default async function HomePage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  // All three queries run in parallel, each independently cached
-  const [featuredPackages, popularPlaces, reviews, ownerProfile] = await Promise.all([
+  const [featuredPackages, popularPlaces, reviews, ownerProfile, discountedPackages] = await Promise.all([
     getFeaturedPackages(locale),
     getFeaturedPlaces(locale),
     getApprovedReviews(6),
     getOwnerProfile(locale),
+    getDiscountedPackages(locale),
   ])
 
   return (
@@ -92,7 +95,9 @@ export default async function HomePage({
       {/* <BookingNotice /> */}
       <HeroBanner />
       <StatsBar />
+      <HotDeals packages={discountedPackages} />
       <FeaturedPackages packages={featuredPackages} />
+      <DivineGallery />
       <HowItWorks />
       <PopularPlaces    places={popularPlaces} />
       <WhyChooseUs />

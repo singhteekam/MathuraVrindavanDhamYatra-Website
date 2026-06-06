@@ -9,6 +9,7 @@ import {
   LayoutDashboard, MapPin, Package, Users, Settings,
   LogOut, Menu, X, Key, ShieldCheck, ChevronRight,
   UtensilsCrossed, Hotel, UserCircle, Activity,
+  CalendarCheck, Newspaper,
 } from 'lucide-react'
 import SimpleThemeSwitcher from '@/components/shared/SimpleThemeSwitcher'
 
@@ -19,9 +20,11 @@ const NAV = [
   { href: '/superadmin/packages',      icon: <Package          size={18} />, label: 'Packages'    },
   { href: '/superadmin/restaurants',   icon: <UtensilsCrossed  size={18} />, label: 'Restaurants' },
   { href: '/superadmin/hotels',        icon: <Hotel            size={18} />, label: 'Hotels'      },
-  { href: '/superadmin/users',         icon: <Users            size={18} />, label: 'Users'       },
-  { href: '/superadmin/owner',         icon: <UserCircle       size={18} />, label: 'Owner'       },
-  { href: '/superadmin/settings',      icon: <Settings         size={18} />, label: 'Settings'    },
+  { href: '/superadmin/users',        icon: <Users         size={18} />, label: 'Users'       },
+  { href: '/superadmin/bookings',     icon: <CalendarCheck size={18} />, label: 'Bookings'    },
+  { href: '/superadmin/newsletter',   icon: <Newspaper     size={18} />, label: 'Newsletter'  },
+  { href: '/superadmin/owner',        icon: <UserCircle    size={18} />, label: 'Owner'       },
+  { href: '/superadmin/settings',     icon: <Settings      size={18} />, label: 'Settings'    },
 ]
 
 export default function SuperadminSidebarWrapper() {

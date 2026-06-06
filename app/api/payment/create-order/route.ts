@@ -18,8 +18,9 @@ export async function POST(req: NextRequest) {
 
     const { amount, bookingId } = await req.json()
 
-    if (!amount || amount < 100) {
-      return errorResponse('Invalid amount.')
+    const numAmount = Number(amount)
+    if (!numAmount || isNaN(numAmount) || numAmount < 1) {
+      return errorResponse(`Invalid amount: received ${JSON.stringify(amount)}.`)
     }
 
     // Lazy import + initialize inside handler — never runs at build time
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
     const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret })
 
     const order = await razorpay.orders.create({
-      amount:   Math.round(amount * 100), // Razorpay uses paise
+      amount:   Math.round(numAmount * 100), // Razorpay uses paise
       currency: 'INR',
       receipt:  bookingId ?? `order_${Date.now()}`,
       notes:    { bookingId: bookingId ?? '' },
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest) {
       orderId:  order.id,
       amount:   order.amount,
       currency: order.currency,
-      keyId:    process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      keyId:    keyId,  // same RAZORPAY_KEY_ID used to create the order — safe to send to client
     })
   } catch (err) {
     console.error('[POST /api/payment/create-order]', err)

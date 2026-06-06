@@ -275,9 +275,6 @@ function LoginForm() {
                     {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                  {t('secretKeyHint')}
-                </p>
               </motion.div>
             )}
           </AnimatePresence>

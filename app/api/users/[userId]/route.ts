@@ -9,28 +9,25 @@ interface Params {
   params: Promise<{ userId: string }>
 }
 
-// PATCH /api/users/[userId] — superadmin only: change role or isActive
+// PATCH /api/users/[userId] — superadmin only: edit profile fields, role, or isActive
 export async function PATCH(req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     const user    = session?.user as { role?: string; id?: string } | undefined
 
-    // Only superadmin can change user roles / status
     if (user?.role !== 'superadmin') {
       return errorResponse('Forbidden. Superadmin access required.', 403)
     }
 
     const { userId } = await params
     const body        = await req.json()
-    const { role, isActive } = body
+    const { name, email, phone, role, isActive } = body
 
-    // Validate role if provided
     const VALID_ROLES = ['customer', 'driver', 'admin', 'superadmin']
     if (role !== undefined && !VALID_ROLES.includes(role)) {
       return errorResponse(`Invalid role. Must be one of: ${VALID_ROLES.join(', ')}.`)
     }
 
-    // Cannot remove your own superadmin role
     if (user.id === userId && role && role !== 'superadmin') {
       return errorResponse('You cannot remove your own superadmin role.')
     }
@@ -38,8 +35,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     await connectDB()
 
     const updateFields: Record<string, unknown> = {}
-    if (role      !== undefined) updateFields.role     = role
-    if (isActive  !== undefined) updateFields.isActive = isActive
+    if (name     !== undefined) updateFields.name     = String(name).trim()
+    if (email    !== undefined) updateFields.email    = String(email).trim().toLowerCase()
+    if (phone    !== undefined) updateFields.phone    = String(phone).trim()
+    if (role     !== undefined) updateFields.role     = role
+    if (isActive !== undefined) updateFields.isActive = isActive
 
     if (Object.keys(updateFields).length === 0) {
       return errorResponse('No valid fields to update.')
@@ -53,12 +53,37 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
     if (!updated) return errorResponse('User not found.', 404)
 
-    return successResponse({
-      user:    updated,
-      message: 'User updated successfully.',
-    })
+    return successResponse({ user: updated, message: 'User updated successfully.' })
   } catch (err) {
     console.error('[PATCH /api/users/:userId]', err)
+    return errorResponse('Internal server error.', 500)
+  }
+}
+
+// DELETE /api/users/[userId] — superadmin only, cannot delete self
+export async function DELETE(_req: NextRequest, { params }: Params) {
+  try {
+    const session = await getServerSession(authOptions)
+    const user    = session?.user as { role?: string; id?: string } | undefined
+
+    if (user?.role !== 'superadmin') {
+      return errorResponse('Forbidden. Superadmin access required.', 403)
+    }
+
+    const { userId } = await params
+
+    if (user.id === userId) {
+      return errorResponse('You cannot delete your own superadmin account.', 400)
+    }
+
+    await connectDB()
+
+    const deleted = await User.findByIdAndDelete(userId)
+    if (!deleted) return errorResponse('User not found.', 404)
+
+    return successResponse({ message: 'User deleted.' })
+  } catch (err) {
+    console.error('[DELETE /api/users/:userId]', err)
     return errorResponse('Internal server error.', 500)
   }
 }

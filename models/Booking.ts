@@ -24,14 +24,19 @@ export interface IBookingDoc extends Document {
   pickupLocation: string
   dropLocation?: string
   totalPassengers: number
-  totalAmount: number
-  advanceAmount: number
+  totalAmount:      number
+  originalAmount?:  number   // pre-discount total (set when discountPercent > 0)
+  discountPercent?: number   // % discount applied at booking time
+  advanceAmount:    number
   status: BookingStatus
-  paymentStatus:  PaymentStatus
-  paymentMethod?: PaymentMethod
-  paidAmount?:    number
-  paymentId?:     string
-  razorpayOrderId?: string
+  paymentStatus:   PaymentStatus
+  paymentMethod?:  PaymentMethod
+  paymentType?:    'full' | 'advance'   // online only: whether full or advance was paid
+  paidAmount?:     number
+  paidAt?:         Date                  // exact timestamp of payment confirmation
+  paymentId?:      string               // razorpay_payment_id
+  razorpayOrderId?:   string
+  razorpaySignature?: string            // HMAC signature — kept for dispute/audit trail
   addons: string[]
   customerEmail?: string
   customerPhone?: string
@@ -57,8 +62,10 @@ const BookingSchema = new Schema<IBookingDoc>(
     pickupLocation:  { type: String, required: true },
     dropLocation:    { type: String },
     totalPassengers: { type: Number, required: true, default: 1 },
-    totalAmount:     { type: Number, required: true },
-    advanceAmount:   { type: Number, required: true },
+    totalAmount:      { type: Number, required: true },
+    originalAmount:   { type: Number },
+    discountPercent:  { type: Number, default: 0 },
+    advanceAmount:    { type: Number, required: true },
     status: {
       type:    String,
       enum:    ['pending', 'confirmed', 'driver_assigned', 'ongoing', 'completed', 'cancelled'],
@@ -73,9 +80,12 @@ const BookingSchema = new Schema<IBookingDoc>(
       type:    String,
       enum:    ['cash', 'online_full', 'online_advance', 'whatsapp'],
     },
-    paidAmount:     { type: Number, default: 0 },
-    paymentId:      { type: String },
-    razorpayOrderId:{ type: String },
+    paymentType:        { type: String, enum: ['full', 'advance'] },
+    paidAmount:         { type: Number, default: 0 },
+    paidAt:             { type: Date },
+    paymentId:          { type: String },
+    razorpayOrderId:    { type: String },
+    razorpaySignature:  { type: String },
     addons:         [{ type: String }],
     customerEmail:  { type: String },
     customerPhone:  { type: String },

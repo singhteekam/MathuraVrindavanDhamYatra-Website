@@ -7,7 +7,7 @@ import { motion }      from 'framer-motion'
 import Link            from 'next/link'
 import {
   Plus, Search, Package, Edit, Eye,
-  ToggleLeft, ToggleRight, Star, ShieldCheck,
+  ToggleLeft, ToggleRight, Star, ShieldCheck, Trash2,
 } from 'lucide-react'
 import toast           from 'react-hot-toast'
 import { formatCurrency } from '@/lib/utils'
@@ -19,22 +19,26 @@ function str(v: BLField | undefined): string {
 }
 
 interface Pkg {
-  _id:          string
-  slug:         string
-  name:         BLField
-  duration:     number
-  basePrice:    number
-  isActive:     boolean
-  isFeatured:   boolean
-  isPopular:    boolean
-  rating:       number
-  totalReviews: number
+  _id:             string
+  slug:            string
+  name:            BLField
+  duration:        number
+  basePrice:       number
+  isActive:        boolean
+  isFeatured:      boolean
+  isPopular:       boolean
+  rating:          number
+  totalReviews:    number
+  discountPercent: number
+  discountEndsAt:  string | null
 }
 
 export default function SuperadminPackagesPage() {
-  const [packages, setPackages] = useState<Pkg[]>([])
-  const [loading,  setLoading]  = useState(true)
-  const [search,   setSearch]   = useState('')
+  const [packages,    setPackages]    = useState<Pkg[]>([])
+  const [loading,     setLoading]     = useState(true)
+  const [search,      setSearch]      = useState('')
+  const [confirmSlug, setConfirmSlug] = useState<string | null>(null)
+  const [deleting,    setDeleting]    = useState(false)
 
   const fetchPackages = useCallback(async () => {
     setLoading(true)
@@ -53,6 +57,9 @@ export default function SuperadminPackagesPage() {
   useEffect(() => { fetchPackages() }, [fetchPackages])
 
   async function toggleField(pkg: Pkg, field: 'isActive' | 'isFeatured' | 'isPopular') {
+    setPackages((prev) =>
+      prev.map((p) => p._id === pkg._id ? { ...p, [field]: !p[field] } : p),
+    )
     try {
       const res = await fetch(`/api/packages/${pkg.slug}`, {
         method:  'PUT',
@@ -61,15 +68,37 @@ export default function SuperadminPackagesPage() {
       })
       if (res.ok) {
         toast.success('Updated!')
-        setPackages((prev) =>
-          prev.map((p) => p._id === pkg._id ? { ...p, [field]: !p[field] } : p),
-        )
       } else {
+        setPackages((prev) =>
+          prev.map((p) => p._id === pkg._id ? { ...p, [field]: pkg[field] } : p),
+        )
         const data = await res.json()
         toast.error(data.error ?? 'Update failed.')
       }
     } catch {
+      setPackages((prev) =>
+        prev.map((p) => p._id === pkg._id ? { ...p, [field]: pkg[field] } : p),
+      )
       toast.error('Network error.')
+    }
+  }
+
+  async function deletePackage(slug: string) {
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/packages/${slug}`, { method: 'DELETE' })
+      if (res.ok) {
+        setPackages((prev) => prev.filter((p) => p.slug !== slug))
+        toast.success('Package permanently deleted.')
+      } else {
+        const data = await res.json()
+        toast.error(data.error ?? 'Delete failed.')
+      }
+    } catch {
+      toast.error('Network error.')
+    } finally {
+      setDeleting(false)
+      setConfirmSlug(null)
     }
   }
 
@@ -92,9 +121,8 @@ export default function SuperadminPackagesPage() {
           </h1>
           <p className="text-sm text-gray-400 mt-0.5">{packages.length} packages in database</p>
         </div>
-        {/* Points to superadmin new package */}
         <Link href="/superadmin/packages/new"
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white flex-shrink-0 transition-all"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shrink-0 transition-all"
           style={{ background: 'linear-gradient(135deg, #1e1b4b, #312e81)' }}>
           <Plus size={16} />Add Package
         </Link>
@@ -135,11 +163,11 @@ export default function SuperadminPackagesPage() {
                     className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                           style={{ background: 'var(--surface-krishna)' }}>
                           <Package size={14} style={{ color: '#6366f1' }} />
                         </div>
-                        <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm max-w-[200px] truncate">
+                        <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm max-w-50 truncate">
                           {str(pkg.name)}
                         </span>
                       </div>
@@ -147,8 +175,15 @@ export default function SuperadminPackagesPage() {
                     <td className="px-4 py-3 text-gray-500 text-sm whitespace-nowrap">
                       {pkg.duration}D
                     </td>
-                    <td className="px-4 py-3 font-semibold text-sm whitespace-nowrap" style={{ color: '#6366f1' }}>
-                      {formatCurrency(pkg.basePrice)}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <p className="font-semibold text-sm" style={{ color: '#6366f1' }}>{formatCurrency(pkg.basePrice)}</p>
+                      {(pkg.discountPercent ?? 0) > 0 &&
+                        (!pkg.discountEndsAt || new Date(pkg.discountEndsAt) > new Date()) && (
+                        <span className="text-xs font-bold px-1.5 py-0.5 rounded-full"
+                          style={{ background: 'var(--surface-red)', color: '#ef4444' }}>
+                          🔥 {pkg.discountPercent}% OFF
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {pkg.rating > 0 ? (
@@ -170,21 +205,45 @@ export default function SuperadminPackagesPage() {
                       </td>
                     ))}
                     <td className="px-4 py-3">
-                      <div className="flex gap-2">
-                        <Link href={`/packages/${pkg.slug}`} target="_blank"
-                          className="p-1.5 rounded-lg transition-colors"
-                          style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
-                          title="View on site">
-                          <Eye size={14} />
-                        </Link>
-                        {/* Edit goes to /superadmin route — NOT /admin */}
-                        <Link href={`/superadmin/packages/${pkg.slug}/edit`}
-                          className="p-1.5 rounded-lg transition-colors"
-                          style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}
-                          title="Edit package">
-                          <Edit size={14} />
-                        </Link>
-                      </div>
+                      {confirmSlug === pkg.slug ? (
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => deletePackage(pkg.slug)}
+                            disabled={deleting}
+                            className="text-xs font-semibold px-2.5 py-1.5 rounded-lg text-white whitespace-nowrap"
+                            style={{ background: '#ef4444' }}>
+                            {deleting ? '...' : 'Yes, delete'}
+                          </button>
+                          <button
+                            onClick={() => setConfirmSlug(null)}
+                            className="text-xs font-semibold px-2.5 py-1.5 rounded-lg whitespace-nowrap"
+                            style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <Link href={`/packages/${pkg.slug}`} target="_blank"
+                            className="p-1.5 rounded-lg transition-colors"
+                            style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}
+                            title="View on site">
+                            <Eye size={14} />
+                          </Link>
+                          <Link href={`/superadmin/packages/${pkg.slug}/edit`}
+                            className="p-1.5 rounded-lg transition-colors"
+                            style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}
+                            title="Edit package">
+                            <Edit size={14} />
+                          </Link>
+                          <button
+                            onClick={() => setConfirmSlug(pkg.slug)}
+                            className="p-1.5 rounded-lg transition-colors"
+                            style={{ background: 'var(--surface-red)', color: '#ef4444' }}
+                            title="Delete package">
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </motion.tr>
                 ))}
@@ -206,7 +265,7 @@ export default function SuperadminPackagesPage() {
                       {pkg.duration}D · {formatCurrency(pkg.basePrice)}
                     </p>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex gap-2 shrink-0">
                     <Link href={`/packages/${pkg.slug}`} target="_blank"
                       className="p-1.5 rounded-lg" style={{ background: 'var(--surface-green)', color: 'var(--text-on-green)' }}>
                       <Eye size={14} />
@@ -215,6 +274,26 @@ export default function SuperadminPackagesPage() {
                       className="p-1.5 rounded-lg" style={{ background: 'var(--surface-krishna)', color: 'var(--text-on-krishna)' }}>
                       <Edit size={14} />
                     </Link>
+                    {confirmSlug === pkg.slug ? (
+                      <>
+                        <button onClick={() => deletePackage(pkg.slug)} disabled={deleting}
+                          className="text-xs font-semibold px-2 py-1.5 rounded-lg text-white"
+                          style={{ background: '#ef4444' }}>
+                          {deleting ? '...' : 'Delete?'}
+                        </button>
+                        <button onClick={() => setConfirmSlug(null)}
+                          className="text-xs font-semibold px-2 py-1.5 rounded-lg"
+                          style={{ background: 'var(--bg-surface-muted)', color: 'var(--text-muted)' }}>
+                          No
+                        </button>
+                      </>
+                    ) : (
+                      <button onClick={() => setConfirmSlug(pkg.slug)}
+                        className="p-1.5 rounded-lg"
+                        style={{ background: 'var(--surface-red)', color: '#ef4444' }}>
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-4 text-xs">

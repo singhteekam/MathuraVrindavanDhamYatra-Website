@@ -53,19 +53,20 @@ export async function PUT(req: NextRequest, { params }: Params) {
   }
 }
 
-// DELETE /api/packages/[slug] — admin only, soft delete
+// DELETE /api/packages/[slug] — superadmin only: hard delete
 export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     const user    = session?.user as { role?: string } | undefined
-    if (user?.role !== 'admin' && user?.role !== 'superadmin') return errorResponse('Forbidden.', 403)
+    if (user?.role !== 'superadmin') return errorResponse('Forbidden. Superadmin access required.', 403)
 
     const { slug } = await params
     await connectDB()
 
-    await Package.findOneAndUpdate({ slug }, { isActive: false })
+    const pkg = await Package.findOneAndDelete({ slug })
+    if (!pkg) return errorResponse('Package not found.', 404)
     revalidateTag('packages', 'default')
-    return successResponse({ message: 'Package deactivated.' })
+    return successResponse({ message: 'Package deleted.' })
   } catch (err) {
     console.error('[DELETE /api/packages/:slug]', err)
     return errorResponse('Internal server error.', 500)

@@ -4,7 +4,7 @@ import { authOptions }            from '@/lib/auth'
 import crypto                     from 'crypto'
 import { connectDB }              from '@/lib/db'
 import Booking                    from '@/models/Booking'
-import { sendBookingConfirmation } from '@/lib/email'
+import { sendBookingConfirmation, sendAdminBookingNotification } from '@/lib/email'
 import { successResponse, errorResponse } from '@/lib/apiResponse'
 
 // POST /api/payment/verify
@@ -45,11 +45,14 @@ export async function POST(req: NextRequest) {
       { bookingId },
       {
         $set: {
-          paymentId:       razorpay_payment_id,
-          razorpayOrderId: razorpay_order_id,
-          paymentStatus:   isFullPayment ? 'paid' : 'partial',
-          paidAmount:      amountPaid,
-          status:          'confirmed',
+          paymentId:          razorpay_payment_id,
+          razorpayOrderId:    razorpay_order_id,
+          razorpaySignature:  razorpay_signature,
+          paymentType:        paymentType as 'full' | 'advance',
+          paymentStatus:      isFullPayment ? 'paid' : 'partial',
+          paidAmount:         amountPaid,
+          paidAt:             new Date(),
+          status:             'confirmed',
         },
       },
       { new: true },
@@ -57,26 +60,50 @@ export async function POST(req: NextRequest) {
 
     if (!booking) return errorResponse('Booking not found.', 404)
 
-    // ── Send confirmation email after successful payment ──────────────────
-    // Send to both the account email (session) and the form-entered email (booking.customerEmail)
     const sessionEmail  = (session.user as { email?: string }).email
     const userName      = (session.user as { name?: string }).name
-    const bookingEmail  = (booking as unknown as { customerEmail?: string }).customerEmail
-    const emailList     = [sessionEmail, bookingEmail]
+    const b = booking as unknown as {
+      customerName?: string; customerEmail?: string; customerPhone?: string
+      discountPercent?: number; originalAmount?: number; paymentMethod?: string
+      addons?: string[]; specialRequests?: string
+    }
+    const formattedDate = new Date(booking.startDate).toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'long', year: 'numeric',
+    })
+    const resolvedName = b.customerName ?? userName ?? 'Valued Customer'
+
+    // ── Customer confirmation email ──────────────────────────────────────
+    const emailList = [sessionEmail, b.customerEmail]
       .filter((e): e is string => Boolean(e?.trim()))
     if (emailList.length > 0) {
       sendBookingConfirmation({
         bookingId:      booking.bookingId,
-        customerName:   (booking as unknown as { customerName?: string }).customerName ?? userName ?? 'Valued Customer',
+        customerName:   resolvedName,
         customerEmail:  emailList,
         carName:        booking.carName,
-        startDate:      new Date(booking.startDate).toLocaleDateString('en-IN', {
-          day: 'numeric', month: 'long', year: 'numeric',
-        }),
+        startDate:      formattedDate,
         pickupLocation: booking.pickupLocation,
         totalAmount:    booking.totalAmount,
+        paidAmount:     amountPaid > 0 ? amountPaid : undefined,
       }).catch(console.error)
     }
+
+    // ── Admin notification ───────────────────────────────────────────────
+    sendAdminBookingNotification({
+      bookingId:       booking.bookingId,
+      customerName:    resolvedName,
+      customerPhone:   b.customerPhone ?? 'Not provided',
+      customerEmail:   b.customerEmail ?? sessionEmail ?? undefined,
+      carName:         booking.carName,
+      startDate:       formattedDate,
+      pickupLocation:  booking.pickupLocation,
+      totalAmount:     booking.totalAmount,
+      originalAmount:  b.originalAmount  ?? undefined,
+      discountPercent: b.discountPercent ?? 0,
+      paymentMethod:   b.paymentMethod   ?? 'online',
+      addons:          b.addons?.length ? b.addons : undefined,
+      specialRequests: b.specialRequests ?? undefined,
+    }).catch(console.error)
 
     return successResponse({
       verified:    true,

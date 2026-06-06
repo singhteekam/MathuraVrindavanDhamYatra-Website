@@ -16,6 +16,8 @@ const MAINTENANCE_BYPASS_PREFIXES = [
   '/_next',
   '/favicon',
   '/images',
+  '/sitemap.xml',
+  '/robots.txt',
 ]
 
 // ─── Routes that stay locale-free (never prefixed with /en or /hi) ───────────
@@ -30,6 +32,8 @@ const LOCALE_BYPASS_PREFIXES = [
   '/_next',
   '/favicon',
   '/images',
+  '/sitemap.xml',
+  '/robots.txt',
 ]
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

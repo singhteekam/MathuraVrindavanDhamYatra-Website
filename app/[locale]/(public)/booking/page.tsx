@@ -34,8 +34,11 @@ const INTL_LOCALE = { en: 'en-IN', hi: 'hi-IN' } as const
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface PackageOption extends Pick<PackageSummary, '_id' | 'slug' | 'duration' | 'basePrice'> {
-  name:    string | { en: string; hi: string }
-  pricing?: { carType: string; price: number }[]
+  name:            string | { en: string; hi: string }
+  pricing?:        { carType: string; price: number }[]
+  discountPercent?: number
+  discountEndsAt?:  string | null
+  discountLabel?:   string
 }
 
 /* ─── Booking form (inner, uses useSearchParams) ─────────── */
@@ -121,7 +124,13 @@ function BookingForm() {
     ? (pkgData.pricing?.find((p) => p.carType === selectedCar)?.price ?? pkgData.basePrice)
     : carData.basePrice * durationData.days
 
-  const totalPrice = basePrice + addonTotal
+  const pkgHasDiscount = (pkgData?.discountPercent ?? 0) > 0 &&
+    (!pkgData?.discountEndsAt || new Date(pkgData.discountEndsAt) > new Date())
+  const discountSaving = pkgHasDiscount
+    ? Math.round(basePrice * ((pkgData!.discountPercent!) / 100))
+    : 0
+  const effectiveBasePrice = basePrice - discountSaving
+  const totalPrice = effectiveBasePrice + addonTotal
   // advanceAmount is a fixed ₹ value set by admin — never exceeds totalPrice
   const safeAdvance = Math.min(advanceAmount, totalPrice)
 
@@ -197,6 +206,8 @@ function BookingForm() {
         pickupLocation:  pickupLocation.trim(),
         totalPassengers: Number(passengers),
         totalAmount:     totalPrice,
+        originalAmount:  pkgHasDiscount ? basePrice + addonTotal : undefined,
+        discountPercent: pkgHasDiscount ? pkgData!.discountPercent : 0,
         advanceAmount:   safeAdvance,
         addons:          selectedAddons,
         specialRequests: requests.trim() || undefined,
@@ -221,7 +232,7 @@ function BookingForm() {
       const booking = await createBooking('cash')
       if (!booking) return
       toast.success(t('toast.bookingConfirmed', { bookingId: booking.bookingId }), { duration: 5000 })
-      router.push(`/booking/confirmation?id=${booking.bookingId}&amount=${totalPrice}&advance=0&method=cash`)
+      router.push(`/booking/confirmation?id=${booking.bookingId}&amount=${totalPrice}&advance=${safeAdvance}&method=cash`)
     } catch { toast.error(t('toast.somethingWentWrong')) }
     finally    { setLoading(false) }
   }
@@ -260,7 +271,7 @@ function BookingForm() {
 
       // Keep loading=true until the modal fires (handler or ondismiss)
       // so the button can't be clicked again while the modal is open
-      const rzpKey = orderData.data.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || ''
+      const rzpKey = orderData.data.keyId ?? ''
       if (!rzpKey) {
         toast.error('Payment not configured. Please contact support.')
         setLoading(false)
@@ -332,22 +343,21 @@ function BookingForm() {
     )
     const waUrl = `https://wa.me/${phone_no}?text=${msg}`
 
-    // If logged in → also create a DB record
-    if (status === 'authenticated') {
-      setLoading(true)
-      try {
-        const booking = await createBooking('whatsapp')
-        if (booking) {
-          toast.success(t('toast.whatsappBooked'), { duration: 4000 })
-          window.open(waUrl, '_blank')
-          router.push(`/booking/confirmation?id=${booking.bookingId}&amount=${totalPrice}&advance=0&method=whatsapp`)
-          return
-        }
-      } catch { /* fall through to just opening WhatsApp */ }
-      finally   { setLoading(false) }
+    setLoading(true)
+    try {
+      const booking = await createBooking('whatsapp')
+      if (booking) {
+        toast.success(t('toast.whatsappBooked'), { duration: 4000 })
+        window.open(waUrl, '_blank')
+        router.push(`/booking/confirmation?id=${booking.bookingId}&amount=${totalPrice}&advance=${safeAdvance}&method=whatsapp`)
+        return
+      }
+    } catch {
+      // Booking creation failed — still open WhatsApp so the user isn't blocked
+    } finally {
+      setLoading(false)
     }
 
-    // Not logged in or booking failed — just open WhatsApp
     window.open(waUrl, '_blank')
   }
 
@@ -397,8 +407,8 @@ function BookingForm() {
             ))}
           </div>
 
-          {/* Not logged in warning */}
-          {status === 'unauthenticated' && (
+          {/* Sign-in nudge — hidden while online payment is disabled */}
+          {false && status === 'unauthenticated' && (
             <div className="mt-4 flex items-center gap-2 text-xs text-amber-200 bg-amber-900/30 px-4 py-2.5 rounded-xl w-fit">
               <LogIn size={13} />
               {t.rich('signInNotice', {
@@ -438,21 +448,36 @@ function BookingForm() {
                             <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">{t('customTrip')}</p>
                             <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{t('customTripHint')}</p>
                           </button>
-                          {packages.slice(0, 5).map((pkg) => (
-                            <button key={pkg.slug}
-                              onClick={() => {
-                                setSelectedPackage(pkg.slug)
-                                const dur = durations.find((d) => d.days === pkg.duration)
-                                if (dur) setSelectedDuration(dur.id)
-                              }}
-                              className="p-3 rounded-xl text-left transition-all duration-200"
-                              style={optionStyle(selectedPackage === pkg.slug)}>
-                              <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">{getLocalName(pkg.name)}</p>
-                              <p className="text-xs mt-0.5" style={{ color: '#ff7d0f' }}>
-                                {t('packagePriceLine', { price: formatCurrency(pkg.basePrice), days: pkg.duration })}
-                              </p>
-                            </button>
-                          ))}
+                          {packages.slice(0, 5).map((pkg) => {
+                            const pkgCardHasDisc = (pkg.discountPercent ?? 0) > 0 &&
+                              (!pkg.discountEndsAt || new Date(pkg.discountEndsAt) > new Date())
+                            const pkgCardDiscounted = pkgCardHasDisc
+                              ? Math.round(pkg.basePrice * (1 - (pkg.discountPercent ?? 0) / 100))
+                              : null
+                            return (
+                              <button key={pkg.slug}
+                                onClick={() => {
+                                  setSelectedPackage(pkg.slug)
+                                  const dur = durations.find((d) => d.days === pkg.duration)
+                                  if (dur) setSelectedDuration(dur.id)
+                                }}
+                                className="p-3 rounded-xl text-left transition-all duration-200"
+                                style={optionStyle(selectedPackage === pkg.slug)}>
+                                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">{getLocalName(pkg.name)}</p>
+                                {pkgCardDiscounted ? (
+                                  <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                    <span className="text-xs line-through text-gray-400">{formatCurrency(pkg.basePrice)}</span>
+                                    <span className="text-xs font-bold" style={{ color: '#16a34a' }}>{formatCurrency(pkgCardDiscounted)}</span>
+                                    <span className="text-[10px] font-bold px-1 rounded" style={{ background: 'rgba(22,163,74,0.12)', color: '#16a34a' }}>🔥 {pkg.discountPercent}% OFF</span>
+                                  </div>
+                                ) : (
+                                  <p className="text-xs mt-0.5" style={{ color: '#ff7d0f' }}>
+                                    {t('packagePriceLine', { price: formatCurrency(pkg.basePrice), days: pkg.duration })}
+                                  </p>
+                                )}
+                              </button>
+                            )
+                          })}
                         </div>
                       </div>
                     )}
@@ -730,8 +755,18 @@ function BookingForm() {
                     <div className="p-4 rounded-2xl mb-5 bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/60">
                       <div className="flex justify-between text-sm mb-1.5">
                         <span className="text-gray-600 dark:text-gray-300">{t('basePrice')}</span>
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">{formatCurrency(basePrice)}</span>
+                        <span className={`font-semibold ${pkgHasDiscount ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-900 dark:text-gray-100'}`}>
+                          {formatCurrency(basePrice)}
+                        </span>
                       </div>
+                      {pkgHasDiscount && (
+                        <div className="flex justify-between text-sm mb-1.5">
+                          <span className="flex items-center gap-1 text-green-600 dark:text-green-400 font-semibold">
+                            🔥 {pkgData!.discountPercent}% {pkgData?.discountLabel || 'Discount'}
+                          </span>
+                          <span className="font-semibold text-green-600 dark:text-green-400">−{formatCurrency(discountSaving)}</span>
+                        </div>
+                      )}
                       {addonTotal > 0 && (
                         <div className="flex justify-between text-sm mb-1.5">
                           <span className="text-gray-600 dark:text-gray-300">{t('addOns')}</span>
@@ -743,13 +778,6 @@ function BookingForm() {
                         <span className="text-gray-900 dark:text-white">{t('total')}</span>
                         <span style={{ color: '#ff7d0f' }}>{formatCurrency(totalPrice)}</span>
                       </div>
-                      {safeAdvance > 0 && (
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                          Pay <strong className="text-saffron-600 dark:text-saffron-400">{formatCurrency(safeAdvance)}</strong> advance online now (same for all bookings),{' '}
-                          or pay full {formatCurrency(totalPrice)}. Balance{' '}
-                          <strong className="text-saffron-600 dark:text-saffron-400">{formatCurrency(totalPrice - safeAdvance)}</strong> due before/during trip.
-                        </p>
-                      )}
                     </div>
 
                     {/* 50% onboarding note */}
@@ -758,29 +786,7 @@ function BookingForm() {
                       <p className="text-xs text-amber-800 dark:text-amber-300">{t('onboardingNote')}</p>
                     </div>
 
-                    {/* Sign-in notice (non-blocking — WhatsApp still works) */}
-                    {status === 'unauthenticated' && (
-                      <div className="p-3 rounded-xl mb-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/60 flex items-center justify-between gap-3">
-                        <p className="text-xs text-blue-700 dark:text-blue-300">{t('signInToConfirm')}</p>
-                        <Link href="/login?callbackUrl=/booking"
-                          className="flex-shrink-0 inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
-                          style={{ background: '#2563eb', color: '#fff' }}>
-                          <LogIn size={11} />{t('signInCreateAccount')}
-                        </Link>
-                      </div>
-                    )}
-
-                    {/* Priority nudge */}
-                    <div className="flex items-start gap-2.5 p-3.5 rounded-xl mb-4"
-                      style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.07),rgba(124,58,237,0.07))', border: '1px solid rgba(37,99,235,0.2)' }}>
-                      <span className="text-base shrink-0 mt-0.5">⚡</span>
-                      <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
-                        <strong className="text-blue-800 dark:text-blue-100">Pay online now</strong> ({formatCurrency(safeAdvance)} advance or full {formatCurrency(totalPrice)}) to get{' '}
-                        <strong className="text-blue-800 dark:text-blue-100">priority review</strong> from our team and faster booking confirmation!
-                      </p>
-                    </div>
-
-                    {/* ── 4 Payment option cards ── */}
+                    {/* ── Payment option cards ── */}
                     <h3 className="font-bold text-gray-900 dark:text-white text-sm mb-3">
                       {t('choosePaymentMethod')}
                     </h3>
@@ -788,7 +794,7 @@ function BookingForm() {
 
                       {/* 1 — Pay Cash */}
                       <button type="button" onClick={handlePayCash}
-                        disabled={loading || status === 'unauthenticated'}
+                        disabled={loading}
                         className="w-full text-left p-4 rounded-2xl border transition-all disabled:opacity-60"
                         style={{ border: '1.5px solid var(--border-default)', background: 'var(--bg-surface)' }}>
                         <div className="flex items-start gap-3">
@@ -810,7 +816,8 @@ function BookingForm() {
                         </div>
                       </button>
 
-                      {/* 2 — Pay Full Now */}
+                      {/* 2 — Pay Full Now (online) — temporarily disabled */}
+                      {/* TODO: re-enable when Razorpay live keys are ready
                       <button type="button" onClick={() => initiateRazorpay('full')}
                         disabled={loading || status === 'unauthenticated'}
                         className="w-full text-left p-4 rounded-2xl border transition-all disabled:opacity-60"
@@ -834,8 +841,10 @@ function BookingForm() {
                                    : <>{t('payOpt.full.btn', { amount: formatCurrency(totalPrice) })}</>}
                         </div>
                       </button>
+                      */}
 
-                      {/* 3 — Pay Advance (only if safeAdvance > 0) */}
+                      {/* 3 — Pay Advance (online) — temporarily disabled */}
+                      {/* TODO: re-enable when Razorpay live keys are ready
                       {safeAdvance > 0 && (
                         <button type="button" onClick={() => initiateRazorpay('advance')}
                           disabled={loading || status === 'unauthenticated'}
@@ -863,6 +872,7 @@ function BookingForm() {
                           </div>
                         </button>
                       )}
+                      */}
 
                       {/* 4 — Book on WhatsApp */}
                       <button type="button" onClick={handleWhatsAppBook}
@@ -940,8 +950,16 @@ function BookingForm() {
               <div className="border-t border-gray-100 dark:border-gray-800 pt-4 space-y-2 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500 dark:text-gray-400">{t('basePrice')}</span>
-                  <span className="font-semibold text-gray-900 dark:text-gray-100">{formatCurrency(basePrice)}</span>
+                  <span className={`font-semibold ${pkgHasDiscount ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-900 dark:text-gray-100'}`}>
+                    {formatCurrency(basePrice)}
+                  </span>
                 </div>
+                {pkgHasDiscount && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-green-600 dark:text-green-400 font-semibold">🔥 Discount</span>
+                    <span className="font-semibold text-green-600 dark:text-green-400">−{formatCurrency(discountSaving)}</span>
+                  </div>
+                )}
                 {addonTotal > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500 dark:text-gray-400">{t('addOns')}</span>

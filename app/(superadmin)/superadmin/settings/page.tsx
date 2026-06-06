@@ -28,17 +28,17 @@ function Toggle({ checked, onChange, label, desc }: {
   checked: boolean; onChange: () => void; label: string; desc: string
 }) {
   return (
-    <div className="flex items-center justify-between p-4 rounded-xl" style={{ background: 'var(--bg-surface-muted)' }}>
-      <div>
+    <div className="flex items-center gap-4 p-4 rounded-xl overflow-hidden" style={{ background: 'var(--bg-surface-muted)' }}>
+      <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{label}</p>
         <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
       </div>
       <button type="button" onClick={onChange}
-        className="relative w-11 h-6 rounded-full overflow-hidden transition-colors duration-200 flex-shrink-0"
+        className="relative w-11 h-6 rounded-full transition-colors duration-200 shrink-0"
         style={{ background: checked ? '#ff7d0f' : '#d1d5db' }}
         role="switch" aria-checked={checked}>
-        <span className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
-          style={{ transform: checked ? 'translateX(22px)' : 'translateX(2px)' }} />
+        <span className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200"
+          style={{ transform: checked ? 'translateX(20px)' : 'translateX(0px)' }} />
       </button>
     </div>
   )

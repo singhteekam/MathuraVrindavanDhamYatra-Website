@@ -35,6 +35,7 @@ interface Booking {
   status: string
   paymentStatus: string
   paymentMethod?: string
+  paymentType?: 'full' | 'advance'
   carName: string
   carType: string
   startDate: string
@@ -44,10 +45,14 @@ interface Booking {
   dropLocation?: string
   totalPassengers: number
   totalAmount: number
+  originalAmount?: number
+  discountPercent?: number
   advanceAmount: number
   paidAmount?: number
+  paidAt?: string
   paymentId?: string
   razorpayOrderId?: string
+  razorpaySignature?: string
   addons: string[]
   customerEmail?: string
   customerPhone?: string
@@ -466,8 +471,6 @@ export default function AdminBookingDetailPage() {
                 value={new Date(booking.createdAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })} />
               <InfoRow label="Last Updated"
                 value={new Date(booking.updatedAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })} />
-              {booking.paymentId       && <InfoRow label="Payment ID"     value={booking.paymentId}       mono />}
-              {booking.razorpayOrderId && <InfoRow label="Razorpay Order" value={booking.razorpayOrderId} mono />}
             </div>
           </div>
         </div>
@@ -502,6 +505,17 @@ export default function AdminBookingDetailPage() {
                 <input type="number" min={0} className="input-field text-sm" value={fields.totalAmount}
                   onChange={(e) => setField('totalAmount', Number(e.target.value))} />
               </Field>
+              {(booking.originalAmount ?? 0) > 0 && (booking.discountPercent ?? 0) > 0 && (
+                <div className="p-2.5 rounded-xl text-xs"
+                  style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(22,163,74,0.2)' }}>
+                  <p className="text-green-700 dark:text-green-400 font-semibold">
+                    🔥 {booking.discountPercent}% Discount Applied
+                  </p>
+                  <p className="text-gray-500 dark:text-gray-400 mt-0.5">
+                    Original: {formatCurrency(booking.originalAmount!)} → Saved: {formatCurrency(booking.originalAmount! - booking.totalAmount)}
+                  </p>
+                </div>
+              )}
               <Field label="Advance Amount (₹)">
                 <input type="number" min={0} className="input-field text-sm" value={fields.advanceAmount}
                   onChange={(e) => setField('advanceAmount', Number(e.target.value))} />
@@ -516,6 +530,49 @@ export default function AdminBookingDetailPage() {
                 style={{ background: 'var(--surface-amber)', border: '1px solid var(--surface-amber-border)' }}>
                 <span className="text-amber-700 dark:text-amber-300 font-medium">Balance Due</span>
                 <span className="font-bold text-amber-700 dark:text-amber-300">{formatCurrency(balance)}</span>
+              </div>
+            )}
+
+            {/* Online payment audit trail — read-only */}
+            {(booking.paymentId || booking.paidAt || booking.paymentType) && (
+              <div className="mt-4 pt-4 space-y-2" style={{ borderTop: '1px solid var(--border-muted)' }}>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Online Payment Record</p>
+                {booking.paymentType && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-500 dark:text-gray-400">Type</span>
+                    <span className="font-semibold capitalize" style={{ color: '#ff7d0f' }}>
+                      {booking.paymentType === 'full' ? 'Full Payment' : 'Advance Payment'}
+                    </span>
+                  </div>
+                )}
+                {booking.paidAt && (
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-500 dark:text-gray-400">Paid At</span>
+                    <span className="font-semibold text-gray-800 dark:text-gray-200">
+                      {new Date(booking.paidAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                    </span>
+                  </div>
+                )}
+                {booking.paymentId && (
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs text-gray-400">Payment ID</span>
+                    <span className="text-xs font-mono font-semibold text-gray-700 dark:text-gray-300 break-all">{booking.paymentId}</span>
+                  </div>
+                )}
+                {booking.razorpayOrderId && (
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs text-gray-400">Order ID</span>
+                    <span className="text-xs font-mono font-semibold text-gray-700 dark:text-gray-300 break-all">{booking.razorpayOrderId}</span>
+                  </div>
+                )}
+                {booking.razorpaySignature && (
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs text-gray-400">Signature (HMAC)</span>
+                    <span className="text-xs font-mono text-gray-500 dark:text-gray-500 break-all">
+                      {booking.razorpaySignature.slice(0, 24)}…
+                    </span>
+                  </div>
+                )}
               </div>
             )}
           </div>
